@@ -61,16 +61,18 @@ namespace pl {
             return (I32)(PL_stack_sp - mark);
         }
         long arg_long(int n) {
-            return (long)SvIV(PL_stack_base[this->ax + n]);
+            return (long)SvIV(fetch_stack(n));
         }
         const char* arg_str(int n) {
-            return SvPV_nolen(PL_stack_base[this->ax + n]);
+            return SvPV_nolen(fetch_stack(n));
         }
         void ret(int n, Scalar* s) {
             PL_stack_base[ax + n] = s->serialize();
         }
     protected:
-        // TODO: this->fetch_stack(n)
+        SV* fetch_stack(int n) {
+            return PL_stack_base[this->ax + n];
+        }
         I32 ax;
         SV ** mark;
     };
