@@ -1,13 +1,12 @@
 #include <string>
+#include <vector>
 
-#ifdef __cplusplus
 extern "C" {
-#endif
-
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
 #include "ppport.h"
+};
 
 #define XS_STATE(type, x) \
     INT2PTR(type, SvROK(x) ? SvIV(SvRV(x)) : SvIV(x))
@@ -20,8 +19,13 @@ extern "C" {
     }
 
 namespace pl {
-    class Scalar {
+    class Value { };
+
+    class Scalar : public Value {
     public:
+        Scalar(SV* _v) {
+            this->val = _v;
+        }
         Scalar * mortal() {
             sv_2mortal(this->val);
             return this;
@@ -35,34 +39,40 @@ namespace pl {
 
     class Int : public Scalar {
     public:
-        Int(int _i) {
-            this->val = newSViv(_i);
+        Int(int _i) : Scalar(newSViv(_i)) {
         }
     };
     class Double : public Scalar {
     public:
-        Double(double _i) {
-            this->val = newSVnv(_i);
+        Double(double _i) : Scalar(newSVnv(_i)) {
         }
     };
     class Str : public Scalar {
     public:
-        Str(std::string & _s) {
-            this->val = newSVpv(_s.c_str(), _s.length());
+        Str(std::string & _s) : Scalar(newSVpv(_s.c_str(), _s.length())) {
         }
     };
 
+    class Reference : public Scalar {
+    public:
+        Reference(SV*v) : Scalar(v) { }
+    };
+
+    class Hash : public Value {
+    public:
+        Hash(HV* _h) {
+            this->h = _h;
+        }
+        Reference * fetch(const char *key);
+    protected:
+        HV* h;
+    };
+
+
     class Ctx {
     public:
-        Ctx() {
-            // same as dAXMARK
-            this->ax = *PL_markstack_ptr + 1;
-            --PL_markstack_ptr;
-            this->mark = PL_stack_base + ax - 1;
-        }
-        ~Ctx() {
-            PL_stack_sp = PL_stack_base + ax;
-        }
+        Ctx();
+        ~Ctx();
         I32 arg_len() {
             return (I32)(PL_stack_sp - mark);
         }
@@ -75,8 +85,24 @@ namespace pl {
         const char* arg_str(int n) {
             return SvPV_nolen(fetch_stack(n));
         }
+        Hash * arg_hashref(int n) {
+            SV* v = fetch_stack(n);
+            if (SvROK(v) && SvTYPE(SvRV(v))==SVt_PVHV) {
+                HV* h = (HV*)SvRV(v);
+                Hash * hobj = new Hash(h);
+                this->register_allocated(hobj);
+                return hobj;
+            } else {
+                Perl_croak(aTHX_ "%s: %s is not a hash reference",
+                    "Devel::BindPP",
+                    "hv");
+            }
+        }
         void ret(int n, Scalar* s) {
             PL_stack_base[ax + n] = s->serialize();
+        }
+        void register_allocated(Value* v) {
+            allocated.push_back(v);
         }
     protected:
         SV* fetch_stack(int n) {
@@ -84,7 +110,46 @@ namespace pl {
         }
         I32 ax;
         SV ** mark;
+        std::vector<Value*> allocated;
     };
+    std::vector<Ctx*> ctxstack;
+    Ctx::Ctx() {
+        // same as dAXMARK
+        this->ax = *PL_markstack_ptr + 1;
+        --PL_markstack_ptr;
+        this->mark = PL_stack_base + ax - 1;
+
+        ctxstack.push_back(this);
+    }
+    Ctx::~Ctx() {
+        std::vector<Value*>::iterator iter;
+        for (iter = allocated.begin(); iter != allocated.end(); iter++) {
+            delete *iter;
+        }
+
+        PL_stack_sp = PL_stack_base + ax;
+
+        ctxstack.pop_back();
+    }
+
+    class CurCtx {
+    public:
+        static Ctx * get() {
+            return ctxstack[ctxstack.size()-1];
+        }
+    };
+
+    Reference * Hash::fetch(const char* key) {
+        // SV**    hv_fetch(HV* tb, const char* key, I32 klen, I32 lval)
+        SV ** v = hv_fetch(h, key, strlen(key), 0);
+        if (v) {
+            Reference * ref = new Reference(*v);
+            CurCtx::get()->register_allocated(ref);
+            return ref;
+        } else {
+            return NULL;
+        }
+    }
 
     class Package {
     public:
@@ -178,17 +243,30 @@ XS(XS_Devel__BindPP_catfoo) {
     c.ret(0, pl::Str(buf).mortal());
 }
 
-XS(boot_Devel__BindPP)
-{
-    pl::BootstrapCtx bc;
+XS(XS_hv_fetch) {
+    pl::Ctx c;
 
-    pl::Package pkg("Devel::BindPP");
-    pkg.add_method("twice", XS_Devel__BindPP_twice, __FILE__);
-    pkg.add_method("catfoo", XS_Devel__BindPP_catfoo, __FILE__);
-    pkg.add_method("twice_n", XS_Devel__BindPP_twice_n, __FILE__);
+    if (c.arg_len() != 2) {
+       Perl_croak(aTHX_ "Usage: %s(hv, str)", "Devel::BindPP::hv_fetch");
+    }
+
+    pl::Hash* hash = c.arg_hashref(0);
+    const char* key = c.arg_str(1);
+
+    pl::Reference * ret = hash->fetch(key);
+
+    c.ret(0, ret);
 }
 
-#ifdef __cplusplus
+extern "C" {
+    XS(boot_Devel__BindPP) {
+        pl::BootstrapCtx bc;
+
+        pl::Package pkg("Devel::BindPP");
+        pkg.add_method("twice", XS_Devel__BindPP_twice, __FILE__);
+        pkg.add_method("catfoo", XS_Devel__BindPP_catfoo, __FILE__);
+        pkg.add_method("twice_n", XS_Devel__BindPP_twice_n, __FILE__);
+        pkg.add_method("hvref_fetch", XS_hv_fetch, __FILE__);
+    }
 }
-#endif
 
