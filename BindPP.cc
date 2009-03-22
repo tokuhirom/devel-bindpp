@@ -39,6 +39,12 @@ namespace pl {
             this->val = newSViv(_i);
         }
     };
+    class Str : public Scalar {
+    public:
+        Str(std::string & _s) {
+            this->val = newSVpv(_s.c_str(), _s.length());
+        }
+    };
 
     class Ctx {
     public:
@@ -54,13 +60,17 @@ namespace pl {
         I32 items() {
             return (I32)(PL_stack_sp - mark);
         }
-        long fetch_long(int n) {
+        long arg_long(int n) {
             return (long)SvIV(PL_stack_base[this->ax + n]);
+        }
+        const char* arg_str(int n) {
+            return SvPV_nolen(PL_stack_base[this->ax + n]);
         }
         void ret(int n, Scalar* s) {
             PL_stack_base[ax + n] = s->serialize();
         }
     protected:
+        // TODO: this->fetch_stack(n)
         I32 ax;
         SV ** mark;
     };
@@ -119,16 +129,30 @@ namespace pl {
     };
 };
 
-XS(XS_Devel__BindPP_hoge) {
+XS(XS_Devel__BindPP_twice) {
     pl::Ctx c;
 
     if (c.items() != 1) {
-       Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::hoge");
+       Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice");
     }
 
-    long n = c.fetch_long(0);
+    long n = c.arg_long(0);
 
     c.ret(0, pl::Int(n*2).mortal());
+}
+
+XS(XS_Devel__BindPP_catfoo) {
+    pl::Ctx c;
+
+    if (c.items() != 1) {
+       Perl_croak(aTHX_ "Usage: %s(str)", "Devel::BindPP::catfoo");
+    }
+
+    const char* n = c.arg_str(0);
+    std::string buf(n);
+    buf += "foo";
+
+    c.ret(0, pl::Str(buf).mortal());
 }
 
 XS(boot_Devel__BindPP)
@@ -136,7 +160,8 @@ XS(boot_Devel__BindPP)
     pl::BootstrapCtx bc;
 
     pl::Package pkg("Devel::BindPP");
-    pkg.add_method("hoge", XS_Devel__BindPP_hoge, __FILE__);
+    pkg.add_method("twice", XS_Devel__BindPP_twice, __FILE__);
+    pkg.add_method("catfoo", XS_Devel__BindPP_catfoo, __FILE__);
 }
 
 #ifdef __cplusplus
