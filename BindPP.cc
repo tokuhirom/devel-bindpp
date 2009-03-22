@@ -39,6 +39,12 @@ namespace pl {
             this->val = newSViv(_i);
         }
     };
+    class Double : public Scalar {
+    public:
+        Double(double _i) {
+            this->val = newSVnv(_i);
+        }
+    };
     class Str : public Scalar {
     public:
         Str(std::string & _s) {
@@ -60,8 +66,11 @@ namespace pl {
         I32 arg_len() {
             return (I32)(PL_stack_sp - mark);
         }
-        long arg_long(int n) {
-            return (long)SvIV(fetch_stack(n));
+        int arg_int(int n) {
+            return SvIV(fetch_stack(n));
+        }
+        double arg_double(int n) {
+            return SvNV(fetch_stack(n));
         }
         const char* arg_str(int n) {
             return SvPV_nolen(fetch_stack(n));
@@ -138,9 +147,21 @@ XS(XS_Devel__BindPP_twice) {
        Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice");
     }
 
-    long n = c.arg_long(0);
+    int n = c.arg_int(0);
 
     c.ret(0, pl::Int(n*2).mortal());
+}
+
+XS(XS_Devel__BindPP_twice_n) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+       Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice_n");
+    }
+
+    double n = c.arg_double(0);
+
+    c.ret(0, pl::Double(n*2).mortal());
 }
 
 XS(XS_Devel__BindPP_catfoo) {
@@ -164,6 +185,7 @@ XS(boot_Devel__BindPP)
     pl::Package pkg("Devel::BindPP");
     pkg.add_method("twice", XS_Devel__BindPP_twice, __FILE__);
     pkg.add_method("catfoo", XS_Devel__BindPP_catfoo, __FILE__);
+    pkg.add_method("twice_n", XS_Devel__BindPP_twice_n, __FILE__);
 }
 
 #ifdef __cplusplus
