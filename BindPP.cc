@@ -57,7 +57,7 @@ namespace pl {
         ~Ctx() {
             PL_stack_sp = PL_stack_base + ax;
         }
-        I32 items() {
+        I32 arg_len() {
             return (I32)(PL_stack_sp - mark);
         }
         long arg_long(int n) {
@@ -103,7 +103,7 @@ namespace pl {
         void xs_version_bootcheck() {
             SV *_sv;
             const char *vn = NULL, *module = SvPV_nolen_const(ST(0));
-            if (this->items() >= 2) {
+            if (this->arg_len() >= 2) {
                 /* version supplied as bootstrap arg */
                 _sv = PL_stack_base[ax+1];
             } else {
@@ -134,7 +134,7 @@ namespace pl {
 XS(XS_Devel__BindPP_twice) {
     pl::Ctx c;
 
-    if (c.items() != 1) {
+    if (c.arg_len() != 1) {
        Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice");
     }
 
@@ -146,7 +146,7 @@ XS(XS_Devel__BindPP_twice) {
 XS(XS_Devel__BindPP_catfoo) {
     pl::Ctx c;
 
-    if (c.items() != 1) {
+    if (c.arg_len() != 1) {
        Perl_croak(aTHX_ "Usage: %s(str)", "Devel::BindPP::catfoo");
     }
 
