@@ -15,6 +15,15 @@ extern "C" {
 };
 
 namespace pl {
+    class Str;
+    class UInt;
+    class Int;
+    class Double;
+    class Pointer;
+    class Reference;
+    class Hash;
+    class Array;
+
     class Value {
     public:
         Value(SV* _v) {
@@ -31,13 +40,6 @@ namespace pl {
         }
         SV* val;
     };
-
-    class Str;
-    class UInt;
-    class Int;
-    class Double;
-    class Pointer;
-    class Reference;
 
     class Scalar : public Value {
     public:
@@ -96,9 +98,6 @@ namespace pl {
             return SvPV_nolen(this->val);
         }
     };
-
-    class Hash;
-    class Array;
 
     class Reference : public Scalar {
     public:

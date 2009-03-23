@@ -10,8 +10,7 @@ use Devel::BindPP;
     is $a, '4,9';
 }
 {
-    my $a = join ',', Devel::BindPP::Basic::mult2();
-    is $a, '';
+    is Devel::BindPP::Basic::mult2(), undef;
 }
 {
     my @a = Devel::BindPP::Basic::wantarray();
