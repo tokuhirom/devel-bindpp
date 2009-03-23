@@ -34,6 +34,20 @@ XS(xs_s_is_object) {
     pl::Boolean b( r->is_object() );
     c.ret(&b);
 }
+XS(xs_s_call_cv) {
+    pl::Ctx c;
+
+    pl::Code * code = c.arg(0)->as_ref()->as_code();
+
+    pl::Int i(4649);
+    i.mortal();
+    pl::Array args;
+    pl::Array retval;
+    args.push(&i);
+    pl::Perl::call(code, G_ARRAY, &args, &retval);
+    pl::Reference * ref = pl::Reference::new_inc(&retval);
+    c.ret(ref);
+}
 
 XS(xs_p_get) {
     pl::Ctx c;
@@ -154,7 +168,6 @@ XS(xs_av_push) {
 
     pl::Array* array = c.arg(0)->as_ref()->as_array();
     pl::Scalar*s = c.arg(1);
-    s->refcnt_inc();
     array->push(s);
 }
 
@@ -181,7 +194,6 @@ XS(xs_av_store) {
     pl::Array* array = c.arg(0)->as_ref()->as_array();
     pl::Int*i = c.arg(1)->as_int();
     pl::Scalar *val = c.arg(2);
-    val->refcnt_inc();
     array->store(i->to_c(), val);
     c.return_true();
 }
@@ -339,7 +351,6 @@ XS(xs_hv_store) {
     pl::Scalar * val = c.arg(2);
 
     pl::Reference *ref = h->store(key, val);
-    ref->refcnt_inc();
 
     c.ret(ref);
 }
@@ -452,6 +463,7 @@ extern "C" {
         s.add_method("twice_deref", xs_twice_deref, __FILE__);
         s.add_method("cats", xs_s_cats, __FILE__);
         s.add_method("is_object", xs_s_is_object, __FILE__);
+        s.add_method("call_cv", xs_s_call_cv, __FILE__);
 
         // Hash
         pl::Package h("Devel::BindPP::Hash");

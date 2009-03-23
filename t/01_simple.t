@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 45;
+use Test::More tests => 48;
 
 use Devel::BindPP;
 
@@ -41,6 +41,7 @@ isa_ok Devel::BindPP::Scalar::do_bless([], 'OK'), 'OK';
     is Internals::SvREFCNT($b), 3;
 }
 {
+    local $@;
     eval {
         Devel::BindPP::Scalar::to_c('ok');
     };
@@ -53,6 +54,11 @@ is Devel::BindPP::Scalar::twice_deref(\3), 6;
 }
 ok !Devel::BindPP::Scalar::is_object([]);
 ok Devel::BindPP::Scalar::is_object(bless []);
+{
+    is join(',', @{Devel::BindPP::Scalar::call_cv(sub { @_, qw/1 2 3/ })}), '3,2,1,4649';
+    is join(',', @{Devel::BindPP::Scalar::call_cv(sub { @_, qw/1 2/ })}), '2,1,4649';
+    is join(',', @{Devel::BindPP::Scalar::call_cv(sub { qw/1 2/ })}), '2,1';
+}
 
 # hash
 is Devel::BindPP::Hash::hvref_fetch(+{a => 'b'}, 'a'), 'b';

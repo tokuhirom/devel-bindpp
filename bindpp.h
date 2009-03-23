@@ -4,7 +4,8 @@
 // TODO: use Newx instead of new
 // TODO: use Safefree instaed of delete
 // TODO: handle gv
-// TODO: handle perlcall
+// TODO: call cv by scalar context
+// TODO: protect value->val
 
 extern "C" {
 #include "EXTERN.h"
@@ -24,6 +25,7 @@ namespace pl {
     class Hash;
     class Array;
     class Package;
+    class Code;
 
     class Value {
     public:
@@ -40,6 +42,8 @@ namespace pl {
             SvREFCNT_dec(this->val);
         }
         SV* val;
+    protected:
+        Value() { }
     };
 
     class Scalar : public Value {
@@ -120,6 +124,7 @@ namespace pl {
         Hash * as_hash();
         Array * as_array();
         Scalar * as_scalar();
+        Code* as_code();
         bool is_object() {
             return sv_isobject(this->val);
         }
@@ -155,6 +160,7 @@ namespace pl {
         Array() : Value((SV*)newAV()) { }
         Array(AV* _a) : Value((SV*)_a) { }
         void push(Value * v) {
+            v->refcnt_inc();
             av_push((AV*)this->val, v->val);
         }
         void unshift(Int &i) {
@@ -308,6 +314,7 @@ namespace pl {
         return s;
     }
     Scalar * Array::store(I32 key, Scalar* _v) {
+        _v->refcnt_inc();
         SV** v = av_store((AV*)this->val, key, _v->val);
         if (v) {
             Reference * ref = new Reference(*v);
@@ -371,6 +378,11 @@ namespace pl {
         }
     };
 
+    class Code : public Scalar {
+    public:
+        Code(SV * _s) : Scalar(_s) { }
+    };
+
     class Pointer : public Scalar {
     public:
         Pointer(SV* s) : Scalar(s) { }
@@ -390,6 +402,44 @@ namespace pl {
 
     class Perl {
     public:
+        static void call(Code* code, U32 flags, Array * args, Array* retval) {
+            SV **sp = PL_stack_sp;
+
+            push_scope(); // ENTER
+            save_int((int*)&PL_tmps_floor); // SAVETMPS
+            PL_tmps_floor = PL_tmps_ix;
+
+            if (++PL_markstack_ptr == PL_markstack_max) { // PUSHMARK(SP);
+                markstack_grow();
+            }
+            *PL_markstack_ptr = (I32)((sp) - PL_stack_base);
+
+            std::vector<Scalar*>::iterator iter;
+            for (int i =0; i < args->len()+1; i++) {
+                if (PL_stack_max - sp < 1) { // EXTEND()
+                    // optimize?
+                    sp = stack_grow(sp, sp, 1);
+                }
+                *++sp = args->pop()->val; // XPUSHs
+            }
+            PL_stack_sp = sp; // PUTBACK
+
+            int count = call_sv(code->val, flags);
+
+            sp = PL_stack_sp; // SPAGAIN
+
+            for (int i=0; i<count; i++) {
+                Scalar * s = new Scalar(*sp--);
+                CurCtx::get()->register_allocated(s);
+                retval->store(i, s);
+            }
+
+            PL_stack_sp = sp; // PUTBACK
+            if (PL_tmps_ix > PL_tmps_floor) { // FREETMPS
+                free_tmps();
+            }
+            pop_scope(); // LEAVE
+        }
         // static Hash* get_stash(Str* name);
 //      template<class U>
 //      static void* alloc(int size) {
@@ -509,7 +559,20 @@ namespace pl {
         } else {
             Perl_croak(aTHX_ "%s: %s is not a array reference",
                 "Devel::BindPP",
-                "av");
+                "sv");
+        }
+    }
+    Code * Reference::as_code() {
+        SV* v = this->val;
+        if (v && SvROK(v)) {
+            SV* a = (SV*)SvRV(v);
+            Code * obj = new Code(a);
+            CurCtx::get()->register_allocated(obj);
+            return obj;
+        } else {
+            Perl_croak(aTHX_ "%s: %s is not a array reference",
+                "Devel::BindPP",
+                "sv");
         }
     }
 
@@ -519,6 +582,7 @@ namespace pl {
         return ref;
     }
     Reference* Hash::store(const char*key, I32 klen, Scalar*value) {
+        value->refcnt_inc();
         SV ** s = hv_store((HV*)this->val, key, klen, value->val, 0);
         assert(s && SvROK(*s));
         Reference * ref = new Reference(*s);
