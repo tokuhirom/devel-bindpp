@@ -9,7 +9,7 @@ XS(xs_p_new) {
     strcpy(self, "ok");
 
     pl::Pointer obj((void*)self, "Devel::BindPP::Pointer");
-    c.ret(0, &obj);
+    c.ret(&obj);
 }
 
 XS(xs_p_get) {
@@ -19,7 +19,7 @@ XS(xs_p_get) {
 
     char *self = p->extract<char>();
     pl::Str s(self);
-    c.ret(0, &s);
+    c.ret(&s);
 }
 
 XS(xs_p_destroy) {
@@ -27,7 +27,7 @@ XS(xs_p_destroy) {
 
     pl::Pointer * p = c.arg(0)->as_pointer();
     Safefree(p->extract<char>());
-    c.ret(0, pl::Boolean::yes());
+    c.ret(pl::Boolean::yes());
 }
 
 XS(XS_Devel__BindPP_twice) {
@@ -39,7 +39,7 @@ XS(XS_Devel__BindPP_twice) {
 
     int n = c.arg(0)->as_int()->to_c();
 
-    c.ret(0, pl::Int(n*2).mortal());
+    c.ret(pl::Int(n*2).mortal());
 }
 
 XS(xs_twice_deref) {
@@ -51,7 +51,7 @@ XS(xs_twice_deref) {
 
     int n = c.arg(0)->as_ref()->as_scalar()->as_int()->to_c();
 
-    c.ret(0, pl::Int(n*2).mortal());
+    c.ret(pl::Int(n*2).mortal());
 }
 
 XS(XS_Devel__BindPP_twice_n) {
@@ -63,7 +63,7 @@ XS(XS_Devel__BindPP_twice_n) {
 
     double n = c.arg(0)->as_double()->to_c();
 
-    c.ret(0, pl::Double(n*2).mortal());
+    c.ret(pl::Double(n*2).mortal());
 }
 
 XS(XS_Devel__BindPP_twice_u) {
@@ -75,7 +75,7 @@ XS(XS_Devel__BindPP_twice_u) {
 
     unsigned int n = c.arg(0)->as_uint()->to_c();
 
-    c.ret(0, pl::UInt(n*2).mortal());
+    c.ret(pl::UInt(n*2).mortal());
 }
 
 XS(XS_Devel__BindPP_catfoo) {
@@ -89,7 +89,7 @@ XS(XS_Devel__BindPP_catfoo) {
     std::string buf(n);
     buf += "foo";
 
-    c.ret(0, pl::Str(buf).mortal());
+    c.ret(pl::Str(buf).mortal());
 }
 
 XS(XS_hv_fetch) {
@@ -104,7 +104,7 @@ XS(XS_hv_fetch) {
 
     pl::Reference * ret = hash->fetch(key);
 
-    c.ret(0, ret);
+    c.ret(ret);
 }
 
 XS(xs_av_fetch) {
@@ -119,7 +119,7 @@ XS(xs_av_fetch) {
 
     pl::Reference * ret = array->fetch(key);
 
-    c.ret(0, ret);
+    c.ret(ret);
 }
 
 XS(xs_av_push) {
@@ -198,7 +198,7 @@ XS(xs_av_pop) {
 
     pl::Array* array = c.arg(0)->as_ref()->as_array();
     pl::Scalar* s = array->pop();
-    c.ret(0, s);
+    c.ret(s);
 }
 
 XS(xs_av_shift) {
@@ -210,7 +210,7 @@ XS(xs_av_shift) {
 
     pl::Array* array = c.arg(0)->as_ref()->as_array();
     pl::Scalar * s =  array->shift();
-    c.ret(0, s);
+    c.ret(s);
 }
 
 XS(xs_av_len) {
@@ -222,7 +222,7 @@ XS(xs_av_len) {
 
     pl::Array* array = c.arg(0)->as_ref()->as_array();
     pl::Int i(array->len());
-    c.ret(0, &i);
+    c.ret(&i);
 }
 
 XS(do_bless) {
@@ -236,7 +236,7 @@ XS(do_bless) {
     const char * pkg = c.arg(1)->as_str()->to_c();
     ref->bless(pkg);
 
-    c.ret(0, ref);
+    c.ret(ref);
 }
 
 XS(XS_hv_exists) {
@@ -251,7 +251,7 @@ XS(XS_hv_exists) {
 
     pl::Boolean b(hash->exists(key));
 
-    c.ret(0, &b);
+    c.ret(&b);
 }
 
 XS(XS_hv_delete) {
@@ -266,7 +266,7 @@ XS(XS_hv_delete) {
 
     pl::Reference * ref = hash->del(key);
 
-    c.ret(0, ref);
+    c.ret(ref);
 }
 
 XS(xs_refcnt_inc) {
@@ -278,7 +278,7 @@ XS(xs_refcnt_inc) {
 
     pl::Scalar * s = c.arg(0);
     s->refcnt_inc();
-    c.ret(0, s);
+    c.ret(s);
 }
 
 XS(xs_refcnt_dec) {
@@ -290,7 +290,7 @@ XS(xs_refcnt_dec) {
 
     pl::Scalar * s = c.arg(0);
     s->refcnt_dec();
-    c.ret(0, s);
+    c.ret(s);
 }
 
 XS(xs_to_c) {
@@ -318,7 +318,7 @@ XS(xs_hv_store) {
     pl::Reference *ref = h->store(key, val);
     ref->refcnt_inc();
 
-    c.ret(0, ref);
+    c.ret(ref);
 }
 
 XS(xs_hv_scalar) {
@@ -329,7 +329,7 @@ XS(xs_hv_scalar) {
     }
 
     pl::Hash * h = c.arg(0)->as_ref()->as_hash();
-    c.ret(0, h->scalar());
+    c.ret(h->scalar());
 }
 
 XS(xs_hv_undef) {
@@ -352,7 +352,7 @@ XS(xs_hv_clear) {
 
     pl::Hash * h = c.arg(0)->as_ref()->as_hash();
     h->clear();
-    c.ret(0, pl::Boolean::yes());
+    c.ret(pl::Boolean::yes());
 }
 
 XS(xs_basic_mult) {

@@ -182,8 +182,14 @@ namespace pl {
             this->register_allocated(s);
             return s;
         }
+        void ret(Scalar* s) {
+            this->ret(0, s);
+        }
         void ret(int n, Scalar* s) {
-            PL_stack_base[ax + n] = s ? s->serialize() : &PL_sv_undef;
+            this->ret(n, s ? s->serialize() : &PL_sv_undef);
+        }
+        void ret(int n, SV* s) {
+            PL_stack_base[ax + n] = s;
         }
         void return_multi(std::vector<Scalar*>& vec) {
             if (vec.size() != 0) {
@@ -202,10 +208,10 @@ namespace pl {
             }
         }
         void return_true() {
-            this->ret(0, pl::Boolean::yes());
+            this->ret(0, &PL_sv_yes);
         }
         void return_undef() {
-            PL_stack_base[ax] = &PL_sv_undef;
+            this->ret(0, &PL_sv_undef);
         }
         void register_allocated(Value* v) {
             allocated.push_back(v);
