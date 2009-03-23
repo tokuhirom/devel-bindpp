@@ -4,7 +4,6 @@
 // TODO: use Newx instead of new
 // TODO: use Safefree instaed of delete
 // TODO: return multiple value
-// TODO: support scalarref
 
 extern "C" {
 #include "EXTERN.h"
@@ -107,6 +106,7 @@ namespace pl {
         }
         Hash * as_hash();
         Array * as_array();
+        Scalar * as_scalar();
     };
 
     class Hash : public Value {
@@ -447,6 +447,20 @@ namespace pl {
                 "av");
         }
     }
+    Scalar * Reference::as_scalar() {
+        SV* v = this->val;
+        if (v && SvROK(v)) {
+            SV* a = (SV*)SvRV(v);
+            Scalar * obj = new Scalar(a);
+            CurCtx::get()->register_allocated(obj);
+            return obj;
+        } else {
+            Perl_croak(aTHX_ "%s: %s is not a array reference",
+                "Devel::BindPP",
+                "av");
+        }
+    }
+
     Reference* Hash::del(const char*key, I32 klen) {
         Reference * ref = new Reference(hv_delete((HV*)this->val, key, klen, 0));
         CurCtx::get()->register_allocated(ref);

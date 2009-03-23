@@ -51,6 +51,18 @@ XS(XS_Devel__BindPP_twice) {
     c.ret(0, pl::Int(n*2).mortal());
 }
 
+XS(xs_twice_deref) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+       Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice");
+    }
+
+    int n = c.arg_ref(0)->as_scalar()->as_int()->to_c();
+
+    c.ret(0, pl::Int(n*2).mortal());
+}
+
 XS(XS_Devel__BindPP_twice_n) {
     pl::Ctx c;
 
@@ -365,6 +377,7 @@ extern "C" {
         s.add_method("refcnt_inc", xs_refcnt_inc, __FILE__);
         s.add_method("refcnt_dec", xs_refcnt_dec, __FILE__);
         s.add_method("to_c", xs_to_c, __FILE__);
+        s.add_method("twice_deref", xs_twice_deref, __FILE__);
 
         // Hash
         pl::Package h("Devel::BindPP::Hash");
