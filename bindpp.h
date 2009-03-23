@@ -42,6 +42,7 @@ namespace pl {
     class Boolean : public Scalar {
     public:
         Boolean(bool b) : Scalar(b ? &PL_sv_yes : &PL_sv_no) { }
+        static Boolean* yes();
     };
     class Int : public Scalar {
     public:
@@ -91,7 +92,11 @@ namespace pl {
             return this->del(key, strlen(key));
         }
         Reference* del(const char*key, I32 klen);
-        // hv_delete(const char *key, I32 klen, 0)
+
+        Reference* store(const char*key, Scalar*value) {
+            return this->store(key, strlen(key), value);
+        }
+        Reference* store(const char*key, I32 klen, Scalar*value);
         // TODO: hv_store()
         // TODO: hv_scalar
         // TODO: hv_undef
@@ -304,5 +309,17 @@ namespace pl {
         Reference * ref = new Reference(hv_delete((HV*)this->val, key, klen, 0));
         CurCtx::get()->register_allocated(ref);
         return ref;
+    }
+    Reference* Hash::store(const char*key, I32 klen, Scalar*value) {
+        SV ** s = hv_store((HV*)this->val, key, klen, value->val, 0);
+        assert(s && SvROK(*s));
+        Reference * ref = new Reference(*s);
+        CurCtx::get()->register_allocated(ref);
+        return ref;
+    }
+    Boolean* Boolean::yes() {
+        Boolean* s = new Boolean(true);
+        CurCtx::get()->register_allocated(s);
+        return s;
     }
 };

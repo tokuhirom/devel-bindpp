@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 18;
 
 use Devel::BindPP;
 
@@ -36,6 +36,8 @@ ok Devel::BindPP::Hash::exists(+{a => 'b'}, 'a');
     is Devel::BindPP::Hash::delete($a, 'a'), 'b';
     is_deeply $a, {'c' => 'd'};
     is(Devel::BindPP::Hash::delete($a, 'a'), undef);
+    is(Devel::BindPP::Hash::store($a, 'm', 'o'), 'o');
+    is_deeply $a, +{'c' => 'd', 'm' => 'o'};
 }
 
 # array

@@ -159,6 +159,20 @@ XS(xs_refcnt_dec) {
     c.ret(0, s);
 }
 
+XS(xs_hv_store) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 3) {
+       Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Hash * h = c.arg_ref(0)->as_hash();
+    const char * key = c.arg_str(1);
+    pl::Scalar * val = c.arg_scalar(2);
+
+    c.ret(0, h->store(key, val));
+}
+
 extern "C" {
     XS(boot_Devel__BindPP) {
         pl::BootstrapCtx bc;
@@ -177,6 +191,7 @@ extern "C" {
         h.add_method("hvref_fetch", XS_hv_fetch, __FILE__);
         h.add_method("exists", XS_hv_exists, __FILE__);
         h.add_method("delete", XS_hv_delete, __FILE__);
+        h.add_method("store", xs_hv_store, __FILE__);
 
         // Array
         pl::Package a("Devel::BindPP::Array");
