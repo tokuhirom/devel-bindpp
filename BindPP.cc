@@ -145,6 +145,47 @@ XS(xs_av_unshift) {
     c.return_true();
 }
 
+XS(xs_av_store) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 3) {
+        Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Array* array = c.arg_ref(0)->as_array();
+    pl::Int*i = c.arg_scalar(1)->as_int();
+    pl::Scalar *val = c.arg_scalar(2);
+    val->refcnt_inc();
+    array->store(i->to_c(), val);
+    c.return_true();
+}
+
+XS(xs_av_clear) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+        Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Array* array = c.arg_ref(0)->as_array();
+    array->clear();
+
+    c.return_true();
+}
+
+XS(xs_av_undef) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+        Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Array* array = c.arg_ref(0)->as_array();
+    array->undef();
+
+    c.return_true();
+}
+
 XS(xs_av_pop) {
     pl::Ctx c;
 
@@ -343,6 +384,9 @@ extern "C" {
         a.add_method("len", xs_av_len, __FILE__);
         a.add_method("shift", xs_av_shift, __FILE__);
         a.add_method("unshift", xs_av_unshift, __FILE__);
+        a.add_method("store", xs_av_store, __FILE__);
+        a.add_method("clear", xs_av_clear, __FILE__);
+        a.add_method("undef", xs_av_undef, __FILE__);
 
         // Pointer
         pl::Package p("Devel::BindPP::Pointer");

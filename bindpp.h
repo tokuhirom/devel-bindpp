@@ -150,15 +150,22 @@ namespace pl {
         Scalar * pop();
         Scalar * shift();
         Reference * fetch(I32 key);
+
+        // @method: len returns highest index in array
         I32 len() {
             return av_len((AV*)this->val);
         }
-        // TODO: store
-        // TODO: shift
-        // TODO: unshift
-        // TODO: clear
-        // TODO: undef
-        // TODO: extend
+
+        Scalar * store(I32 key, Scalar* v);
+        void clear() {
+            av_clear((AV*)this->val);
+        }
+        void undef() {
+            av_undef((AV*)this->val);
+        }
+        void extend(I32 n) {
+            av_extend((AV*)this->val, n);
+        }
     };
 
     class Ctx {
@@ -267,6 +274,16 @@ namespace pl {
         Scalar *s = new Scalar(v);
         CurCtx::get()->register_allocated(s);
         return s;
+    }
+    Scalar * Array::store(I32 key, Scalar* _v) {
+        SV** v = av_store((AV*)this->val, key, _v->val);
+        if (v) {
+            Reference * ref = new Reference(*v);
+            CurCtx::get()->register_allocated(ref);
+            return ref;
+        } else {
+            return NULL;
+        }
     }
 
     class Package {
