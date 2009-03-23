@@ -109,20 +109,20 @@ extern "C" {
     XS(boot_Devel__BindPP) {
         pl::BootstrapCtx bc;
 
-        pl::Package pkg("Devel::BindPP");
-
-        // Scalar
-        pkg.add_method("twice", XS_Devel__BindPP_twice, __FILE__);
-        pkg.add_method("catfoo", XS_Devel__BindPP_catfoo, __FILE__);
-        pkg.add_method("twice_n", XS_Devel__BindPP_twice_n, __FILE__);
-        pkg.add_method("twice_u", XS_Devel__BindPP_twice_u, __FILE__);
-        pkg.add_method("do_bless", do_bless, __FILE__);
+        pl::Package s("Devel::BindPP::Scalar");
+        s.add_method("twice", XS_Devel__BindPP_twice, __FILE__);
+        s.add_method("catfoo", XS_Devel__BindPP_catfoo, __FILE__);
+        s.add_method("twice_n", XS_Devel__BindPP_twice_n, __FILE__);
+        s.add_method("twice_u", XS_Devel__BindPP_twice_u, __FILE__);
+        s.add_method("do_bless", do_bless, __FILE__);
 
         // Hash
-        pkg.add_method("hvref_fetch", XS_hv_fetch, __FILE__);
+        pl::Package h("Devel::BindPP::Hash");
+        h.add_method("hvref_fetch", XS_hv_fetch, __FILE__);
 
         // Array
-        pkg.add_method("avref_fetch", XS_av_fetch, __FILE__);
+        pl::Package a("Devel::BindPP::Array");
+        a.add_method("avref_fetch", XS_av_fetch, __FILE__);
     }
 }
 
