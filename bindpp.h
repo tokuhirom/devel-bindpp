@@ -83,7 +83,11 @@ namespace pl {
             return hv_exists((HV*)this->val, key, klen);
         }
         // TODO: hv_clear
-        // TODO: hv_delete(const char *key, I32 klen, 0)
+        Reference* del(const char*key) {
+            return this->del(key, strlen(key));
+        }
+        Reference* del(const char*key, I32 klen);
+        // hv_delete(const char *key, I32 klen, 0)
         // TODO: hv_store()
         // TODO: hv_scalar
         // TODO: hv_undef
@@ -286,5 +290,10 @@ namespace pl {
                 "Devel::BindPP",
                 "av");
         }
+    }
+    Reference* Hash::del(const char*key, I32 klen) {
+        Reference * ref = new Reference(hv_delete((HV*)this->val, key, klen, 0));
+        CurCtx::get()->register_allocated(ref);
+        return ref;
     }
 };

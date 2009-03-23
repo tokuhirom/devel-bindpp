@@ -120,6 +120,21 @@ XS(XS_hv_exists) {
     c.ret(0, &b);
 }
 
+XS(XS_hv_delete) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 2) {
+       Perl_croak(aTHX_ "Usage: %s(av, str)", "Devel::BindPP::av_fetch");
+    }
+
+    pl::Hash* hash = c.arg_ref(0)->as_hash();
+    const char * key = c.arg_str(1);
+
+    pl::Reference * ref = hash->del(key);
+
+    c.ret(0, ref);
+}
+
 extern "C" {
     XS(boot_Devel__BindPP) {
         pl::BootstrapCtx bc;
@@ -135,6 +150,7 @@ extern "C" {
         pl::Package h("Devel::BindPP::Hash");
         h.add_method("hvref_fetch", XS_hv_fetch, __FILE__);
         h.add_method("exists", XS_hv_exists, __FILE__);
+        h.add_method("delete", XS_hv_delete, __FILE__);
 
         // Array
         pl::Package a("Devel::BindPP::Array");
