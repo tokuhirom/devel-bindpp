@@ -98,9 +98,9 @@ namespace pl {
         }
         Reference* store(const char*key, I32 klen, Scalar*value);
         // TODO: hv_store()
-        // TODO: hv_scalar
         Scalar* scalar();
-        // TODO: hv_undef
+        void undef();
+        void clear();
     };
 
     class Array : public Value {
@@ -322,6 +322,12 @@ namespace pl {
         Scalar*s = new Scalar(hv_scalar((HV*)this->val));
         CurCtx::get()->register_allocated(s);
         return s;
+    }
+    void Hash::undef() {
+        hv_undef((HV*)this->val);
+    }
+    void Hash::clear() {
+        hv_clear((HV*)this->val);
     }
     Boolean* Boolean::yes() {
         Boolean* s = new Boolean(true);

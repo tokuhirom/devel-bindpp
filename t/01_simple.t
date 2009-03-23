@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 19;
+use Test::More tests => 22;
 
 use Devel::BindPP;
 
@@ -32,13 +32,19 @@ is Devel::BindPP::Hash::hvref_fetch(+{a => 'b'}, 'c'), undef;
 ok !Devel::BindPP::Hash::exists(+{a => 'b'}, 'c');
 ok Devel::BindPP::Hash::exists(+{a => 'b'}, 'a');
 {
-    $a = +{a => 'b', 'c' => 'd'};
+    my $a = +{a => 'b', 'c' => 'd'};
     is Devel::BindPP::Hash::delete($a, 'a'), 'b';
     is_deeply $a, {'c' => 'd'};
     is(Devel::BindPP::Hash::delete($a, 'a'), undef);
     is(Devel::BindPP::Hash::store($a, 'm', 'o'), 'o');
     is_deeply $a, +{'c' => 'd', 'm' => 'o'};
     is(Devel::BindPP::Hash::scalar($a), '2/8');
+    Devel::BindPP::Hash::undef($a);
+    is_deeply $a, +{};
+    $a->{'b'} = 1;
+    is_deeply $a, +{'b' => 1};
+    Devel::BindPP::Hash::clear($a);
+    is_deeply $a, +{};
 }
 
 # array

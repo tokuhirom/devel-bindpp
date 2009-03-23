@@ -170,7 +170,10 @@ XS(xs_hv_store) {
     const char * key = c.arg_str(1);
     pl::Scalar * val = c.arg_scalar(2);
 
-    c.ret(0, h->store(key, val));
+    pl::Reference *ref = h->store(key, val);
+    ref->refcnt_inc();
+
+    c.ret(0, ref);
 }
 
 XS(xs_hv_scalar) {
@@ -182,6 +185,29 @@ XS(xs_hv_scalar) {
 
     pl::Hash * h = c.arg_ref(0)->as_hash();
     c.ret(0, h->scalar());
+}
+
+XS(xs_hv_undef) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+       Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Hash * h = c.arg_ref(0)->as_hash();
+    h->undef();
+    c.ret(0, pl::Boolean::yes());
+}
+XS(xs_hv_clear) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+       Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Hash * h = c.arg_ref(0)->as_hash();
+    h->clear();
+    c.ret(0, pl::Boolean::yes());
 }
 
 extern "C" {
@@ -204,6 +230,8 @@ extern "C" {
         h.add_method("delete", XS_hv_delete, __FILE__);
         h.add_method("store", xs_hv_store, __FILE__);
         h.add_method("scalar", xs_hv_scalar, __FILE__);
+        h.add_method("undef", xs_hv_undef, __FILE__);
+        h.add_method("clear", xs_hv_clear, __FILE__);
 
         // Array
         pl::Package a("Devel::BindPP::Array");
