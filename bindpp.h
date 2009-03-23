@@ -63,7 +63,7 @@ namespace pl {
     public:
         Str(SV* _s) : Scalar(_s) { }
         Str(std::string & _s) : Scalar(newSVpv(_s.c_str(), _s.length())) { }
-        const char* c_str() {
+        const char* to_c() {
             return SvPV_nolen(this->val);
         }
     };

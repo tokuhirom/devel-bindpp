@@ -54,7 +54,7 @@ XS(XS_Devel__BindPP_catfoo) {
        Perl_croak(aTHX_ "Usage: %s(str)", "Devel::BindPP::catfoo");
     }
 
-    const char* n = c.arg_scalar(0)->as_str()->c_str();
+    const char* n = c.arg_scalar(0)->as_str()->to_c();
     std::string buf(n);
     buf += "foo";
 
@@ -69,7 +69,7 @@ XS(XS_hv_fetch) {
     }
 
     pl::Hash* hash = c.arg_ref(0)->as_hash();
-    const char* key = c.arg_scalar(1)->as_str()->c_str();
+    const char* key = c.arg_scalar(1)->as_str()->to_c();
 
     pl::Reference * ret = hash->fetch(key);
 
@@ -99,7 +99,7 @@ XS(do_bless) {
     }
 
     pl::Reference* ref = c.arg_ref(0);
-    const char * pkg = c.arg_scalar(1)->as_str()->c_str();
+    const char * pkg = c.arg_scalar(1)->as_str()->to_c();
     ref->bless(pkg);
 
     c.ret(0, ref);
@@ -113,7 +113,7 @@ XS(XS_hv_exists) {
     }
 
     pl::Hash* hash = c.arg_ref(0)->as_hash();
-    const char * key = c.arg_scalar(1)->as_str()->c_str();
+    const char * key = c.arg_scalar(1)->as_str()->to_c();
 
     pl::Boolean b(hash->exists(key));
 
@@ -128,7 +128,7 @@ XS(XS_hv_delete) {
     }
 
     pl::Hash* hash = c.arg_ref(0)->as_hash();
-    const char * key = c.arg_scalar(1)->as_str()->c_str();
+    const char * key = c.arg_scalar(1)->as_str()->to_c();
 
     pl::Reference * ref = hash->del(key);
 
@@ -159,7 +159,7 @@ XS(xs_refcnt_dec) {
     c.ret(0, s);
 }
 
-XS(xs_c_str) {
+XS(xs_to_c) {
     pl::Ctx c;
 
     if (c.arg_len() != 1) {
@@ -167,7 +167,7 @@ XS(xs_c_str) {
     }
 
     pl::Str * s = c.arg_scalar(0)->as_str();
-    Perl_croak(aTHX_ "OK: '%s'", s->c_str());
+    Perl_croak(aTHX_ "OK: '%s'", s->to_c());
 }
 
 XS(xs_hv_store) {
@@ -178,7 +178,7 @@ XS(xs_hv_store) {
     }
 
     pl::Hash * h = c.arg_ref(0)->as_hash();
-    const char * key = c.arg_scalar(1)->as_str()->c_str();
+    const char * key = c.arg_scalar(1)->as_str()->to_c();
     pl::Scalar * val = c.arg_scalar(2);
 
     pl::Reference *ref = h->store(key, val);
@@ -233,7 +233,7 @@ extern "C" {
         s.add_method("do_bless", do_bless, __FILE__);
         s.add_method("refcnt_inc", xs_refcnt_inc, __FILE__);
         s.add_method("refcnt_dec", xs_refcnt_dec, __FILE__);
-        s.add_method("c_str", xs_c_str, __FILE__);
+        s.add_method("to_c", xs_to_c, __FILE__);
 
         // Hash
         pl::Package h("Devel::BindPP::Hash");

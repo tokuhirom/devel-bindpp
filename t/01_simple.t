@@ -27,7 +27,7 @@ isa_ok Devel::BindPP::Scalar::do_bless([], 'OK'), 'OK';
 }
 {
     eval {
-        Devel::BindPP::Scalar::c_str('ok');
+        Devel::BindPP::Scalar::to_c('ok');
     };
     like $@, qr{OK: 'ok'};
 }
