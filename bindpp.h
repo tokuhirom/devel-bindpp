@@ -3,6 +3,8 @@
 
 // TODO: use Newx instead of new
 // TODO: use Safefree instaed of delete
+// TODO: handle gv
+// TODO: handle perlcall
 
 extern "C" {
 #include "EXTERN.h"
