@@ -35,6 +35,10 @@ namespace pl {
         // TODO: REFCNT_dec
     };
 
+    class Boolean : public Scalar {
+    public:
+        Boolean(bool b) : Scalar(b ? &PL_sv_yes : &PL_sv_no) { }
+    };
     class Int : public Scalar {
     public:
         Int(int _i) : Scalar(newSViv(_i)) { }
@@ -52,6 +56,8 @@ namespace pl {
         Str(std::string & _s) : Scalar(newSVpv(_s.c_str(), _s.length())) { }
     };
 
+    class Hash;
+
     class Reference : public Scalar {
     public:
         Reference(SV*v) : Scalar(v) { }
@@ -60,6 +66,7 @@ namespace pl {
             HV * stash = gv_stashpv(pkg, TRUE);
             sv_bless(this->val, stash);
         }
+        Hash * as_hash();
     };
 
     class Hash : public Value {
@@ -67,9 +74,14 @@ namespace pl {
         Hash() : Value((SV*)newHV()) { }
         Hash(HV* _h) : Value((SV*)_h) { }
         Reference * fetch(const char *key);
+        bool exists(const char*key) {
+            return this->exists(key, strlen(key));
+        }
+        bool exists(const char*key, I32 klen) {
+            return hv_exists((HV*)this->val, key, klen);
+        }
         // TODO: hv_clear
         // TODO: hv_delete(const char *key, I32 klen, 0)
-        // TODO: hv_exists(const char *key, I32 klen)
         // TODO: hv_store()
         // TODO: hv_scalar
         // TODO: hv_undef
@@ -273,4 +285,17 @@ namespace pl {
     class Perl {
     public:
     };
+
+    Hash * Reference::as_hash() {
+        if (SvROK(this->val) && SvTYPE(SvRV(this->val))==SVt_PVHV) {
+            HV* h = (HV*)SvRV(this->val);
+            Hash * hobj = new Hash(h);
+            CurCtx::get()->register_allocated(hobj);
+            return hobj;
+        } else {
+            Perl_croak(aTHX_ "%s: %s is not a hash reference",
+                "Devel::BindPP",
+                "hv");
+        }
+    }
 };

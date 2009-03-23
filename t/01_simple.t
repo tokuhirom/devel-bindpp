@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 11;
 
 use Devel::BindPP;
 
@@ -14,6 +14,8 @@ isa_ok Devel::BindPP::Scalar::do_bless([], 'OK'), 'OK';
 # hash
 is Devel::BindPP::Hash::hvref_fetch(+{a => 'b'}, 'a'), 'b';
 is Devel::BindPP::Hash::hvref_fetch(+{a => 'b'}, 'c'), undef;
+ok !Devel::BindPP::Hash::exists(+{a => 'b'}, 'c');
+ok Devel::BindPP::Hash::exists(+{a => 'b'}, 'a');
 
 # array
 is Devel::BindPP::Array::avref_fetch([qw/a b c/], 1), 'b';
