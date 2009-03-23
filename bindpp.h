@@ -4,6 +4,7 @@
 // TODO: use Newx instead of new
 // TODO: use Safefree instaed of delete
 // TODO: return multiple value
+// TODO: support scalarref
 
 extern "C" {
 #include "EXTERN.h"
@@ -137,7 +138,9 @@ namespace pl {
     public:
         Array() : Value((SV*)newAV()) { }
         Array(AV* _a) : Value((SV*)_a) { }
-        // TODO: push
+        void push(Value * v) {
+            av_push((AV*)this->val, v->val);
+        }
         // TODO: pop
         Reference * fetch(I32 key);
         // TODO: store

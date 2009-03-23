@@ -104,7 +104,7 @@ XS(XS_hv_fetch) {
     c.ret(0, ret);
 }
 
-XS(XS_av_fetch) {
+XS(xs_av_fetch) {
     pl::Ctx c;
 
     if (c.arg_len() != 2) {
@@ -117,6 +117,19 @@ XS(XS_av_fetch) {
     pl::Reference * ret = array->fetch(key);
 
     c.ret(0, ret);
+}
+
+XS(xs_av_push) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 2) {
+        Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Array* array = c.arg_ref(0)->as_array();
+    pl::Scalar*s = c.arg_scalar(1);
+    s->refcnt_inc();
+    array->push(s);
 }
 
 XS(do_bless) {
@@ -275,7 +288,8 @@ extern "C" {
 
         // Array
         pl::Package a("Devel::BindPP::Array");
-        a.add_method("avref_fetch", XS_av_fetch, __FILE__);
+        a.add_method("avref_fetch", xs_av_fetch, __FILE__);
+        a.add_method("push", xs_av_push, __FILE__);
 
         // Pointer
         pl::Package p("Devel::BindPP::Pointer");
