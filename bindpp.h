@@ -143,6 +143,9 @@ namespace pl {
         }
         Scalar * pop();
         Reference * fetch(I32 key);
+        I32 len() {
+            return av_len((AV*)this->val);
+        }
         // TODO: store
         // TODO: len
         // TODO: shift

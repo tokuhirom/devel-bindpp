@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 28;
+use Test::More tests => 31;
 
 use Devel::BindPP;
 
@@ -58,9 +58,12 @@ is Devel::BindPP::Array::avref_fetch([qw/a b c/], 1), 'b';
 is Devel::BindPP::Array::avref_fetch([qw/a b c/], 9), undef;
 {
     my $a = [];
+    is Devel::BindPP::Array::len($a), -1;
     Devel::BindPP::Array::push($a, 'a');
+    is Devel::BindPP::Array::len($a), 0;
     is_deeply($a, ['a']);
     is Devel::BindPP::Array::pop($a), 'a';
+    is Devel::BindPP::Array::len($a), -1;
     is Devel::BindPP::Array::pop($a), undef;
 }
 
