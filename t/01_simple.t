@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 40;
+use Test::More tests => 42;
 
 use Devel::BindPP;
 
@@ -12,6 +12,12 @@ use Devel::BindPP;
 {
     my $a = join ',', Devel::BindPP::Basic::mult2();
     is $a, '';
+}
+{
+    my @a = Devel::BindPP::Basic::wantarray();
+    is "@a", 'yes';
+    my $a = Devel::BindPP::Basic::wantarray();
+    is "$a", 'no';
 }
 
 # scalar

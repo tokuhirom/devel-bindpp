@@ -381,6 +381,21 @@ XS(xs_basic_mult2) {
 
     c.return_multi(v);
 }
+XS(xs_wantarray) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 0) {
+       Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Str y("yes");
+    pl::Str n("no");
+    if (c.wantarray()) {
+        c.ret(&y);
+    } else {
+        c.ret(&n);
+    }
+}
 
 extern "C" {
     XS(boot_Devel__BindPP) {
@@ -389,6 +404,7 @@ extern "C" {
         pl::Package b("Devel::BindPP::Basic");
         b.add_method("mult", xs_basic_mult, __FILE__);
         b.add_method("mult2", xs_basic_mult2, __FILE__);
+        b.add_method("wantarray", xs_wantarray, __FILE__);
 
         pl::Package s("Devel::BindPP::Scalar");
         s.add_method("twice", XS_Devel__BindPP_twice, __FILE__);

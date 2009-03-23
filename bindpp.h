@@ -3,7 +3,6 @@
 
 // TODO: use Newx instead of new
 // TODO: use Safefree instaed of delete
-// TODO: wantarray support(GIMME_V)
 
 extern "C" {
 #include "EXTERN.h"
@@ -60,6 +59,7 @@ namespace pl {
     public:
         Boolean(bool b) : Scalar(b ? &PL_sv_yes : &PL_sv_no) { }
         static Boolean* yes();
+        static Boolean* no();
     };
     class Int : public Scalar {
     public:
@@ -190,6 +190,9 @@ namespace pl {
         }
         void ret(int n, SV* s) {
             PL_stack_base[ax + n] = s;
+        }
+        bool wantarray() {
+            return GIMME_V & G_ARRAY ? true : false;
         }
         void return_multi(std::vector<Scalar*>& vec) {
             if (vec.size() != 0) {
@@ -512,6 +515,11 @@ namespace pl {
     }
     Boolean* Boolean::yes() {
         Boolean* s = new Boolean(true);
+        CurCtx::get()->register_allocated(s);
+        return s;
+    }
+    Boolean* Boolean::no() {
+        Boolean* s = new Boolean(false);
         CurCtx::get()->register_allocated(s);
         return s;
     }
