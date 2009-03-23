@@ -141,7 +141,7 @@ namespace pl {
         void push(Value * v) {
             av_push((AV*)this->val, v->val);
         }
-        // TODO: pop
+        Scalar * pop();
         Reference * fetch(I32 key);
         // TODO: store
         // TODO: len
@@ -243,6 +243,12 @@ namespace pl {
         } else {
             return NULL;
         }
+    }
+    Scalar * Array::pop() {
+        SV* v = av_pop((AV*)this->val);
+        Scalar *s = new Scalar(v);
+        CurCtx::get()->register_allocated(s);
+        return s;
     }
 
     class Package {

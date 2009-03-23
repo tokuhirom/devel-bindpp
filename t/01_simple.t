@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 26;
+use Test::More tests => 28;
 
 use Devel::BindPP;
 
@@ -60,6 +60,8 @@ is Devel::BindPP::Array::avref_fetch([qw/a b c/], 9), undef;
     my $a = [];
     Devel::BindPP::Array::push($a, 'a');
     is_deeply($a, ['a']);
+    is Devel::BindPP::Array::pop($a), 'a';
+    is Devel::BindPP::Array::pop($a), undef;
 }
 
 # pointer

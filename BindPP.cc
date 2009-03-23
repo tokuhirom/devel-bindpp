@@ -132,6 +132,18 @@ XS(xs_av_push) {
     array->push(s);
 }
 
+XS(xs_av_pop) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+        Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Array* array = c.arg_ref(0)->as_array();
+    pl::Scalar* s = array->pop();
+    c.ret(0, s);
+}
+
 XS(do_bless) {
     pl::Ctx c;
 
@@ -290,6 +302,7 @@ extern "C" {
         pl::Package a("Devel::BindPP::Array");
         a.add_method("avref_fetch", xs_av_fetch, __FILE__);
         a.add_method("push", xs_av_push, __FILE__);
+        a.add_method("pop", xs_av_pop, __FILE__);
 
         // Pointer
         pl::Package p("Devel::BindPP::Pointer");
