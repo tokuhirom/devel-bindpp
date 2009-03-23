@@ -57,6 +57,7 @@ namespace pl {
     };
 
     class Hash;
+    class Array;
 
     class Reference : public Scalar {
     public:
@@ -67,6 +68,7 @@ namespace pl {
             sv_bless(this->val, stash);
         }
         Hash * as_hash();
+        Array * as_array();
     };
 
     class Hash : public Value {
@@ -121,32 +123,6 @@ namespace pl {
         }
         const char* arg_str(int n) {
             return SvPV_nolen(fetch_stack(n));
-        }
-        Hash * arg_hashref(int n) {
-            SV* v = fetch_stack(n);
-            if (SvROK(v) && SvTYPE(SvRV(v))==SVt_PVHV) {
-                HV* h = (HV*)SvRV(v);
-                Hash * hobj = new Hash(h);
-                this->register_allocated(hobj);
-                return hobj;
-            } else {
-                Perl_croak(aTHX_ "%s: %s is not a hash reference",
-                    "Devel::BindPP",
-                    "hv");
-            }
-        }
-        Array * arg_arrayref(int n) {
-            SV* v = fetch_stack(n);
-            if (SvROK(v) && SvTYPE(SvRV(v))==SVt_PVAV) {
-                AV* a = (AV*)SvRV(v);
-                Array * obj = new Array(a);
-                this->register_allocated(obj);
-                return obj;
-            } else {
-                Perl_croak(aTHX_ "%s: %s is not a array reference",
-                    "Devel::BindPP",
-                    "av");
-            }
         }
         Reference * arg_ref(int n) {
             SV* v = fetch_stack(n);
@@ -296,6 +272,19 @@ namespace pl {
             Perl_croak(aTHX_ "%s: %s is not a hash reference",
                 "Devel::BindPP",
                 "hv");
+        }
+    }
+    Array * Reference::as_array() {
+        SV* v = this->val;
+        if (SvROK(v) && SvTYPE(SvRV(v))==SVt_PVAV) {
+            AV* a = (AV*)SvRV(v);
+            Array * obj = new Array(a);
+            CurCtx::get()->register_allocated(obj);
+            return obj;
+        } else {
+            Perl_croak(aTHX_ "%s: %s is not a array reference",
+                "Devel::BindPP",
+                "av");
         }
     }
 };

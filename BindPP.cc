@@ -68,7 +68,7 @@ XS(XS_hv_fetch) {
        Perl_croak(aTHX_ "Usage: %s(hv, str)", "Devel::BindPP::hv_fetch");
     }
 
-    pl::Hash* hash = c.arg_hashref(0);
+    pl::Hash* hash = c.arg_ref(0)->as_hash();
     const char* key = c.arg_str(1);
 
     pl::Reference * ret = hash->fetch(key);
@@ -83,7 +83,7 @@ XS(XS_av_fetch) {
        Perl_croak(aTHX_ "Usage: %s(av, str)", "Devel::BindPP::av_fetch");
     }
 
-    pl::Array* array = c.arg_arrayref(0);
+    pl::Array* array = c.arg_ref(0)->as_array();
     const int key = c.arg_int(1);
 
     pl::Reference * ret = array->fetch(key);
