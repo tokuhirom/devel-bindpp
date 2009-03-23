@@ -8,3 +8,4 @@ t_moose_t/
 *.sw[po]
 *.bs
 *.o
+.gdb_history
