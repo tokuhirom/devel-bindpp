@@ -4,6 +4,7 @@
 // TODO: use Newx instead of new
 // TODO: use Safefree instaed of delete
 // TODO: return multiple value
+// TODO: wantarray support
 
 extern "C" {
 #include "EXTERN.h"

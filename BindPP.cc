@@ -1,15 +1,5 @@
 #include "bindpp.h"
 
-#define XS_STATE(type, x) \
-    INT2PTR(type, SvROK(x) ? SvIV(SvRV(x)) : SvIV(x))
-
-#define XS_STRUCT2OBJ(sv, class, obj) \
-    if (obj == NULL) { \
-        sv_setsv(sv, &PL_sv_undef); \
-    } else { \
-        sv_setref_pv(sv, class, (void *) obj); \
-    }
-
 XS(xs_p_new) {
     pl::Ctx c;
 
