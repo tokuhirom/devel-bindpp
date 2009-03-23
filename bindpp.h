@@ -140,10 +140,6 @@ namespace pl {
         double arg_double(int n) {
             return SvNV(fetch_stack(n));
         }
-        const char* arg_str(int n) {
-            // TODO: SvPOK check
-            return SvPV_nolen(fetch_stack(n));
-        }
         Scalar* arg_scalar(int n) {
             Scalar*s = new Scalar(fetch_stack(n));
             this->register_allocated(s);

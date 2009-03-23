@@ -54,7 +54,7 @@ XS(XS_Devel__BindPP_catfoo) {
        Perl_croak(aTHX_ "Usage: %s(str)", "Devel::BindPP::catfoo");
     }
 
-    const char* n = c.arg_str(0);
+    const char* n = c.arg_scalar(0)->as_str()->c_str();
     std::string buf(n);
     buf += "foo";
 
@@ -69,7 +69,7 @@ XS(XS_hv_fetch) {
     }
 
     pl::Hash* hash = c.arg_ref(0)->as_hash();
-    const char* key = c.arg_str(1);
+    const char* key = c.arg_scalar(1)->as_str()->c_str();
 
     pl::Reference * ret = hash->fetch(key);
 
@@ -99,7 +99,7 @@ XS(do_bless) {
     }
 
     pl::Reference* ref = c.arg_ref(0);
-    const char * pkg = c.arg_str(1);
+    const char * pkg = c.arg_scalar(1)->as_str()->c_str();
     ref->bless(pkg);
 
     c.ret(0, ref);
@@ -113,7 +113,7 @@ XS(XS_hv_exists) {
     }
 
     pl::Hash* hash = c.arg_ref(0)->as_hash();
-    const char * key = c.arg_str(1);
+    const char * key = c.arg_scalar(1)->as_str()->c_str();
 
     pl::Boolean b(hash->exists(key));
 
@@ -128,7 +128,7 @@ XS(XS_hv_delete) {
     }
 
     pl::Hash* hash = c.arg_ref(0)->as_hash();
-    const char * key = c.arg_str(1);
+    const char * key = c.arg_scalar(1)->as_str()->c_str();
 
     pl::Reference * ref = hash->del(key);
 
@@ -178,7 +178,7 @@ XS(xs_hv_store) {
     }
 
     pl::Hash * h = c.arg_ref(0)->as_hash();
-    const char * key = c.arg_str(1);
+    const char * key = c.arg_scalar(1)->as_str()->c_str();
     pl::Scalar * val = c.arg_scalar(2);
 
     pl::Reference *ref = h->store(key, val);
