@@ -135,6 +135,30 @@ XS(XS_hv_delete) {
     c.ret(0, ref);
 }
 
+XS(xs_refcnt_inc) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+       Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Scalar * s = c.arg_scalar(0);
+    s->refcnt_inc();
+    c.ret(0, s);
+}
+
+XS(xs_refcnt_dec) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+       Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Scalar * s = c.arg_scalar(0);
+    s->refcnt_dec();
+    c.ret(0, s);
+}
+
 extern "C" {
     XS(boot_Devel__BindPP) {
         pl::BootstrapCtx bc;
@@ -145,6 +169,8 @@ extern "C" {
         s.add_method("twice_n", XS_Devel__BindPP_twice_n, __FILE__);
         s.add_method("twice_u", XS_Devel__BindPP_twice_u, __FILE__);
         s.add_method("do_bless", do_bless, __FILE__);
+        s.add_method("refcnt_inc", xs_refcnt_inc, __FILE__);
+        s.add_method("refcnt_dec", xs_refcnt_dec, __FILE__);
 
         // Hash
         pl::Package h("Devel::BindPP::Hash");

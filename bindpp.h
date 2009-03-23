@@ -18,6 +18,12 @@ namespace pl {
         void dump() {
             sv_dump(val);
         }
+        void refcnt_inc() {
+            SvREFCNT_inc(this->val);
+        }
+        void refcnt_dec() {
+            SvREFCNT_dec(this->val);
+        }
         SV* val;
     };
 
@@ -31,8 +37,6 @@ namespace pl {
         SV * serialize() {
             return val;
         }
-        // TODO: REFCNT_inc
-        // TODO: REFCNT_dec
     };
 
     class Boolean : public Scalar {
@@ -127,6 +131,11 @@ namespace pl {
         }
         const char* arg_str(int n) {
             return SvPV_nolen(fetch_stack(n));
+        }
+        Scalar* arg_scalar(int n) {
+            Scalar*s = new Scalar(fetch_stack(n));
+            this->register_allocated(s);
+            return s;
         }
         Reference * arg_ref(int n) {
             SV* v = fetch_stack(n);

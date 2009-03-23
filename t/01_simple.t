@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 16;
 
 use Devel::BindPP;
 
@@ -10,6 +10,21 @@ is Devel::BindPP::Scalar::catfoo('hoge'), 'hogefoo';
 is Devel::BindPP::Scalar::twice_n(3.2), 6.4;
 is Devel::BindPP::Scalar::twice_u(5), 10;
 isa_ok Devel::BindPP::Scalar::do_bless([], 'OK'), 'OK';
+{
+    my $a = 'OK';
+    Devel::BindPP::Scalar::refcnt_inc($a);
+    Devel::BindPP::Scalar::refcnt_inc($a);
+    Devel::BindPP::Scalar::refcnt_inc($a);
+    is Internals::SvREFCNT($a), 4;
+}
+{
+    my $b = 'OK';
+    Devel::BindPP::Scalar::refcnt_inc($b);
+    Devel::BindPP::Scalar::refcnt_inc($b);
+    Devel::BindPP::Scalar::refcnt_inc($b);
+    Devel::BindPP::Scalar::refcnt_dec($b);
+    is Internals::SvREFCNT($b), 3;
+}
 
 # hash
 is Devel::BindPP::Hash::hvref_fetch(+{a => 'b'}, 'a'), 'b';
