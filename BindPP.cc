@@ -8,8 +8,7 @@ XS(xs_p_new) {
     Newx(self, 3, char);
     strcpy(self, "ok");
 
-    pl::Pointer obj((void*)self, "Devel::BindPP::Pointer");
-    c.ret(&obj);
+    c.ret(pl::Pointer((void*)self, "Devel::BindPP::Pointer"));
 }
 
 XS(xs_s_cats) {
@@ -24,29 +23,27 @@ XS(xs_s_cats) {
     s1->concat(s3->to_c());
     s1->concat(s4->to_c(), 1);
 
-    c.ret(s1);
+    c.ret(s1->mortal());
 }
 
 XS(xs_s_is_object) {
     pl::Ctx c;
 
     pl::Reference * r = c.arg(0)->as_ref();
-    pl::Boolean b( r->is_object() );
-    c.ret(&b);
+    c.ret(pl::Boolean(r->is_object()));
 }
 XS(xs_s_call_cv) {
     pl::Ctx c;
 
     pl::Code * code = c.arg(0)->as_ref()->as_code();
 
-    pl::Int i(4649);
-    i.mortal();
     pl::Array args;
+    args.push(pl::Int(4649));
+
     pl::Array retval;
-    args.push(&i);
     pl::Perl::call(code, G_ARRAY, &args, &retval);
-    pl::Reference * ref = pl::Reference::new_inc(&retval);
-    c.ret(ref);
+
+    c.ret(retval.reference());
 }
 
 XS(xs_p_get) {
@@ -55,8 +52,7 @@ XS(xs_p_get) {
     pl::Pointer * p = c.arg(0)->as_pointer();
 
     char *self = p->extract<char>();
-    pl::Str s(self);
-    c.ret(&s);
+    c.ret(pl::Str(self));
 }
 
 XS(xs_p_destroy) {
@@ -64,7 +60,7 @@ XS(xs_p_destroy) {
 
     pl::Pointer * p = c.arg(0)->as_pointer();
     Safefree(p->extract<char>());
-    c.ret(pl::Boolean::yes());
+    c.return_true();
 }
 
 XS(XS_Devel__BindPP_twice) {
@@ -139,9 +135,7 @@ XS(XS_hv_fetch) {
     pl::Hash* hash = c.arg(0)->as_ref()->as_hash();
     const char* key = c.arg(1)->as_str()->to_c();
 
-    pl::Reference * ret = hash->fetch(key);
-
-    c.ret(ret);
+    c.ret(hash->fetch(key));
 }
 
 XS(xs_av_fetch) {
@@ -154,9 +148,7 @@ XS(xs_av_fetch) {
     pl::Array* array = c.arg(0)->as_ref()->as_array();
     const int key = c.arg(1)->as_int()->to_c();
 
-    pl::Reference * ret = array->fetch(key);
-
-    c.ret(ret);
+    c.ret(array->fetch(key));
 }
 
 XS(xs_av_push) {
@@ -169,6 +161,8 @@ XS(xs_av_push) {
     pl::Array* array = c.arg(0)->as_ref()->as_array();
     pl::Scalar*s = c.arg(1);
     array->push(s);
+
+    c.return_true();
 }
 
 XS(xs_av_unshift) {
@@ -181,6 +175,7 @@ XS(xs_av_unshift) {
     pl::Array* array = c.arg(0)->as_ref()->as_array();
     pl::Int*i = c.arg(1)->as_int();
     array->unshift(i->to_c());
+
     c.return_true();
 }
 
@@ -195,6 +190,7 @@ XS(xs_av_store) {
     pl::Int*i = c.arg(1)->as_int();
     pl::Scalar *val = c.arg(2);
     array->store(i->to_c(), val);
+
     c.return_true();
 }
 
@@ -256,8 +252,7 @@ XS(xs_av_len) {
     }
 
     pl::Array* array = c.arg(0)->as_ref()->as_array();
-    pl::Int i(array->len());
-    c.ret(&i);
+    c.ret(pl::Int(array->len()));
 }
 
 XS(do_bless) {
@@ -284,9 +279,7 @@ XS(XS_hv_exists) {
     pl::Hash* hash = c.arg(0)->as_ref()->as_hash();
     const char * key = c.arg(1)->as_str()->to_c();
 
-    pl::Boolean b(hash->exists(key));
-
-    c.ret(&b);
+    c.ret(pl::Boolean(hash->exists(key)));
 }
 
 XS(XS_hv_delete) {
@@ -299,9 +292,7 @@ XS(XS_hv_delete) {
     pl::Hash* hash = c.arg(0)->as_ref()->as_hash();
     const char * key = c.arg(1)->as_str()->to_c();
 
-    pl::Reference * ref = hash->del(key);
-
-    c.ret(ref);
+    c.ret(hash->del(key));
 }
 
 XS(xs_refcnt_inc) {
@@ -350,9 +341,7 @@ XS(xs_hv_store) {
     const char * key = c.arg(1)->as_str()->to_c();
     pl::Scalar * val = c.arg(2);
 
-    pl::Reference *ref = h->store(key, val);
-
-    c.ret(ref);
+    c.ret(h->store(key, val));
 }
 
 XS(xs_hv_scalar) {
@@ -386,7 +375,7 @@ XS(xs_hv_clear) {
 
     pl::Hash * h = c.arg(0)->as_ref()->as_hash();
     h->clear();
-    c.ret(pl::Boolean::yes());
+    c.return_true();
 }
 
 XS(xs_basic_mult) {
@@ -415,6 +404,7 @@ XS(xs_basic_mult2) {
 
     c.return_multi(v);
 }
+
 XS(xs_wantarray) {
     pl::Ctx c;
 
@@ -422,12 +412,10 @@ XS(xs_wantarray) {
        Perl_croak(aTHX_ "orz");
     }
 
-    pl::Str y("yes");
-    pl::Str n("no");
     if (c.wantarray()) {
-        c.ret(&y);
+        c.ret(pl::Str("yes"));
     } else {
-        c.ret(&n);
+        c.ret(pl::Str("no"));
     }
 }
 

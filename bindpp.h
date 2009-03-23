@@ -42,6 +42,7 @@ namespace pl {
             SvREFCNT_dec(this->val);
         }
         SV* val;
+        Reference* reference();
     protected:
         Value() { }
     };
@@ -116,7 +117,10 @@ namespace pl {
     class Reference : public Scalar {
     public:
         Reference(SV*v) : Scalar(v) { }
-        static Reference * new_inc(Value* thing);
+        static Reference * new_inc(Value* thing) {
+            return new_inc(thing->val);
+        }
+        static Reference * new_inc(SV* thing);
         void bless(const char *pkg) {
             HV * stash = gv_stashpv(pkg, TRUE);
             sv_bless(this->val, stash);
@@ -159,6 +163,9 @@ namespace pl {
     public:
         Array() : Value((SV*)newAV()) { }
         Array(AV* _a) : Value((SV*)_a) { }
+        void push(Value v) {
+            this->push(&v);
+        }
         void push(Value * v) {
             v->refcnt_inc();
             av_push((AV*)this->val, v->val);
@@ -201,6 +208,9 @@ namespace pl {
             Scalar*s = new Scalar(fetch_stack(n));
             this->register_allocated(s);
             return s;
+        }
+        void ret(Scalar s) {
+            this->ret(0, &s);
         }
         void ret(Scalar* s) {
             this->ret(0, s);
@@ -274,8 +284,8 @@ namespace pl {
         }
     };
 
-    Reference * Reference::new_inc(Value* thing) {
-        Reference* ref = new Reference(newRV_inc(thing->val));
+    Reference * Reference::new_inc(SV* thing) {
+        Reference* ref = new Reference(newRV_inc(thing));
         CurCtx::get()->register_allocated(ref);
         return ref;
     }
@@ -448,6 +458,10 @@ namespace pl {
 //          return buf;
 //      }
     };
+
+    Reference * Value::reference() {
+        return Reference::new_inc(this->val);
+    }
 
     Str* Scalar::as_str() {
         if (SvPOK(this->val)) {
