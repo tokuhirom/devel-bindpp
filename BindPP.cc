@@ -10,6 +10,34 @@
         sv_setref_pv(sv, class, (void *) obj); \
     }
 
+XS(xs_p_new) {
+    pl::Ctx c;
+
+    char *self;
+    Newx(self, 3, char);
+    strcpy(self, "ok");
+
+    pl::Pointer obj((void*)self, "Devel::BindPP::Pointer");
+    c.ret(0, &obj);
+}
+
+XS(xs_p_get) {
+    pl::Ctx c;
+
+    pl::Pointer * p = c.arg_scalar(0)->as_pointer();
+
+    char *self = p->extract<char>();
+    pl::Str s(self);
+    c.ret(0, &s);
+}
+
+XS(xs_p_destroy) {
+    pl::Ctx c;
+
+    pl::Pointer * p = c.arg_scalar(0)->as_pointer();
+    Safefree(p->extract<char>());
+    c.ret(0, pl::Boolean::yes());
+}
 
 XS(XS_Devel__BindPP_twice) {
     pl::Ctx c;
@@ -248,6 +276,12 @@ extern "C" {
         // Array
         pl::Package a("Devel::BindPP::Array");
         a.add_method("avref_fetch", XS_av_fetch, __FILE__);
+
+        // Pointer
+        pl::Package p("Devel::BindPP::Pointer");
+        p.add_method("new", xs_p_new, __FILE__);
+        p.add_method("get", xs_p_get, __FILE__);
+        p.add_method("DESTROY", xs_p_destroy, __FILE__);
     }
 }
 

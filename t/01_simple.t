@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 23;
+use Test::More tests => 25;
 
 use Devel::BindPP;
 
@@ -56,4 +56,11 @@ ok Devel::BindPP::Hash::exists(+{a => 'b'}, 'a');
 # array
 is Devel::BindPP::Array::avref_fetch([qw/a b c/], 1), 'b';
 is Devel::BindPP::Array::avref_fetch([qw/a b c/], 9), undef;
+
+# pointer
+{
+    my $a = Devel::BindPP::Pointer->new();
+    isa_ok $a, 'Devel::BindPP::Pointer';
+    is $a->get(), 'ok';
+}
 

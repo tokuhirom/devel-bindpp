@@ -1,6 +1,10 @@
 #include <string>
 #include <vector>
 
+// TODO: use Newx instead of new
+// TODO: use Safefree instaed of delete
+// TODO: return multiple value
+
 extern "C" {
 #include "EXTERN.h"
 #include "perl.h"
@@ -31,6 +35,7 @@ namespace pl {
     class UInt;
     class Int;
     class Double;
+    class Pointer;
 
     class Scalar : public Value {
     public:
@@ -46,6 +51,7 @@ namespace pl {
         Int* as_int();
         UInt* as_uint();
         Double* as_double();
+        Pointer* as_pointer();
     };
 
     class Boolean : public Scalar {
@@ -81,6 +87,7 @@ namespace pl {
     public:
         Str(SV* _s) : Scalar(_s) { }
         Str(std::string & _s) : Scalar(newSVpv(_s.c_str(), _s.length())) { }
+        Str(const char* _s) : Scalar(newSVpv(_s, strlen(_s))) { }
         const char* to_c() {
             return SvPV_nolen(this->val);
         }
@@ -288,8 +295,31 @@ namespace pl {
         }
     };
 
+    class Pointer : public Scalar {
+    public:
+        Pointer(SV* s) : Scalar(s) { }
+        Pointer(void* _ptr, const char* klass) : Scalar(sv_newmortal()) {
+            if (_ptr == NULL) {
+                sv_setsv(this->val, &PL_sv_undef);
+            } else {
+                sv_setref_pv(this->val, klass, _ptr);
+            }
+        }
+
+        template <class T>
+        T* extract() {
+            return INT2PTR(T *, SvROK(this->val) ? SvIV(SvRV(this->val)) : SvIV(this->val));
+        }
+    };
+
     class Perl {
     public:
+//      template<class U>
+//      static void* alloc(int size) {
+//          void *buf;
+//          Newx(buf, size, U);
+//          return buf;
+//      }
     };
 
     Str* Scalar::as_str() {
@@ -299,6 +329,17 @@ namespace pl {
             return s;
         } else {
             Perl_croak(aTHX_ "%s: %s is not a string",
+                "Devel::BindPP",
+                "sv");
+        }
+    }
+    Pointer* Scalar::as_pointer() {
+        if (SvROK(this->val)) {
+            Pointer * s = new Pointer(this->val);
+            CurCtx::get()->register_allocated(s);
+            return s;
+        } else {
+            Perl_croak(aTHX_ "%s: %s is not a pointer",
                 "Devel::BindPP",
                 "sv");
         }
