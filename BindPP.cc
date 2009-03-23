@@ -18,7 +18,7 @@ XS(XS_Devel__BindPP_twice) {
        Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice");
     }
 
-    int n = c.arg_int(0);
+    int n = c.arg_scalar(0)->as_int()->to_c();
 
     c.ret(0, pl::Int(n*2).mortal());
 }
@@ -30,7 +30,7 @@ XS(XS_Devel__BindPP_twice_n) {
        Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice_n");
     }
 
-    double n = c.arg_double(0);
+    double n = c.arg_scalar(0)->as_double()->to_c();
 
     c.ret(0, pl::Double(n*2).mortal());
 }
@@ -42,7 +42,7 @@ XS(XS_Devel__BindPP_twice_u) {
        Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice_u");
     }
 
-    unsigned int n = c.arg_uint(0);
+    unsigned int n = c.arg_scalar(0)->as_uint()->to_c();
 
     c.ret(0, pl::UInt(n*2).mortal());
 }
@@ -84,7 +84,7 @@ XS(XS_av_fetch) {
     }
 
     pl::Array* array = c.arg_ref(0)->as_array();
-    const int key = c.arg_int(1);
+    const int key = c.arg_scalar(1)->as_int()->to_c();
 
     pl::Reference * ret = array->fetch(key);
 

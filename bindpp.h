@@ -28,6 +28,9 @@ namespace pl {
     };
 
     class Str;
+    class UInt;
+    class Int;
+    class Double;
 
     class Scalar : public Value {
     public:
@@ -40,6 +43,9 @@ namespace pl {
             return val;
         }
         Str* as_str();
+        Int* as_int();
+        UInt* as_uint();
+        Double* as_double();
     };
 
     class Boolean : public Scalar {
@@ -49,15 +55,27 @@ namespace pl {
     };
     class Int : public Scalar {
     public:
+        Int(SV* _s) : Scalar(_s) { }
         Int(int _i) : Scalar(newSViv(_i)) { }
+        int to_c() {
+            return SvIV(this->val);
+        }
     };
     class UInt : public Scalar {
     public:
+        UInt(SV* _s) : Scalar(_s) { }
         UInt(unsigned int _i) : Scalar(newSVuv(_i)) { }
+        unsigned int to_c() {
+            return SvUV(this->val);
+        }
     };
     class Double : public Scalar {
     public:
+        Double(SV* _s) : Scalar(_s) { }
         Double(double _i) : Scalar(newSVnv(_i)) { }
+        double to_c() {
+            return SvNV(this->val);
+        }
     };
     class Str : public Scalar {
     public:
@@ -130,15 +148,6 @@ namespace pl {
         ~Ctx();
         I32 arg_len() {
             return (I32)(PL_stack_sp - mark);
-        }
-        int arg_int(int n) {
-            return SvIV(fetch_stack(n));
-        }
-        int arg_uint(int n) {
-            return SvUV(fetch_stack(n));
-        }
-        double arg_double(int n) {
-            return SvNV(fetch_stack(n));
         }
         Scalar* arg_scalar(int n) {
             Scalar*s = new Scalar(fetch_stack(n));
@@ -294,6 +303,40 @@ namespace pl {
                 "sv");
         }
     }
+    Int* Scalar::as_int() {
+        if (SvIOK(this->val)) {
+            Int * s = new Int(this->val);
+            CurCtx::get()->register_allocated(s);
+            return s;
+        } else {
+            Perl_croak(aTHX_ "%s: %s is not a int",
+                "Devel::BindPP",
+                "sv");
+        }
+    }
+    UInt* Scalar::as_uint() {
+        if (SvIOK(this->val)) {
+            UInt * s = new UInt(this->val);
+            CurCtx::get()->register_allocated(s);
+            return s;
+        } else {
+            Perl_croak(aTHX_ "%s: %s is not a uint",
+                "Devel::BindPP",
+                "sv");
+        }
+    }
+    Double* Scalar::as_double() {
+        if (SvNOK(this->val)) {
+            Double * s = new Double(this->val);
+            CurCtx::get()->register_allocated(s);
+            return s;
+        } else {
+            Perl_croak(aTHX_ "%s: %s is not a double",
+                "Devel::BindPP",
+                "sv");
+        }
+    }
+
     Hash * Reference::as_hash() {
         if (SvROK(this->val) && SvTYPE(SvRV(this->val))==SVt_PVHV) {
             HV* h = (HV*)SvRV(this->val);
