@@ -159,6 +159,17 @@ XS(xs_refcnt_dec) {
     c.ret(0, s);
 }
 
+XS(xs_c_str) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+       Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Str * s = c.arg_scalar(0)->as_str();
+    Perl_croak(aTHX_ "OK: '%s'", s->c_str());
+}
+
 XS(xs_hv_store) {
     pl::Ctx c;
 
@@ -222,6 +233,7 @@ extern "C" {
         s.add_method("do_bless", do_bless, __FILE__);
         s.add_method("refcnt_inc", xs_refcnt_inc, __FILE__);
         s.add_method("refcnt_dec", xs_refcnt_dec, __FILE__);
+        s.add_method("c_str", xs_c_str, __FILE__);
 
         // Hash
         pl::Package h("Devel::BindPP::Hash");

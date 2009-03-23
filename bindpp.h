@@ -27,6 +27,8 @@ namespace pl {
         SV* val;
     };
 
+    class Str;
+
     class Scalar : public Value {
     public:
         Scalar(SV* _v) : Value(_v) { }
@@ -37,6 +39,7 @@ namespace pl {
         SV * serialize() {
             return val;
         }
+        Str* as_str();
     };
 
     class Boolean : public Scalar {
@@ -58,7 +61,11 @@ namespace pl {
     };
     class Str : public Scalar {
     public:
+        Str(SV* _s) : Scalar(_s) { }
         Str(std::string & _s) : Scalar(newSVpv(_s.c_str(), _s.length())) { }
+        const char* c_str() {
+            return SvPV_nolen(this->val);
+        }
     };
 
     class Hash;
@@ -87,7 +94,6 @@ namespace pl {
         bool exists(const char*key, I32 klen) {
             return hv_exists((HV*)this->val, key, klen);
         }
-        // TODO: hv_clear
         Reference* del(const char*key) {
             return this->del(key, strlen(key));
         }
@@ -97,7 +103,6 @@ namespace pl {
             return this->store(key, strlen(key), value);
         }
         Reference* store(const char*key, I32 klen, Scalar*value);
-        // TODO: hv_store()
         Scalar* scalar();
         void undef();
         void clear();
@@ -136,6 +141,7 @@ namespace pl {
             return SvNV(fetch_stack(n));
         }
         const char* arg_str(int n) {
+            // TODO: SvPOK check
             return SvPV_nolen(fetch_stack(n));
         }
         Scalar* arg_scalar(int n) {
@@ -281,6 +287,17 @@ namespace pl {
     public:
     };
 
+    Str* Scalar::as_str() {
+        if (SvPOK(this->val)) {
+            Str * s = new Str(this->val);
+            CurCtx::get()->register_allocated(s);
+            return s;
+        } else {
+            Perl_croak(aTHX_ "%s: %s is not a string",
+                "Devel::BindPP",
+                "sv");
+        }
+    }
     Hash * Reference::as_hash() {
         if (SvROK(this->val) && SvTYPE(SvRV(this->val))==SVt_PVHV) {
             HV* h = (HV*)SvRV(this->val);

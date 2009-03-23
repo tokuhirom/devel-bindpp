@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 22;
+use Test::More tests => 23;
 
 use Devel::BindPP;
 
@@ -24,6 +24,12 @@ isa_ok Devel::BindPP::Scalar::do_bless([], 'OK'), 'OK';
     Devel::BindPP::Scalar::refcnt_inc($b);
     Devel::BindPP::Scalar::refcnt_dec($b);
     is Internals::SvREFCNT($b), 3;
+}
+{
+    eval {
+        Devel::BindPP::Scalar::c_str('ok');
+    };
+    like $@, qr{OK: 'ok'};
 }
 
 # hash
