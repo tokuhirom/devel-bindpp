@@ -27,6 +27,9 @@ namespace pl {
     class Code;
     class Ctx;
 
+    /**
+     * abstract base class for perl values
+     */
     class Value {
         friend class Ctx;
         friend class Reference;
@@ -38,28 +41,52 @@ namespace pl {
         Value(SV* _v) {
             this->val = _v;
         }
+        /**
+         * dump value
+         * @see sv_dump()
+         */
         void dump() {
             sv_dump(val);
         }
+        /**
+         * increment the reference counter for this value
+         * @see SvREFCNT_inc
+         */
         void refcnt_inc() {
             SvREFCNT_inc(this->val);
         }
+        /**
+         * decrement the reference counter for this value
+         * @see SvREFCNT_dec
+         */
         void refcnt_dec() {
             SvREFCNT_dec(this->val);
         }
+        /**
+         * get a reference of this value
+         */
         Reference* reference();
     protected:
         SV* val;
         Value() { }
     };
 
+    /**
+     * Scalar class(SV)
+     */
     class Scalar : public Value {
     public:
         Scalar(SV* _v) : Value(_v) { }
+        /**
+         * make this value as mortal.
+         */
         Scalar * mortal() {
             sv_2mortal(this->val);
             return this;
         }
+        /**
+         * serialize this object to real perl variable
+         */
         SV * serialize() {
             return val;
         }
@@ -71,12 +98,18 @@ namespace pl {
         Reference* as_ref();
     };
 
+    /**
+     * boolean class
+     */
     class Boolean : public Scalar {
     public:
         Boolean(bool b) : Scalar(b ? &PL_sv_yes : &PL_sv_no) { }
         static Boolean* yes();
         static Boolean* no();
     };
+    /**
+     * integer(IV)
+     */
     class Int : public Scalar {
     public:
         Int(SV* _s) : Scalar(_s) { }
@@ -85,6 +118,9 @@ namespace pl {
             return SvIV(this->val);
         }
     };
+    /**
+     * unsigned integer(UV)
+     */
     class UInt : public Scalar {
     public:
         UInt(SV* _s) : Scalar(_s) { }
@@ -93,6 +129,9 @@ namespace pl {
             return SvUV(this->val);
         }
     };
+    /**
+     * double(NV)
+     */
     class Double : public Scalar {
     public:
         Double(SV* _s) : Scalar(_s) { }
@@ -101,6 +140,9 @@ namespace pl {
             return SvNV(this->val);
         }
     };
+    /**
+     * string(PV)
+     */
     class Str : public Scalar {
     public:
         Str(SV* _s) : Scalar(_s) { }
@@ -120,6 +162,9 @@ namespace pl {
         }
     };
 
+    /**
+     * reference(RV)
+     */
     class Reference : public Scalar {
     public:
         Reference(SV*v) : Scalar(v) { }
@@ -140,6 +185,9 @@ namespace pl {
         }
     };
 
+    /**
+     * hash(HV)
+     */
     class Hash : public Value {
     public:
         Hash() : Value((SV*)newHV()) { }
@@ -165,6 +213,9 @@ namespace pl {
         void clear();
     };
 
+    /**
+     * array(AV)
+     */
     class Array : public Value {
     public:
         Array() : Value((SV*)newAV()) { }
@@ -203,6 +254,9 @@ namespace pl {
         }
     };
 
+    /**
+     * XSUB context class
+     */
     class Ctx {
     public:
         Ctx();
@@ -283,6 +337,9 @@ namespace pl {
         ctxstack.pop_back();
     }
 
+    /**
+     * current context registrar
+     */
     class CurCtx {
     public:
         static Ctx * get() {
@@ -341,11 +398,17 @@ namespace pl {
         }
     }
 
+    /**
+     * package class
+     */
     class Package {
     public:
         Package(std::string _pkg) {
             pkg = _pkg;
         }
+        /**
+         * install xsub
+         */
         void add_method(const char*name, XSUBADDR_t func, const char *file) {
             newXS((pkg + "::" + name).c_str(), func, file);
         }
@@ -353,6 +416,9 @@ namespace pl {
         std::string pkg;
     };
 
+    /**
+     * special context class for bootstrap_* method
+     */
     class BootstrapCtx : public Ctx {
     public:
         BootstrapCtx() : Ctx() {
@@ -394,11 +460,17 @@ namespace pl {
         }
     };
 
+    /**
+     * coderef(CV)
+     */
     class Code : public Scalar {
     public:
         Code(SV * _s) : Scalar(_s) { }
     };
 
+    /**
+     * pointer class(blessed object, contains pointer for C struct/class/etc.)
+     */
     class Pointer : public Scalar {
     public:
         Pointer(SV* s) : Scalar(s) { }
@@ -416,6 +488,9 @@ namespace pl {
         }
     };
 
+    /**
+     * utility functions
+     */
     class Perl {
     public:
         static void call(Code* code, U32 flags, Array * args, Array* retval) {

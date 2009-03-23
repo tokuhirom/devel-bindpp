@@ -10,3 +10,4 @@ t_moose_t/
 *.o
 .gdb_history
 Makefile.old
+*.bak
