@@ -36,6 +36,7 @@ namespace pl {
     class Int;
     class Double;
     class Pointer;
+    class Reference;
 
     class Scalar : public Value {
     public:
@@ -52,6 +53,7 @@ namespace pl {
         UInt* as_uint();
         Double* as_double();
         Pointer* as_pointer();
+        Reference* as_ref();
     };
 
     class Boolean : public Scalar {
@@ -175,22 +177,10 @@ namespace pl {
         I32 arg_len() {
             return (I32)(PL_stack_sp - mark);
         }
-        Scalar* arg_scalar(int n) {
+        Scalar* arg(int n) {
             Scalar*s = new Scalar(fetch_stack(n));
             this->register_allocated(s);
             return s;
-        }
-        Reference * arg_ref(int n) {
-            SV* v = fetch_stack(n);
-            if (SvROK(v)) {
-                Reference * obj = new Reference(v);
-                this->register_allocated(obj);
-                return obj;
-            } else {
-                Perl_croak(aTHX_ "%s: %s is not a reference",
-                    "Devel::BindPP",
-                    "av");
-            }
         }
         void ret(int n, Scalar* s) {
             PL_stack_base[ax + n] = s ? s->serialize() : &PL_sv_undef;
@@ -417,6 +407,17 @@ namespace pl {
             return s;
         } else {
             Perl_croak(aTHX_ "%s: %s is not a double",
+                "Devel::BindPP",
+                "sv");
+        }
+    }
+    Reference* Scalar::as_ref() {
+        if (SvROK(this->val)) {
+            Reference * obj = new Reference(this->val);
+            CurCtx::get()->register_allocated(obj);
+            return obj;
+        } else {
+            Perl_croak(aTHX_ "%s: %s is not a reference",
                 "Devel::BindPP",
                 "sv");
         }

@@ -24,7 +24,7 @@ XS(xs_p_new) {
 XS(xs_p_get) {
     pl::Ctx c;
 
-    pl::Pointer * p = c.arg_scalar(0)->as_pointer();
+    pl::Pointer * p = c.arg(0)->as_pointer();
 
     char *self = p->extract<char>();
     pl::Str s(self);
@@ -34,7 +34,7 @@ XS(xs_p_get) {
 XS(xs_p_destroy) {
     pl::Ctx c;
 
-    pl::Pointer * p = c.arg_scalar(0)->as_pointer();
+    pl::Pointer * p = c.arg(0)->as_pointer();
     Safefree(p->extract<char>());
     c.ret(0, pl::Boolean::yes());
 }
@@ -46,7 +46,7 @@ XS(XS_Devel__BindPP_twice) {
        Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice");
     }
 
-    int n = c.arg_scalar(0)->as_int()->to_c();
+    int n = c.arg(0)->as_int()->to_c();
 
     c.ret(0, pl::Int(n*2).mortal());
 }
@@ -58,7 +58,7 @@ XS(xs_twice_deref) {
        Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice");
     }
 
-    int n = c.arg_ref(0)->as_scalar()->as_int()->to_c();
+    int n = c.arg(0)->as_ref()->as_scalar()->as_int()->to_c();
 
     c.ret(0, pl::Int(n*2).mortal());
 }
@@ -70,7 +70,7 @@ XS(XS_Devel__BindPP_twice_n) {
        Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice_n");
     }
 
-    double n = c.arg_scalar(0)->as_double()->to_c();
+    double n = c.arg(0)->as_double()->to_c();
 
     c.ret(0, pl::Double(n*2).mortal());
 }
@@ -82,7 +82,7 @@ XS(XS_Devel__BindPP_twice_u) {
        Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice_u");
     }
 
-    unsigned int n = c.arg_scalar(0)->as_uint()->to_c();
+    unsigned int n = c.arg(0)->as_uint()->to_c();
 
     c.ret(0, pl::UInt(n*2).mortal());
 }
@@ -94,7 +94,7 @@ XS(XS_Devel__BindPP_catfoo) {
        Perl_croak(aTHX_ "Usage: %s(str)", "Devel::BindPP::catfoo");
     }
 
-    const char* n = c.arg_scalar(0)->as_str()->to_c();
+    const char* n = c.arg(0)->as_str()->to_c();
     std::string buf(n);
     buf += "foo";
 
@@ -108,8 +108,8 @@ XS(XS_hv_fetch) {
        Perl_croak(aTHX_ "Usage: %s(hv, str)", "Devel::BindPP::hv_fetch");
     }
 
-    pl::Hash* hash = c.arg_ref(0)->as_hash();
-    const char* key = c.arg_scalar(1)->as_str()->to_c();
+    pl::Hash* hash = c.arg(0)->as_ref()->as_hash();
+    const char* key = c.arg(1)->as_str()->to_c();
 
     pl::Reference * ret = hash->fetch(key);
 
@@ -123,8 +123,8 @@ XS(xs_av_fetch) {
        Perl_croak(aTHX_ "Usage: %s(av, str)", "Devel::BindPP::av_fetch");
     }
 
-    pl::Array* array = c.arg_ref(0)->as_array();
-    const int key = c.arg_scalar(1)->as_int()->to_c();
+    pl::Array* array = c.arg(0)->as_ref()->as_array();
+    const int key = c.arg(1)->as_int()->to_c();
 
     pl::Reference * ret = array->fetch(key);
 
@@ -138,8 +138,8 @@ XS(xs_av_push) {
         Perl_croak(aTHX_ "orz");
     }
 
-    pl::Array* array = c.arg_ref(0)->as_array();
-    pl::Scalar*s = c.arg_scalar(1);
+    pl::Array* array = c.arg(0)->as_ref()->as_array();
+    pl::Scalar*s = c.arg(1);
     s->refcnt_inc();
     array->push(s);
 }
@@ -151,8 +151,8 @@ XS(xs_av_unshift) {
         Perl_croak(aTHX_ "orz");
     }
 
-    pl::Array* array = c.arg_ref(0)->as_array();
-    pl::Int*i = c.arg_scalar(1)->as_int();
+    pl::Array* array = c.arg(0)->as_ref()->as_array();
+    pl::Int*i = c.arg(1)->as_int();
     array->unshift(i->to_c());
     c.return_true();
 }
@@ -164,9 +164,9 @@ XS(xs_av_store) {
         Perl_croak(aTHX_ "orz");
     }
 
-    pl::Array* array = c.arg_ref(0)->as_array();
-    pl::Int*i = c.arg_scalar(1)->as_int();
-    pl::Scalar *val = c.arg_scalar(2);
+    pl::Array* array = c.arg(0)->as_ref()->as_array();
+    pl::Int*i = c.arg(1)->as_int();
+    pl::Scalar *val = c.arg(2);
     val->refcnt_inc();
     array->store(i->to_c(), val);
     c.return_true();
@@ -179,7 +179,7 @@ XS(xs_av_clear) {
         Perl_croak(aTHX_ "orz");
     }
 
-    pl::Array* array = c.arg_ref(0)->as_array();
+    pl::Array* array = c.arg(0)->as_ref()->as_array();
     array->clear();
 
     c.return_true();
@@ -192,7 +192,7 @@ XS(xs_av_undef) {
         Perl_croak(aTHX_ "orz");
     }
 
-    pl::Array* array = c.arg_ref(0)->as_array();
+    pl::Array* array = c.arg(0)->as_ref()->as_array();
     array->undef();
 
     c.return_true();
@@ -205,7 +205,7 @@ XS(xs_av_pop) {
         Perl_croak(aTHX_ "orz");
     }
 
-    pl::Array* array = c.arg_ref(0)->as_array();
+    pl::Array* array = c.arg(0)->as_ref()->as_array();
     pl::Scalar* s = array->pop();
     c.ret(0, s);
 }
@@ -217,7 +217,7 @@ XS(xs_av_shift) {
         Perl_croak(aTHX_ "orz");
     }
 
-    pl::Array* array = c.arg_ref(0)->as_array();
+    pl::Array* array = c.arg(0)->as_ref()->as_array();
     pl::Scalar * s =  array->shift();
     c.ret(0, s);
 }
@@ -229,7 +229,7 @@ XS(xs_av_len) {
         Perl_croak(aTHX_ "orz");
     }
 
-    pl::Array* array = c.arg_ref(0)->as_array();
+    pl::Array* array = c.arg(0)->as_ref()->as_array();
     pl::Int i(array->len());
     c.ret(0, &i);
 }
@@ -241,8 +241,8 @@ XS(do_bless) {
        Perl_croak(aTHX_ "Usage: %s(av, str)", "Devel::BindPP::av_fetch");
     }
 
-    pl::Reference* ref = c.arg_ref(0);
-    const char * pkg = c.arg_scalar(1)->as_str()->to_c();
+    pl::Reference* ref = c.arg(0)->as_ref();
+    const char * pkg = c.arg(1)->as_str()->to_c();
     ref->bless(pkg);
 
     c.ret(0, ref);
@@ -255,8 +255,8 @@ XS(XS_hv_exists) {
        Perl_croak(aTHX_ "Usage: %s(av, str)", "Devel::BindPP::av_fetch");
     }
 
-    pl::Hash* hash = c.arg_ref(0)->as_hash();
-    const char * key = c.arg_scalar(1)->as_str()->to_c();
+    pl::Hash* hash = c.arg(0)->as_ref()->as_hash();
+    const char * key = c.arg(1)->as_str()->to_c();
 
     pl::Boolean b(hash->exists(key));
 
@@ -270,8 +270,8 @@ XS(XS_hv_delete) {
        Perl_croak(aTHX_ "Usage: %s(av, str)", "Devel::BindPP::av_fetch");
     }
 
-    pl::Hash* hash = c.arg_ref(0)->as_hash();
-    const char * key = c.arg_scalar(1)->as_str()->to_c();
+    pl::Hash* hash = c.arg(0)->as_ref()->as_hash();
+    const char * key = c.arg(1)->as_str()->to_c();
 
     pl::Reference * ref = hash->del(key);
 
@@ -285,7 +285,7 @@ XS(xs_refcnt_inc) {
        Perl_croak(aTHX_ "orz");
     }
 
-    pl::Scalar * s = c.arg_scalar(0);
+    pl::Scalar * s = c.arg(0);
     s->refcnt_inc();
     c.ret(0, s);
 }
@@ -297,7 +297,7 @@ XS(xs_refcnt_dec) {
        Perl_croak(aTHX_ "orz");
     }
 
-    pl::Scalar * s = c.arg_scalar(0);
+    pl::Scalar * s = c.arg(0);
     s->refcnt_dec();
     c.ret(0, s);
 }
@@ -309,7 +309,7 @@ XS(xs_to_c) {
        Perl_croak(aTHX_ "orz");
     }
 
-    pl::Str * s = c.arg_scalar(0)->as_str();
+    pl::Str * s = c.arg(0)->as_str();
     Perl_croak(aTHX_ "OK: '%s'", s->to_c());
 }
 
@@ -320,9 +320,9 @@ XS(xs_hv_store) {
        Perl_croak(aTHX_ "orz");
     }
 
-    pl::Hash * h = c.arg_ref(0)->as_hash();
-    const char * key = c.arg_scalar(1)->as_str()->to_c();
-    pl::Scalar * val = c.arg_scalar(2);
+    pl::Hash * h = c.arg(0)->as_ref()->as_hash();
+    const char * key = c.arg(1)->as_str()->to_c();
+    pl::Scalar * val = c.arg(2);
 
     pl::Reference *ref = h->store(key, val);
     ref->refcnt_inc();
@@ -337,7 +337,7 @@ XS(xs_hv_scalar) {
        Perl_croak(aTHX_ "orz");
     }
 
-    pl::Hash * h = c.arg_ref(0)->as_hash();
+    pl::Hash * h = c.arg(0)->as_ref()->as_hash();
     c.ret(0, h->scalar());
 }
 
@@ -348,7 +348,7 @@ XS(xs_hv_undef) {
        Perl_croak(aTHX_ "orz");
     }
 
-    pl::Hash * h = c.arg_ref(0)->as_hash();
+    pl::Hash * h = c.arg(0)->as_ref()->as_hash();
     h->undef();
     c.return_true();
 }
@@ -359,7 +359,7 @@ XS(xs_hv_clear) {
        Perl_croak(aTHX_ "orz");
     }
 
-    pl::Hash * h = c.arg_ref(0)->as_hash();
+    pl::Hash * h = c.arg(0)->as_ref()->as_hash();
     h->clear();
     c.ret(0, pl::Boolean::yes());
 }
