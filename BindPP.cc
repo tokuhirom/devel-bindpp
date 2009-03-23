@@ -12,6 +12,21 @@ XS(xs_p_new) {
     c.ret(&obj);
 }
 
+XS(xs_s_cats) {
+    pl::Ctx c;
+
+    pl::Str * s1 = c.arg(0)->as_str();
+    pl::Str * s2 = c.arg(1)->as_str();
+    pl::Str * s3 = c.arg(2)->as_str();
+    pl::Str * s4 = c.arg(3)->as_str();
+
+    s1->concat(s2);
+    s1->concat(s3->to_c());
+    s1->concat(s4->to_c(), 1);
+
+    c.ret(s1);
+}
+
 XS(xs_p_get) {
     pl::Ctx c;
 
@@ -416,6 +431,7 @@ extern "C" {
         s.add_method("refcnt_dec", xs_refcnt_dec, __FILE__);
         s.add_method("to_c", xs_to_c, __FILE__);
         s.add_method("twice_deref", xs_twice_deref, __FILE__);
+        s.add_method("cats", xs_s_cats, __FILE__);
 
         // Hash
         pl::Package h("Devel::BindPP::Hash");

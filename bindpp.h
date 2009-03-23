@@ -97,6 +97,15 @@ namespace pl {
         const char* to_c() {
             return SvPV_nolen(this->val);
         }
+        void concat(const char* s, I32 len) {
+            sv_catpvn(this->val, s, len);
+        }
+        void concat(const char* s) {
+            sv_catpv(this->val, s);
+        }
+        void concat(Str* s) {
+            sv_catsv(this->val, s->val);
+        }
     };
 
     class Reference : public Scalar {

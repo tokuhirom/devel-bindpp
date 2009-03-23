@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 42;
+use Test::More tests => 43;
 
 use Devel::BindPP;
 
@@ -47,6 +47,10 @@ isa_ok Devel::BindPP::Scalar::do_bless([], 'OK'), 'OK';
     like $@, qr{OK: 'ok'};
 }
 is Devel::BindPP::Scalar::twice_deref(\3), 6;
+{
+    my $a = 'a';
+    is Devel::BindPP::Scalar::cats($a, 'b', 'c', 'de'), 'abcd';
+}
 
 # hash
 is Devel::BindPP::Hash::hvref_fetch(+{a => 'b'}, 'a'), 'b';
