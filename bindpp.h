@@ -26,8 +26,15 @@ namespace pl {
     class Array;
     class Package;
     class Code;
+    class Ctx;
 
     class Value {
+        friend class Ctx;
+        friend class Reference;
+        friend class Array;
+        friend class Perl;
+        friend class Hash;
+
     public:
         Value(SV* _v) {
             this->val = _v;
@@ -41,9 +48,9 @@ namespace pl {
         void refcnt_dec() {
             SvREFCNT_dec(this->val);
         }
-        SV* val;
         Reference* reference();
     protected:
+        SV* val;
         Value() { }
     };
 
