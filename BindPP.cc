@@ -6,6 +6,7 @@ extern "C" {
 #include "perl.h"
 #include "XSUB.h"
 #include "ppport.h"
+#include <cstdarg>
 };
 
 #define XS_STATE(type, x) \
@@ -33,6 +34,9 @@ namespace pl {
         SV * serialize() {
             return val;
         }
+        void dump() {
+            sv_dump(val);
+        }
     protected:
         SV* val;
     };
@@ -40,6 +44,11 @@ namespace pl {
     class Int : public Scalar {
     public:
         Int(int _i) : Scalar(newSViv(_i)) {
+        }
+    };
+    class UInt : public Scalar {
+    public:
+        UInt(unsigned int _i) : Scalar(newSVuv(_i)) {
         }
     };
     class Double : public Scalar {
@@ -64,6 +73,12 @@ namespace pl {
             this->h = _h;
         }
         Reference * fetch(const char *key);
+        // TODO: hv_clear
+        // TODO: hv_delete(const char *key, I32 klen, 0)
+        // TODO: hv_exists(const char *key, I32 klen)
+        // TODO: hv_store()
+        // TODO: hv_scalar
+        // TODO: hv_undef
     protected:
         HV* h;
     };
@@ -78,6 +93,9 @@ namespace pl {
         }
         int arg_int(int n) {
             return SvIV(fetch_stack(n));
+        }
+        int arg_uint(int n) {
+            return SvUV(fetch_stack(n));
         }
         double arg_double(int n) {
             return SvNV(fetch_stack(n));
@@ -203,6 +221,10 @@ namespace pl {
             }
         }
     };
+
+    class Perl {
+    public:
+    };
 };
 
 XS(XS_Devel__BindPP_twice) {
@@ -227,6 +249,18 @@ XS(XS_Devel__BindPP_twice_n) {
     double n = c.arg_double(0);
 
     c.ret(0, pl::Double(n*2).mortal());
+}
+
+XS(XS_Devel__BindPP_twice_u) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+       Perl_croak(aTHX_ "Usage: %s(n)", "Devel::BindPP::twice_u");
+    }
+
+    unsigned int n = c.arg_uint(0);
+
+    c.ret(0, pl::UInt(n*2).mortal());
 }
 
 XS(XS_Devel__BindPP_catfoo) {
@@ -267,6 +301,7 @@ extern "C" {
         pkg.add_method("catfoo", XS_Devel__BindPP_catfoo, __FILE__);
         pkg.add_method("twice_n", XS_Devel__BindPP_twice_n, __FILE__);
         pkg.add_method("hvref_fetch", XS_hv_fetch, __FILE__);
+        pkg.add_method("twice_u", XS_Devel__BindPP_twice_u, __FILE__);
     }
 }
 
