@@ -41,7 +41,6 @@ namespace pl {
         SV * serialize() {
             return val;
         }
-        // TODO: sv_bless
         // TODO: REFCNT_inc
         // TODO: REFCNT_dec
     };
@@ -67,6 +66,10 @@ namespace pl {
     public:
         Reference(SV*v) : Scalar(v) { }
         static Reference * new_inc(Scalar* thing);
+        void bless(const char *pkg) {
+            HV * stash = gv_stashpv(pkg, TRUE);
+            sv_bless(this->val, stash);
+        }
     };
 
     class Hash : public Value {
@@ -139,6 +142,18 @@ namespace pl {
                 return obj;
             } else {
                 Perl_croak(aTHX_ "%s: %s is not a array reference",
+                    "Devel::BindPP",
+                    "av");
+            }
+        }
+        Reference * arg_ref(int n) {
+            SV* v = fetch_stack(n);
+            if (SvROK(v)) {
+                Reference * obj = new Reference(v);
+                this->register_allocated(obj);
+                return obj;
+            } else {
+                Perl_croak(aTHX_ "%s: %s is not a reference",
                     "Devel::BindPP",
                     "av");
             }
@@ -350,16 +365,37 @@ XS(XS_av_fetch) {
     c.ret(0, ret);
 }
 
+XS(do_bless) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 2) {
+       Perl_croak(aTHX_ "Usage: %s(av, str)", "Devel::BindPP::av_fetch");
+    }
+
+    pl::Reference* ref = c.arg_ref(0);
+    const char * pkg = c.arg_str(1);
+    ref->bless(pkg);
+
+    c.ret(0, ref);
+}
+
 extern "C" {
     XS(boot_Devel__BindPP) {
         pl::BootstrapCtx bc;
 
         pl::Package pkg("Devel::BindPP");
+
+        // Scalar
         pkg.add_method("twice", XS_Devel__BindPP_twice, __FILE__);
         pkg.add_method("catfoo", XS_Devel__BindPP_catfoo, __FILE__);
         pkg.add_method("twice_n", XS_Devel__BindPP_twice_n, __FILE__);
-        pkg.add_method("hvref_fetch", XS_hv_fetch, __FILE__);
         pkg.add_method("twice_u", XS_Devel__BindPP_twice_u, __FILE__);
+        pkg.add_method("do_bless", do_bless, __FILE__);
+
+        // Hash
+        pkg.add_method("hvref_fetch", XS_hv_fetch, __FILE__);
+
+        // Array
         pkg.add_method("avref_fetch", XS_av_fetch, __FILE__);
     }
 }
