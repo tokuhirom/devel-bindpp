@@ -1,8 +1,18 @@
 use strict;
 use warnings;
-use Test::More tests => 38;
+use Test::More tests => 40;
 
 use Devel::BindPP;
+
+# basic
+{
+    my $a = join ',', Devel::BindPP::Basic::mult();
+    is $a, '4,9';
+}
+{
+    my $a = join ',', Devel::BindPP::Basic::mult2();
+    is $a, '';
+}
 
 # scalar
 is Devel::BindPP::Scalar::twice(5), 10;
@@ -60,7 +70,7 @@ is Devel::BindPP::Array::avref_fetch([qw/a b c/], 9), undef, 'fetch';
 {
     my $a = [];
     is Devel::BindPP::Array::len($a), -1;
-    Devel::BindPP::Array::push($a, 'a'), 'push';
+    Devel::BindPP::Array::push($a, 'a');
     is Devel::BindPP::Array::len($a), 0, 'len';
     is_deeply($a, ['a']);
     is Devel::BindPP::Array::pop($a), 'a';

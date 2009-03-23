@@ -1,4 +1,5 @@
 #include "bindpp.h"
+// This is an example file for BindPP
 
 XS(xs_p_new) {
     pl::Ctx c;
@@ -354,9 +355,40 @@ XS(xs_hv_clear) {
     c.ret(0, pl::Boolean::yes());
 }
 
+XS(xs_basic_mult) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 0) {
+       Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Int s1(4);
+    pl::Int s2(9);
+    std::vector<pl::Scalar*> v;
+    v.push_back(&s1);
+    v.push_back(&s2);
+
+    c.ret_multi(v);
+}
+XS(xs_basic_mult2) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 0) {
+       Perl_croak(aTHX_ "orz");
+    }
+
+    std::vector<pl::Scalar*> v;
+
+    c.ret_multi(v);
+}
+
 extern "C" {
     XS(boot_Devel__BindPP) {
         pl::BootstrapCtx bc;
+
+        pl::Package b("Devel::BindPP::Basic");
+        b.add_method("mult", xs_basic_mult, __FILE__);
+        b.add_method("mult2", xs_basic_mult2, __FILE__);
 
         pl::Package s("Devel::BindPP::Scalar");
         s.add_method("twice", XS_Devel__BindPP_twice, __FILE__);

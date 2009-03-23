@@ -3,8 +3,7 @@
 
 // TODO: use Newx instead of new
 // TODO: use Safefree instaed of delete
-// TODO: return multiple value
-// TODO: wantarray support
+// TODO: wantarray support(GIMME_V)
 
 extern "C" {
 #include "EXTERN.h"
@@ -185,6 +184,18 @@ namespace pl {
         }
         void ret(int n, Scalar* s) {
             PL_stack_base[ax + n] = s ? s->serialize() : &PL_sv_undef;
+        }
+        void ret_multi(std::vector<Scalar*>& vec) {
+            SV** sp = PL_stack_sp;
+            if ((unsigned int)(PL_stack_max - sp) < vec.size()) {
+                sp = stack_grow(sp, sp, vec.size());
+            }
+
+            std::vector<Scalar*>::iterator iter;
+            for (iter = vec.begin(); iter != vec.end(); iter++) {
+                PL_stack_base[ax++] = *iter ? (*iter)->serialize() : &PL_sv_undef;
+            }
+            ax--;
         }
         void return_true() {
             this->ret(0, pl::Boolean::yes());
