@@ -52,18 +52,15 @@ namespace pl {
     };
     class UInt : public Scalar {
     public:
-        UInt(unsigned int _i) : Scalar(newSVuv(_i)) {
-        }
+        UInt(unsigned int _i) : Scalar(newSVuv(_i)) { }
     };
     class Double : public Scalar {
     public:
-        Double(double _i) : Scalar(newSVnv(_i)) {
-        }
+        Double(double _i) : Scalar(newSVnv(_i)) { }
     };
     class Str : public Scalar {
     public:
-        Str(std::string & _s) : Scalar(newSVpv(_s.c_str(), _s.length())) {
-        }
+        Str(std::string & _s) : Scalar(newSVpv(_s.c_str(), _s.length())) { }
     };
 
     class Reference : public Scalar {
