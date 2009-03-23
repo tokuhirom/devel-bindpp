@@ -141,13 +141,19 @@ namespace pl {
         void push(Value * v) {
             av_push((AV*)this->val, v->val);
         }
+        void unshift(Int &i) {
+            this->unshift(i.to_c());
+        }
+        void unshift(I32 i) {
+            av_unshift((AV*)this->val, i);
+        }
         Scalar * pop();
+        Scalar * shift();
         Reference * fetch(I32 key);
         I32 len() {
             return av_len((AV*)this->val);
         }
         // TODO: store
-        // TODO: len
         // TODO: shift
         // TODO: unshift
         // TODO: clear
@@ -181,6 +187,9 @@ namespace pl {
         }
         void ret(int n, Scalar* s) {
             PL_stack_base[ax + n] = s ? s->serialize() : &PL_sv_undef;
+        }
+        void return_true() {
+            this->ret(0, pl::Boolean::yes());
         }
         void register_allocated(Value* v) {
             allocated.push_back(v);
@@ -249,6 +258,12 @@ namespace pl {
     }
     Scalar * Array::pop() {
         SV* v = av_pop((AV*)this->val);
+        Scalar *s = new Scalar(v);
+        CurCtx::get()->register_allocated(s);
+        return s;
+    }
+    Scalar * Array::shift() {
+        SV* v = av_shift((AV*)this->val);
         Scalar *s = new Scalar(v);
         CurCtx::get()->register_allocated(s);
         return s;
