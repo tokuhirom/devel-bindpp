@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 8;
 
 use Devel::BindPP;
 
@@ -13,4 +13,5 @@ is Devel::BindPP::twice_u(5), 10;
 
 # array
 is Devel::BindPP::avref_fetch([qw/a b c/], 1), 'b';
+is Devel::BindPP::avref_fetch([qw/a b c/], 9), undef;
 
