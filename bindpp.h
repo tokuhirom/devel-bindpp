@@ -99,6 +99,7 @@ namespace pl {
         Reference* store(const char*key, I32 klen, Scalar*value);
         // TODO: hv_store()
         // TODO: hv_scalar
+        Scalar* scalar();
         // TODO: hv_undef
     };
 
@@ -316,6 +317,11 @@ namespace pl {
         Reference * ref = new Reference(*s);
         CurCtx::get()->register_allocated(ref);
         return ref;
+    }
+    Scalar* Hash::scalar() {
+        Scalar*s = new Scalar(hv_scalar((HV*)this->val));
+        CurCtx::get()->register_allocated(s);
+        return s;
     }
     Boolean* Boolean::yes() {
         Boolean* s = new Boolean(true);

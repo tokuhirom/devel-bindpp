@@ -173,6 +173,17 @@ XS(xs_hv_store) {
     c.ret(0, h->store(key, val));
 }
 
+XS(xs_hv_scalar) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+       Perl_croak(aTHX_ "orz");
+    }
+
+    pl::Hash * h = c.arg_ref(0)->as_hash();
+    c.ret(0, h->scalar());
+}
+
 extern "C" {
     XS(boot_Devel__BindPP) {
         pl::BootstrapCtx bc;
@@ -192,6 +203,7 @@ extern "C" {
         h.add_method("exists", XS_hv_exists, __FILE__);
         h.add_method("delete", XS_hv_delete, __FILE__);
         h.add_method("store", xs_hv_store, __FILE__);
+        h.add_method("scalar", xs_hv_scalar, __FILE__);
 
         // Array
         pl::Package a("Devel::BindPP::Array");
