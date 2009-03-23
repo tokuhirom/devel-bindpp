@@ -99,7 +99,7 @@ namespace pl {
             }
         }
         void ret(int n, Scalar* s) {
-            PL_stack_base[ax + n] = s->serialize();
+            PL_stack_base[ax + n] = s ? s->serialize() : &PL_sv_undef;
         }
         void register_allocated(Value* v) {
             allocated.push_back(v);
