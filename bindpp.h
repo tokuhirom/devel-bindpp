@@ -5,7 +5,6 @@
 // TODO: use Safefree instaed of delete
 // TODO: handle gv
 // TODO: call cv by scalar context
-// TODO: protect value->val
 
 extern "C" {
 #include "EXTERN.h"
