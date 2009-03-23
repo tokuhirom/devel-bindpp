@@ -20,13 +20,20 @@ extern "C" {
     }
 
 namespace pl {
-    class Value { };
+    class Value {
+    public:
+        Value(SV* _v) {
+            this->val = _v;
+        }
+        void dump() {
+            sv_dump(val);
+        }
+        SV* val;
+    };
 
     class Scalar : public Value {
     public:
-        Scalar(SV* _v) {
-            this->val = _v;
-        }
+        Scalar(SV* _v) : Value(_v) { }
         Scalar * mortal() {
             sv_2mortal(this->val);
             return this;
@@ -34,17 +41,14 @@ namespace pl {
         SV * serialize() {
             return val;
         }
-        void dump() {
-            sv_dump(val);
-        }
-    protected:
-        SV* val;
+        // TODO: sv_bless
+        // TODO: REFCNT_inc
+        // TODO: REFCNT_dec
     };
 
     class Int : public Scalar {
     public:
-        Int(int _i) : Scalar(newSViv(_i)) {
-        }
+        Int(int _i) : Scalar(newSViv(_i)) { }
     };
     class UInt : public Scalar {
     public:
@@ -65,13 +69,13 @@ namespace pl {
     class Reference : public Scalar {
     public:
         Reference(SV*v) : Scalar(v) { }
+        static Reference * new_inc(Scalar* thing);
     };
 
     class Hash : public Value {
     public:
-        Hash(HV* _h) {
-            this->h = _h;
-        }
+        Hash() : Value((SV*)newHV()) { }
+        Hash(HV* _h) : Value((SV*)_h) { }
         Reference * fetch(const char *key);
         // TODO: hv_clear
         // TODO: hv_delete(const char *key, I32 klen, 0)
@@ -79,10 +83,23 @@ namespace pl {
         // TODO: hv_store()
         // TODO: hv_scalar
         // TODO: hv_undef
-    protected:
-        HV* h;
     };
 
+    class Array : public Value {
+    public:
+        Array() : Value((SV*)newAV()) { }
+        Array(AV* _a) : Value((SV*)_a) { }
+        // TODO: push
+        // TODO: pop
+        Reference * fetch(I32 key);
+        // TODO: store
+        // TODO: len
+        // TODO: shift
+        // TODO: unshift
+        // TODO: clear
+        // TODO: undef
+        // TODO: extend
+    };
 
     class Ctx {
     public:
@@ -114,6 +131,19 @@ namespace pl {
                 Perl_croak(aTHX_ "%s: %s is not a hash reference",
                     "Devel::BindPP",
                     "hv");
+            }
+        }
+        Array * arg_arrayref(int n) {
+            SV* v = fetch_stack(n);
+            if (SvROK(v) && SvTYPE(SvRV(v))==SVt_PVAV) {
+                AV* a = (AV*)SvRV(v);
+                Array * obj = new Array(a);
+                this->register_allocated(obj);
+                return obj;
+            } else {
+                Perl_croak(aTHX_ "%s: %s is not a array reference",
+                    "Devel::BindPP",
+                    "av");
             }
         }
         void ret(int n, Scalar* s) {
@@ -157,9 +187,25 @@ namespace pl {
         }
     };
 
+    Reference * Reference::new_inc(Scalar* thing) {
+        Reference* ref = new Reference(newRV_inc(thing->val));
+        CurCtx::get()->register_allocated(ref);
+        return ref;
+    }
+
     Reference * Hash::fetch(const char* key) {
         // SV**    hv_fetch(HV* tb, const char* key, I32 klen, I32 lval)
-        SV ** v = hv_fetch(h, key, strlen(key), 0);
+        SV ** v = hv_fetch((HV*)this->val, key, strlen(key), 0);
+        if (v) {
+            Reference * ref = new Reference(*v);
+            CurCtx::get()->register_allocated(ref);
+            return ref;
+        } else {
+            return NULL;
+        }
+    }
+    Reference * Array::fetch(I32 key) {
+        SV ** v = av_fetch((AV*)this->val, key, 0);
         if (v) {
             Reference * ref = new Reference(*v);
             CurCtx::get()->register_allocated(ref);
@@ -292,6 +338,21 @@ XS(XS_hv_fetch) {
     c.ret(0, ret);
 }
 
+XS(XS_av_fetch) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 2) {
+       Perl_croak(aTHX_ "Usage: %s(av, str)", "Devel::BindPP::av_fetch");
+    }
+
+    pl::Array* array = c.arg_arrayref(0);
+    const int key = c.arg_int(1);
+
+    pl::Reference * ret = array->fetch(key);
+
+    c.ret(0, ret);
+}
+
 extern "C" {
     XS(boot_Devel__BindPP) {
         pl::BootstrapCtx bc;
@@ -302,6 +363,7 @@ extern "C" {
         pkg.add_method("twice_n", XS_Devel__BindPP_twice_n, __FILE__);
         pkg.add_method("hvref_fetch", XS_hv_fetch, __FILE__);
         pkg.add_method("twice_u", XS_Devel__BindPP_twice_u, __FILE__);
+        pkg.add_method("avref_fetch", XS_av_fetch, __FILE__);
     }
 }
 
