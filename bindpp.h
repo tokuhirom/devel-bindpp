@@ -79,6 +79,7 @@ namespace pl {
         Scalar(SV* _v) : Value(_v) { }
         /**
          * make this value as mortal.
+         * mortal means "this variable is just a temporary.please remove after leave this context"
          */
         Scalar * mortal() {
             sv_2mortal(this->val);
@@ -90,11 +91,29 @@ namespace pl {
         SV * serialize() {
             return val;
         }
+        /**
+         * this variable is just a string.change the type
+         */
         Str* as_str();
+        /**
+         * this variable is just a int.change the type
+         */
         Int* as_int();
+        /**
+         * this variable is just a uint.change the type
+         */
         UInt* as_uint();
+        /**
+         * this variable is just a double.change the type
+         */
         Double* as_double();
+        /**
+         * this variable is just a pointer.change the type
+         */
         Pointer* as_pointer();
+        /**
+         * this variable is just a reference.change the type
+         */
         Reference* as_ref();
     };
 
@@ -104,7 +123,15 @@ namespace pl {
     class Boolean : public Scalar {
     public:
         Boolean(bool b) : Scalar(b ? &PL_sv_yes : &PL_sv_no) { }
+        /**
+         * get a 'yes' indicator variable
+         * @see PL_sv_yes
+         */
         static Boolean* yes();
+        /**
+         * get a 'no' indicator variable
+         * @see PL_sv_no
+         */
         static Boolean* no();
     };
     /**
@@ -114,6 +141,9 @@ namespace pl {
     public:
         Int(SV* _s) : Scalar(_s) { }
         Int(int _i) : Scalar(newSViv(_i)) { }
+        /**
+         * convert to C level integer
+         */
         int to_c() {
             return SvIV(this->val);
         }
@@ -125,6 +155,9 @@ namespace pl {
     public:
         UInt(SV* _s) : Scalar(_s) { }
         UInt(unsigned int _i) : Scalar(newSVuv(_i)) { }
+        /**
+         * convert to C level unsigned integer
+         */
         unsigned int to_c() {
             return SvUV(this->val);
         }
@@ -136,6 +169,9 @@ namespace pl {
     public:
         Double(SV* _s) : Scalar(_s) { }
         Double(double _i) : Scalar(newSVnv(_i)) { }
+        /**
+         * convert to C level double
+         */
         double to_c() {
             return SvNV(this->val);
         }
@@ -148,15 +184,28 @@ namespace pl {
         Str(SV* _s) : Scalar(_s) { }
         Str(std::string & _s) : Scalar(newSVpv(_s.c_str(), _s.length())) { }
         Str(const char* _s) : Scalar(newSVpv(_s, strlen(_s))) { }
+        Str(const char* _s, int _n) : Scalar(newSVpv(_s, _n)) { }
+        /**
+         * convert to C level const char*
+         */
         const char* to_c() {
             return SvPV_nolen(this->val);
         }
+        /**
+         * concat the string
+         */
         void concat(const char* s, I32 len) {
             sv_catpvn(this->val, s, len);
         }
+        /**
+         * ditto
+         */
         void concat(const char* s) {
             sv_catpv(this->val, s);
         }
+        /**
+         * ditto
+         */
         void concat(Str* s) {
             sv_catsv(this->val, s->val);
         }
@@ -168,48 +217,72 @@ namespace pl {
     class Reference : public Scalar {
     public:
         Reference(SV*v) : Scalar(v) { }
+        /**
+         * create a new reference with refcnt increment
+         */
         static Reference * new_inc(Value* thing) {
             return new_inc(thing->val);
         }
+        /**
+         * ditto
+         */
         static Reference * new_inc(SV* thing);
+        /// bless the reference
         void bless(const char *pkg) {
             HV * stash = gv_stashpv(pkg, TRUE);
             sv_bless(this->val, stash);
         }
+        /// dereference
         Hash * as_hash();
+        /// dereference
         Array * as_array();
+        /// dereference
         Scalar * as_scalar();
+        /// dereference
         Code* as_code();
+        /** is this object?
+         * @see sv_isobject
+         */
         bool is_object() {
             return sv_isobject(this->val);
         }
     };
 
     /**
-     * hash(HV)
+     * %hash(HV)
      */
     class Hash : public Value {
     public:
         Hash() : Value((SV*)newHV()) { }
         Hash(HV* _h) : Value((SV*)_h) { }
+        /// fetch the value of hash
         Reference * fetch(const char *key);
+        /// exists(%a, $key)
         bool exists(const char*key) {
             return this->exists(key, strlen(key));
         }
+        /// exists(%a, $key)
         bool exists(const char*key, I32 klen) {
             return hv_exists((HV*)this->val, key, klen);
         }
+        /// remove the key in hash
         Reference* del(const char*key) {
             return this->del(key, strlen(key));
         }
+        /// remove the key in hash
         Reference* del(const char*key, I32 klen);
 
+        /// store value to hash
         Reference* store(const char*key, Scalar*value) {
             return this->store(key, strlen(key), value);
         }
+        /// store value to hash
         Reference* store(const char*key, I32 klen, Scalar*value);
+        /// Evaluates the hash in scalar context and returns the result.
         Scalar* scalar();
+        /// Undefines the hash.
         void undef();
+        /// Clears a hash, making it empty.
         void clear();
     };
 
@@ -220,35 +293,48 @@ namespace pl {
     public:
         Array() : Value((SV*)newAV()) { }
         Array(AV* _a) : Value((SV*)_a) { }
+        /// push the value
         void push(Value v) {
             this->push(&v);
         }
+        /// push the value
         void push(Value * v) {
             v->refcnt_inc();
             av_push((AV*)this->val, v->val);
         }
+        /**
+          * Unshift the given number of "undef" values onto the beginning
+          * of the array.
+          */
         void unshift(Int &i) {
             this->unshift(i.to_c());
         }
         void unshift(I32 i) {
             av_unshift((AV*)this->val, i);
         }
+        /// pops value from the array
         Scalar * pop();
+        /// shifts value from the array
         Scalar * shift();
+        /// fetch value from the array
         Reference * fetch(I32 key);
 
-        // @method: len returns highest index in array
+        /// len returns highest index in array
         I32 len() {
             return av_len((AV*)this->val);
         }
 
+        /// store values to array
         Scalar * store(I32 key, Scalar* v);
+        /// Clears an array, making it empty.
         void clear() {
             av_clear((AV*)this->val);
         }
+        /// Undefines this value
         void undef() {
             av_undef((AV*)this->val);
         }
+        /// Pre-extend an array.
         void extend(I32 n) {
             av_extend((AV*)this->val, n);
         }
@@ -261,14 +347,17 @@ namespace pl {
     public:
         Ctx();
         ~Ctx();
+        /// length of arguments
         I32 arg_len() {
             return (I32)(PL_stack_sp - mark);
         }
+        /// get the argument indexed by n
         Scalar* arg(int n) {
             Scalar*s = new Scalar(fetch_stack(n));
             this->register_allocated(s);
             return s;
         }
+        /// return the one scalar value
         void ret(Scalar s) {
             this->ret(0, &s);
         }
@@ -281,9 +370,11 @@ namespace pl {
         void ret(int n, SV* s) {
             PL_stack_base[ax + n] = s;
         }
+        /// same as perl level wantarray()
         bool wantarray() {
             return GIMME_V & G_ARRAY ? true : false;
         }
+        /// return multiple values
         void return_multi(std::vector<Scalar*>& vec) {
             if (vec.size() != 0) {
                 SV** sp = PL_stack_sp;
@@ -300,16 +391,27 @@ namespace pl {
                 this->return_undef();
             }
         }
+        /// return true value
         void return_true() {
             this->ret(0, &PL_sv_yes);
         }
+        /// return undef value
         void return_undef() {
             this->ret(0, &PL_sv_undef);
         }
+        /**
+          * register the allocated Value. these objects delete
+          * when leave this context.
+          * Note: 'Value' is delete, but Value->val is not delete!
+          */
         void register_allocated(Value* v) {
             allocated.push_back(v);
         }
     protected:
+        /**
+          * fetch the top 'n' of stack
+          * @see ST(n)
+          */
         SV* fetch_stack(int n) {
             return PL_stack_base[this->ax + n];
         }
@@ -408,6 +510,7 @@ namespace pl {
         }
         /**
          * install xsub
+         * @see newXS
          */
         void add_method(const char*name, XSUBADDR_t func, const char *file) {
             newXS((pkg + "::" + name).c_str(), func, file);
@@ -474,6 +577,7 @@ namespace pl {
     class Pointer : public Scalar {
     public:
         Pointer(SV* s) : Scalar(s) { }
+        /// create a scalar from void* pointer
         Pointer(void* _ptr, const char* klass) : Scalar(sv_newmortal()) {
             if (_ptr == NULL) {
                 sv_setsv(this->val, &PL_sv_undef);
@@ -482,6 +586,9 @@ namespace pl {
             }
         }
 
+        /**
+         * get the pointer from scalar
+         */
         template <class T>
         T* extract() {
             return INT2PTR(T *, SvROK(this->val) ? SvIV(SvRV(this->val)) : SvIV(this->val));
