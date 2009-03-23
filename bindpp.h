@@ -23,6 +23,7 @@ namespace pl {
     class Reference;
     class Hash;
     class Array;
+    class Package;
 
     class Value {
     public:
@@ -111,7 +112,7 @@ namespace pl {
     class Reference : public Scalar {
     public:
         Reference(SV*v) : Scalar(v) { }
-        static Reference * new_inc(Scalar* thing);
+        static Reference * new_inc(Value* thing);
         void bless(const char *pkg) {
             HV * stash = gv_stashpv(pkg, TRUE);
             sv_bless(this->val, stash);
@@ -119,6 +120,9 @@ namespace pl {
         Hash * as_hash();
         Array * as_array();
         Scalar * as_scalar();
+        bool is_object() {
+            return sv_isobject(this->val);
+        }
     };
 
     class Hash : public Value {
@@ -264,7 +268,7 @@ namespace pl {
         }
     };
 
-    Reference * Reference::new_inc(Scalar* thing) {
+    Reference * Reference::new_inc(Value* thing) {
         Reference* ref = new Reference(newRV_inc(thing->val));
         CurCtx::get()->register_allocated(ref);
         return ref;
@@ -386,6 +390,7 @@ namespace pl {
 
     class Perl {
     public:
+        // static Hash* get_stash(Str* name);
 //      template<class U>
 //      static void* alloc(int size) {
 //          void *buf;
@@ -460,6 +465,14 @@ namespace pl {
                 "sv");
         }
     }
+    /*
+    Hash* Perl::get_stash(Str * name) {
+        HV * stash = gv_stashpv(name->to_c(), 0);
+        Hash * h = new Hash(stash);
+        CurCtx::get()->register_allocated(h);
+        return h;
+    }
+    */
 
     Hash * Reference::as_hash() {
         if (SvROK(this->val) && SvTYPE(SvRV(this->val))==SVt_PVHV) {

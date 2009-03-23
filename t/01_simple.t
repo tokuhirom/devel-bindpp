@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 43;
+use Test::More tests => 45;
 
 use Devel::BindPP;
 
@@ -51,6 +51,8 @@ is Devel::BindPP::Scalar::twice_deref(\3), 6;
     my $a = 'a';
     is Devel::BindPP::Scalar::cats($a, 'b', 'c', 'de'), 'abcd';
 }
+ok !Devel::BindPP::Scalar::is_object([]);
+ok Devel::BindPP::Scalar::is_object(bless []);
 
 # hash
 is Devel::BindPP::Hash::hvref_fetch(+{a => 'b'}, 'a'), 'b';
@@ -105,4 +107,20 @@ is Devel::BindPP::Array::avref_fetch([qw/a b c/], 9), undef, 'fetch';
     isa_ok $a, 'Devel::BindPP::Pointer';
     is $a->get(), 'ok';
 }
+
+# package
+=pod
+{
+    is_deeply(
+        Devel::BindPP::Package::stash('Devel::BindPP::Pointer'),
+        {
+            'isa'     => *Devel::BindPP::Pointer::isa,
+            'get'     => *Devel::BindPP::Pointer::get,
+            'DESTROY' => *Devel::BindPP::Pointer::DESTROY,
+            'new'     => *Devel::BindPP::Pointer::new
+        }
+    );
+}
+
+=cut
 

@@ -27,6 +27,14 @@ XS(xs_s_cats) {
     c.ret(s1);
 }
 
+XS(xs_s_is_object) {
+    pl::Ctx c;
+
+    pl::Reference * r = c.arg(0)->as_ref();
+    pl::Boolean b( r->is_object() );
+    c.ret(&b);
+}
+
 XS(xs_p_get) {
     pl::Ctx c;
 
@@ -412,6 +420,17 @@ XS(xs_wantarray) {
     }
 }
 
+/*
+XS(xs_pkg_stash) {
+    pl::Ctx c;
+
+    pl::Str *pkg = c.arg(0)->as_str();
+    pl::Hash * h = pl::Perl::get_stash(pkg);
+    pl::Reference * ref = pl::Reference::new_inc(h);
+    c.ret(ref);
+}
+*/
+
 extern "C" {
     XS(boot_Devel__BindPP) {
         pl::BootstrapCtx bc;
@@ -432,6 +451,7 @@ extern "C" {
         s.add_method("to_c", xs_to_c, __FILE__);
         s.add_method("twice_deref", xs_twice_deref, __FILE__);
         s.add_method("cats", xs_s_cats, __FILE__);
+        s.add_method("is_object", xs_s_is_object, __FILE__);
 
         // Hash
         pl::Package h("Devel::BindPP::Hash");
@@ -460,6 +480,14 @@ extern "C" {
         p.add_method("new", xs_p_new, __FILE__);
         p.add_method("get", xs_p_get, __FILE__);
         p.add_method("DESTROY", xs_p_destroy, __FILE__);
+
+        // package
+        /*
+        {
+            pl::Package pkg("Devel::BindPP::Package");
+            pkg.add_method("stash", xs_pkg_stash, __FILE__);
+        }
+        */
     }
 }
 
