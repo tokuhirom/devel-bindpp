@@ -185,20 +185,27 @@ namespace pl {
         void ret(int n, Scalar* s) {
             PL_stack_base[ax + n] = s ? s->serialize() : &PL_sv_undef;
         }
-        void ret_multi(std::vector<Scalar*>& vec) {
-            SV** sp = PL_stack_sp;
-            if ((unsigned int)(PL_stack_max - sp) < vec.size()) {
-                sp = stack_grow(sp, sp, vec.size());
-            }
+        void return_multi(std::vector<Scalar*>& vec) {
+            if (vec.size() != 0) {
+                SV** sp = PL_stack_sp;
+                if ((unsigned int)(PL_stack_max - sp) < vec.size()) {
+                    sp = stack_grow(sp, sp, vec.size());
+                }
 
-            std::vector<Scalar*>::iterator iter;
-            for (iter = vec.begin(); iter != vec.end(); iter++) {
-                PL_stack_base[ax++] = *iter ? (*iter)->serialize() : &PL_sv_undef;
+                std::vector<Scalar*>::iterator iter;
+                for (iter = vec.begin(); iter != vec.end(); iter++) {
+                    PL_stack_base[ax++] = *iter ? (*iter)->serialize() : &PL_sv_undef;
+                }
+                ax--;
+            } else {
+                this->return_undef();
             }
-            ax--;
         }
         void return_true() {
             this->ret(0, pl::Boolean::yes());
+        }
+        void return_undef() {
+            PL_stack_base[ax] = &PL_sv_undef;
         }
         void register_allocated(Value* v) {
             allocated.push_back(v);

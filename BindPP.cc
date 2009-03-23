@@ -368,7 +368,7 @@ XS(xs_basic_mult) {
     v.push_back(&s1);
     v.push_back(&s2);
 
-    c.ret_multi(v);
+    c.return_multi(v);
 }
 XS(xs_basic_mult2) {
     pl::Ctx c;
@@ -379,7 +379,7 @@ XS(xs_basic_mult2) {
 
     std::vector<pl::Scalar*> v;
 
-    c.ret_multi(v);
+    c.return_multi(v);
 }
 
 extern "C" {
