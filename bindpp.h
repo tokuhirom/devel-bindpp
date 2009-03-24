@@ -4,7 +4,6 @@
 // TODO: use Newx instead of new
 // TODO: use Safefree instaed of delete
 // TODO: handle gv
-// TODO: call cv by scalar context
 
 extern "C" {
 #include "EXTERN.h"
