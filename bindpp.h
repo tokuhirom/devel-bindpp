@@ -40,9 +40,6 @@ namespace pl {
         friend class Code;
 
     public:
-        Value(SV* _v) {
-            this->val = _v;
-        }
         /**
          * dump value
          * @see sv_dump()
@@ -71,14 +68,24 @@ namespace pl {
     protected:
         SV* val;
         Value() { }
+        Value(SV* _v) {
+            this->val = _v;
+        }
     };
 
     /**
      * Scalar class(SV)
      */
     class Scalar : public Value {
+        friend class Ctx;
+        friend class Reference;
+        friend class Array;
+        friend class Perl;
+        friend class Hash;
+        friend class Package;
+        friend class Code;
+
     public:
-        Scalar(SV* _v) : Value(_v) { }
         /**
          * make this value as mortal.
          * mortal means "this variable is just a temporary.please remove after leave this context"
@@ -117,6 +124,8 @@ namespace pl {
          * this variable is just a reference.change the type
          */
         Reference* as_ref();
+    protected:
+        Scalar(SV* _v) : Value(_v) { }
     };
 
     /**
@@ -140,8 +149,8 @@ namespace pl {
      * integer(IV)
      */
     class Int : public Scalar {
+        friend class Scalar;
     public:
-        Int(SV* _s) : Scalar(_s) { }
         Int(int _i) : Scalar(newSViv(_i)) { }
         /**
          * convert to C level integer
@@ -149,13 +158,15 @@ namespace pl {
         int to_c() {
             return SvIV(this->val);
         }
+    protected:
+        Int(SV* _s) : Scalar(_s) { }
     };
     /**
      * unsigned integer(UV)
      */
     class UInt : public Scalar {
+        friend class Scalar;
     public:
-        UInt(SV* _s) : Scalar(_s) { }
         UInt(unsigned int _i) : Scalar(newSVuv(_i)) { }
         /**
          * convert to C level unsigned integer
@@ -163,13 +174,15 @@ namespace pl {
         unsigned int to_c() {
             return SvUV(this->val);
         }
+    protected:
+        UInt(SV* _s) : Scalar(_s) { }
     };
     /**
      * double(NV)
      */
     class Double : public Scalar {
+        friend class Scalar;
     public:
-        Double(SV* _s) : Scalar(_s) { }
         Double(double _i) : Scalar(newSVnv(_i)) { }
         /**
          * convert to C level double
@@ -177,13 +190,15 @@ namespace pl {
         double to_c() {
             return SvNV(this->val);
         }
+    protected:
+        Double(SV* _s) : Scalar(_s) { }
     };
     /**
      * string(PV)
      */
     class Str : public Scalar {
+        friend class Scalar;
     public:
-        Str(SV* _s) : Scalar(_s) { }
         Str(std::string & _s) : Scalar(newSVpv(_s.c_str(), _s.length())) { }
         Str(const char* _s) : Scalar(newSVpv(_s, strlen(_s))) { }
         Str(const char* _s, int _n) : Scalar(newSVpv(_s, _n)) { }
@@ -211,24 +226,22 @@ namespace pl {
         void concat(Str* s) {
             sv_catsv(this->val, s->val);
         }
+    protected:
+        Str(SV* _s) : Scalar(_s) { }
     };
 
     /**
      * reference(RV)
      */
     class Reference : public Scalar {
+        friend class Scalar;
+        friend class Hash;
+        friend class Array;
     public:
-        Reference(SV*v) : Scalar(v) { }
         /**
          * create a new reference with refcnt increment
          */
-        static Reference * new_inc(Value* thing) {
-            return new_inc(thing->val);
-        }
-        /**
-         * ditto
-         */
-        static Reference * new_inc(SV* thing);
+        static Reference * new_inc(Value* thing);
         /// bless the reference
         void bless(const char *pkg) {
             HV * stash = gv_stashpv(pkg, TRUE);
@@ -248,15 +261,17 @@ namespace pl {
         bool is_object() {
             return sv_isobject(this->val);
         }
+    protected:
+        Reference(SV*v) : Scalar(v) { }
     };
 
     /**
      * %hash(HV)
      */
     class Hash : public Value {
+        friend class Reference;
     public:
         Hash() : Value((SV*)newHV()) { }
-        Hash(HV* _h) : Value((SV*)_h) { }
         /// fetch the value of hash
         Reference * fetch(const char *key);
         /// exists(%a, $key)
@@ -286,15 +301,17 @@ namespace pl {
         void undef();
         /// Clears a hash, making it empty.
         void clear();
+    protected:
+        Hash(HV* _h) : Value((SV*)_h) { }
     };
 
     /**
      * array(AV)
      */
     class Array : public Value {
+        friend class Reference;
     public:
         Array() : Value((SV*)newAV()) { }
-        Array(AV* _a) : Value((SV*)_a) { }
         /// push the value
         void push(Value v) {
             this->push(&v);
@@ -340,6 +357,8 @@ namespace pl {
         void extend(I32 n) {
             av_extend((AV*)this->val, n);
         }
+    protected:
+        Array(AV* _a) : Value((SV*)_a) { }
     };
 
     /**
@@ -368,9 +387,6 @@ namespace pl {
         }
         void ret(int n, Scalar* s) {
             this->ret(n, s ? s->serialize() : &PL_sv_undef);
-        }
-        void ret(int n, SV* s) {
-            PL_stack_base[ax + n] = s;
         }
         /// same as perl level wantarray()
         bool wantarray() {
@@ -417,6 +433,9 @@ namespace pl {
         SV* fetch_stack(int n) {
             return PL_stack_base[this->ax + n];
         }
+        void ret(int n, SV* s) {
+            PL_stack_base[ax + n] = s;
+        }
         I32 ax;
         SV ** mark;
         std::vector<Value*> allocated;
@@ -451,8 +470,8 @@ namespace pl {
         }
     };
 
-    Reference * Reference::new_inc(SV* thing) {
-        Reference* ref = new Reference(newRV_inc(thing));
+    Reference * Reference::new_inc(Value* thing) {
+        Reference* ref = new Reference(newRV_inc(thing->val));
         CurCtx::get()->register_allocated(ref);
         return ref;
     }
@@ -522,14 +541,15 @@ namespace pl {
          * add new const sub
          * same as sub FOO() { 1 }
          */
-        void add_constant(const char *name, SV* val) {
-            newCONSTSUB(stash, name, val);
-        }
         void add_constant(const char *name, Value * val) {
             this->add_constant(name, val->val);
         }
         void add_constant(const char *name, Value val) {
             this->add_constant(name, val.val);
+        }
+    protected:
+        void add_constant(const char *name, SV* val) {
+            newCONSTSUB(stash, name, val);
         }
     private:
         std::string pkg;
@@ -665,7 +685,7 @@ namespace pl {
     };
 
     Reference * Value::reference() {
-        return Reference::new_inc(this->val);
+        return Reference::new_inc(this);
     }
 
     Str* Scalar::as_str() {
