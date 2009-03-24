@@ -2,7 +2,7 @@
 #include <vector>
 
 // TODO: use Newx instead of new
-// TODO: use Safefree instaed of delete
+// TODO: use Safefree instead of delete
 // TODO: handle gv
 
 extern "C" {
