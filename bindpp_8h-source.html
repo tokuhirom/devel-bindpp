@@ -48,606 +48,618 @@
 <a name="l00036"></a>00036         <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a>;
 <a name="l00037"></a>00037         <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classpl_1_1Perl.html" title="utility functions">Perl</a>;
 <a name="l00038"></a>00038         <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a>;
-<a name="l00039"></a>00039 
-<a name="l00040"></a>00040     <span class="keyword">public</span>:
-<a name="l00041"></a>00041         <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>(SV* _v) {
-<a name="l00042"></a>00042             this-&gt;val = _v;
-<a name="l00043"></a>00043         }
-<a name="l00048"></a><a class="code" href="classpl_1_1Value.html#6443d62e19940e96d92ecd455e854b57">00048</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Value.html#6443d62e19940e96d92ecd455e854b57" title="dump value">dump</a>() {
-<a name="l00049"></a>00049             sv_dump(val);
-<a name="l00050"></a>00050         }
-<a name="l00055"></a><a class="code" href="classpl_1_1Value.html#03cd7efcf6532a680d98052984dbc201">00055</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Value.html#03cd7efcf6532a680d98052984dbc201" title="increment the reference counter for this value">refcnt_inc</a>() {
-<a name="l00056"></a>00056             SvREFCNT_inc(this-&gt;val);
-<a name="l00057"></a>00057         }
-<a name="l00062"></a><a class="code" href="classpl_1_1Value.html#d5f6ceaf4d82be935157fd4711add187">00062</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Value.html#d5f6ceaf4d82be935157fd4711add187" title="decrement the reference counter for this value">refcnt_dec</a>() {
-<a name="l00063"></a>00063             SvREFCNT_dec(this-&gt;val);
-<a name="l00064"></a>00064         }
-<a name="l00068"></a>00068         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Value.html#1be79542b1fdb3fe9106a73a184f0e5c" title="get a reference of this value">reference</a>();
-<a name="l00069"></a>00069     <span class="keyword">protected</span>:
-<a name="l00070"></a>00070         SV* val;
-<a name="l00071"></a>00071         <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>() { }
-<a name="l00072"></a>00072     };
-<a name="l00073"></a>00073 
-<a name="l00077"></a><a class="code" href="classpl_1_1Scalar.html">00077</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a> {
-<a name="l00078"></a>00078     <span class="keyword">public</span>:
-<a name="l00079"></a>00079         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(SV* _v) : <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>(_v) { }
-<a name="l00084"></a><a class="code" href="classpl_1_1Scalar.html#7250120a7904b5f11e24ca9771d120eb">00084</a>         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Scalar.html#7250120a7904b5f11e24ca9771d120eb" title="make this value as mortal.">mortal</a>() {
-<a name="l00085"></a>00085             sv_2mortal(this-&gt;val);
-<a name="l00086"></a>00086             <span class="keywordflow">return</span> <span class="keyword">this</span>;
-<a name="l00087"></a>00087         }
-<a name="l00091"></a><a class="code" href="classpl_1_1Scalar.html#0f57def7d69b1e02beb8a37c6b9fd87a">00091</a>         SV * <a class="code" href="classpl_1_1Scalar.html#0f57def7d69b1e02beb8a37c6b9fd87a" title="serialize this object to real perl variable">serialize</a>() {
-<a name="l00092"></a>00092             <span class="keywordflow">return</span> val;
-<a name="l00093"></a>00093         }
-<a name="l00097"></a>00097         <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>* <a class="code" href="classpl_1_1Scalar.html#b0074dc66d437b353a30d1c721f10963" title="this variable is just a string.change the type">as_str</a>();
-<a name="l00101"></a>00101         <a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a>* <a class="code" href="classpl_1_1Scalar.html#c122bb7bd0574e2069aeea874df26fef" title="this variable is just a int.change the type">as_int</a>();
-<a name="l00105"></a>00105         <a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a>* <a class="code" href="classpl_1_1Scalar.html#793dca992805eb85cf3a9ca81c2c435f" title="this variable is just a uint.change the type">as_uint</a>();
-<a name="l00109"></a>00109         <a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a>* <a class="code" href="classpl_1_1Scalar.html#d097f65651a61f5abc1f306017c7588c" title="this variable is just a double.change the type">as_double</a>();
-<a name="l00113"></a>00113         <a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a>* <a class="code" href="classpl_1_1Scalar.html#6dadfa0cebaefc72cb999923e436db3a" title="this variable is just a pointer.change the type">as_pointer</a>();
-<a name="l00117"></a>00117         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Scalar.html#9f56af8688eb87c31af7b4c061dbafb4" title="this variable is just a reference.change the type">as_ref</a>();
-<a name="l00118"></a>00118     };
-<a name="l00119"></a>00119 
-<a name="l00123"></a><a class="code" href="classpl_1_1Boolean.html">00123</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
-<a name="l00124"></a>00124     <span class="keyword">public</span>:
-<a name="l00125"></a>00125         <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>(<span class="keywordtype">bool</span> b) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(b ? &amp;PL_sv_yes : &amp;PL_sv_no) { }
-<a name="l00130"></a>00130         <span class="keyword">static</span> <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>* <a class="code" href="classpl_1_1Boolean.html#40f1b6e887d1bff72eb1a28b9993e413" title="get a &amp;#39;yes&amp;#39; indicator variable">yes</a>();
-<a name="l00135"></a>00135         <span class="keyword">static</span> <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>* <a class="code" href="classpl_1_1Boolean.html#78241cf06d823ae38f466e57a30f2732" title="get a &amp;#39;no&amp;#39; indicator variable">no</a>();
-<a name="l00136"></a>00136     };
-<a name="l00140"></a><a class="code" href="classpl_1_1Int.html">00140</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
-<a name="l00141"></a>00141     <span class="keyword">public</span>:
-<a name="l00142"></a>00142         <a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a>(SV* _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(_s) { }
-<a name="l00143"></a>00143         <a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a>(<span class="keywordtype">int</span> _i) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(newSViv(_i)) { }
-<a name="l00147"></a><a class="code" href="classpl_1_1Int.html#8c8a2ba015e746539b621bfdeb612246">00147</a>         <span class="keywordtype">int</span> <a class="code" href="classpl_1_1Int.html#8c8a2ba015e746539b621bfdeb612246" title="convert to C level integer">to_c</a>() {
-<a name="l00148"></a>00148             <span class="keywordflow">return</span> SvIV(this-&gt;val);
-<a name="l00149"></a>00149         }
-<a name="l00150"></a>00150     };
-<a name="l00154"></a><a class="code" href="classpl_1_1UInt.html">00154</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
-<a name="l00155"></a>00155     <span class="keyword">public</span>:
-<a name="l00156"></a>00156         <a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a>(SV* _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(_s) { }
-<a name="l00157"></a>00157         <a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> _i) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(newSVuv(_i)) { }
-<a name="l00161"></a><a class="code" href="classpl_1_1UInt.html#2d057cbb9783b4a1a333381a440e8479">00161</a>         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classpl_1_1UInt.html#2d057cbb9783b4a1a333381a440e8479" title="convert to C level unsigned integer">to_c</a>() {
-<a name="l00162"></a>00162             <span class="keywordflow">return</span> SvUV(this-&gt;val);
-<a name="l00163"></a>00163         }
-<a name="l00164"></a>00164     };
-<a name="l00168"></a><a class="code" href="classpl_1_1Double.html">00168</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
-<a name="l00169"></a>00169     <span class="keyword">public</span>:
-<a name="l00170"></a>00170         <a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a>(SV* _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(_s) { }
-<a name="l00171"></a>00171         <a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a>(<span class="keywordtype">double</span> _i) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(newSVnv(_i)) { }
-<a name="l00175"></a><a class="code" href="classpl_1_1Double.html#313f231fc279521cca5f729c567bc86e">00175</a>         <span class="keywordtype">double</span> <a class="code" href="classpl_1_1Double.html#313f231fc279521cca5f729c567bc86e" title="convert to C level double">to_c</a>() {
-<a name="l00176"></a>00176             <span class="keywordflow">return</span> SvNV(this-&gt;val);
-<a name="l00177"></a>00177         }
-<a name="l00178"></a>00178     };
-<a name="l00182"></a><a class="code" href="classpl_1_1Str.html">00182</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
-<a name="l00183"></a>00183     <span class="keyword">public</span>:
-<a name="l00184"></a>00184         <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>(SV* _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(_s) { }
-<a name="l00185"></a>00185         <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>(std::string &amp; _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(newSVpv(_s.c_str(), _s.length())) { }
-<a name="l00186"></a>00186         <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(newSVpv(_s, strlen(_s))) { }
-<a name="l00187"></a>00187         <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* _s, <span class="keywordtype">int</span> _n) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(newSVpv(_s, _n)) { }
-<a name="l00191"></a><a class="code" href="classpl_1_1Str.html#259e84bdba8316e737a72513aa160732">00191</a>         <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classpl_1_1Str.html#259e84bdba8316e737a72513aa160732" title="convert to C level const char*">to_c</a>() {
-<a name="l00192"></a>00192             <span class="keywordflow">return</span> SvPV_nolen(this-&gt;val);
-<a name="l00193"></a>00193         }
-<a name="l00197"></a><a class="code" href="classpl_1_1Str.html#27bbb69e1408215613123ca3c114c45c">00197</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Str.html#27bbb69e1408215613123ca3c114c45c" title="concat the string">concat</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* s, I32 len) {
-<a name="l00198"></a>00198             sv_catpvn(this-&gt;val, s, len);
-<a name="l00199"></a>00199         }
-<a name="l00203"></a><a class="code" href="classpl_1_1Str.html#630cc3bcad7f04159184d987c79ca0b9">00203</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Str.html#27bbb69e1408215613123ca3c114c45c" title="concat the string">concat</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* s) {
-<a name="l00204"></a>00204             sv_catpv(this-&gt;val, s);
-<a name="l00205"></a>00205         }
-<a name="l00209"></a><a class="code" href="classpl_1_1Str.html#51d72cc7f1fa6cf8693176fd927bb552">00209</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Str.html#27bbb69e1408215613123ca3c114c45c" title="concat the string">concat</a>(<a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>* s) {
-<a name="l00210"></a>00210             sv_catsv(this-&gt;val, s-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>);
-<a name="l00211"></a>00211         }
-<a name="l00212"></a>00212     };
-<a name="l00213"></a>00213 
-<a name="l00217"></a><a class="code" href="classpl_1_1Reference.html">00217</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
-<a name="l00218"></a>00218     <span class="keyword">public</span>:
-<a name="l00219"></a>00219         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(SV*v) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(v) { }
-<a name="l00223"></a><a class="code" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875">00223</a>         <span class="keyword">static</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875" title="create a new reference with refcnt increment">new_inc</a>(<a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>* thing) {
-<a name="l00224"></a>00224             <span class="keywordflow">return</span> <a class="code" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875" title="create a new reference with refcnt increment">new_inc</a>(thing-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>);
-<a name="l00225"></a>00225         }
-<a name="l00229"></a>00229         <span class="keyword">static</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875" title="create a new reference with refcnt increment">new_inc</a>(SV* thing);
-<a name="l00231"></a><a class="code" href="classpl_1_1Reference.html#45b208b5a4b9fde26e3f89a8f8e016e8">00231</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Reference.html#45b208b5a4b9fde26e3f89a8f8e016e8" title="bless the reference">bless</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *pkg) {
-<a name="l00232"></a>00232             HV * stash = gv_stashpv(pkg, TRUE);
-<a name="l00233"></a>00233             sv_bless(this-&gt;val, stash);
-<a name="l00234"></a>00234         }
-<a name="l00236"></a>00236         <a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a> * <a class="code" href="classpl_1_1Reference.html#c30666c0043cb5650dc166f70004d4aa" title="dereference">as_hash</a>();
-<a name="l00238"></a>00238         <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a> * <a class="code" href="classpl_1_1Reference.html#1c0ffb031c70ba2082acee856ef86943" title="dereference">as_array</a>();
-<a name="l00240"></a>00240         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Reference.html#5c14eb6224ba437f41988391296804be" title="dereference">as_scalar</a>();
-<a name="l00242"></a>00242         <a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a>* <a class="code" href="classpl_1_1Reference.html#8c43817fba60083ab9fc95883e28d7b7" title="dereference">as_code</a>();
-<a name="l00246"></a><a class="code" href="classpl_1_1Reference.html#d60864b07307021b2d780a0d8b703249">00246</a>         <span class="keywordtype">bool</span> <a class="code" href="classpl_1_1Reference.html#d60864b07307021b2d780a0d8b703249" title="is this object?">is_object</a>() {
-<a name="l00247"></a>00247             <span class="keywordflow">return</span> sv_isobject(this-&gt;val);
-<a name="l00248"></a>00248         }
-<a name="l00249"></a>00249     };
-<a name="l00250"></a>00250 
-<a name="l00254"></a><a class="code" href="classpl_1_1Hash.html">00254</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a> {
-<a name="l00255"></a>00255     <span class="keyword">public</span>:
-<a name="l00256"></a>00256         <a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a>() : <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>((SV*)newHV()) { }
-<a name="l00257"></a>00257         <a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a>(HV* _h) : <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>((SV*)_h) { }
-<a name="l00259"></a>00259         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Hash.html#2257e1856bd1aa9499125848b7e799df" title="fetch the value of hash">fetch</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *key);
-<a name="l00261"></a><a class="code" href="classpl_1_1Hash.html#3048a6aeba2a9ad21e581623c4aca27b">00261</a>         <span class="keywordtype">bool</span> <a class="code" href="classpl_1_1Hash.html#3048a6aeba2a9ad21e581623c4aca27b" title="exists(a, $key)">exists</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key) {
-<a name="l00262"></a>00262             <span class="keywordflow">return</span> this-&gt;<a class="code" href="classpl_1_1Hash.html#3048a6aeba2a9ad21e581623c4aca27b" title="exists(a, $key)">exists</a>(key, strlen(key));
-<a name="l00263"></a>00263         }
-<a name="l00265"></a><a class="code" href="classpl_1_1Hash.html#2ce6a198fb7268fca37eff94efc823ce">00265</a>         <span class="keywordtype">bool</span> <a class="code" href="classpl_1_1Hash.html#3048a6aeba2a9ad21e581623c4aca27b" title="exists(a, $key)">exists</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key, I32 klen) {
-<a name="l00266"></a>00266             <span class="keywordflow">return</span> hv_exists((HV*)this-&gt;val, key, klen);
-<a name="l00267"></a>00267         }
-<a name="l00269"></a><a class="code" href="classpl_1_1Hash.html#405d9cac6c91e8ad8dfcc0eafd81a896">00269</a>         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Hash.html#405d9cac6c91e8ad8dfcc0eafd81a896" title="remove the key in hash">del</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key) {
-<a name="l00270"></a>00270             <span class="keywordflow">return</span> this-&gt;<a class="code" href="classpl_1_1Hash.html#405d9cac6c91e8ad8dfcc0eafd81a896" title="remove the key in hash">del</a>(key, strlen(key));
-<a name="l00271"></a>00271         }
-<a name="l00273"></a>00273         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Hash.html#405d9cac6c91e8ad8dfcc0eafd81a896" title="remove the key in hash">del</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key, I32 klen);
-<a name="l00274"></a>00274 
-<a name="l00276"></a><a class="code" href="classpl_1_1Hash.html#f4137cad6e85223a1d586ae2e6601bbf">00276</a>         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Hash.html#f4137cad6e85223a1d586ae2e6601bbf" title="store value to hash">store</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key, <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>*value) {
-<a name="l00277"></a>00277             <span class="keywordflow">return</span> this-&gt;<a class="code" href="classpl_1_1Hash.html#f4137cad6e85223a1d586ae2e6601bbf" title="store value to hash">store</a>(key, strlen(key), value);
-<a name="l00278"></a>00278         }
-<a name="l00280"></a>00280         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Hash.html#f4137cad6e85223a1d586ae2e6601bbf" title="store value to hash">store</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key, I32 klen, <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>*value);
-<a name="l00282"></a>00282         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>* <a class="code" href="classpl_1_1Hash.html#feff4b98ab2924e72e9fca62c9b5a143" title="Evaluates the hash in scalar context and returns the result.">scalar</a>();
-<a name="l00284"></a>00284         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Hash.html#dc95a75ed77af5deb2af542a775eacf8" title="Undefines the hash.">undef</a>();
-<a name="l00286"></a>00286         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Hash.html#8264d5ed4a4dd4eac8711004889e4be9" title="Clears a hash, making it empty.">clear</a>();
-<a name="l00287"></a>00287     };
-<a name="l00288"></a>00288 
-<a name="l00292"></a><a class="code" href="classpl_1_1Array.html">00292</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a> {
-<a name="l00293"></a>00293     <span class="keyword">public</span>:
-<a name="l00294"></a>00294         <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a>() : <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>((SV*)newAV()) { }
-<a name="l00295"></a>00295         <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a>(AV* _a) : <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>((SV*)_a) { }
-<a name="l00297"></a><a class="code" href="classpl_1_1Array.html#69828ce611257d62d1109c28ccbd3d77">00297</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#69828ce611257d62d1109c28ccbd3d77" title="push the value">push</a>(<a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a> v) {
-<a name="l00298"></a>00298             this-&gt;<a class="code" href="classpl_1_1Array.html#69828ce611257d62d1109c28ccbd3d77" title="push the value">push</a>(&amp;v);
-<a name="l00299"></a>00299         }
-<a name="l00301"></a><a class="code" href="classpl_1_1Array.html#9768fa9a46e82ce797d3053cbbc02318">00301</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#69828ce611257d62d1109c28ccbd3d77" title="push the value">push</a>(<a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a> * v) {
-<a name="l00302"></a>00302             v-&gt;<a class="code" href="classpl_1_1Value.html#03cd7efcf6532a680d98052984dbc201" title="increment the reference counter for this value">refcnt_inc</a>();
-<a name="l00303"></a>00303             av_push((AV*)this-&gt;val, v-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>);
-<a name="l00304"></a>00304         }
-<a name="l00309"></a><a class="code" href="classpl_1_1Array.html#c8d9026dddf71c1628b7023aac56c2fa">00309</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#c8d9026dddf71c1628b7023aac56c2fa" title="Unshift the given number of &amp;quot;undef&amp;quot; values onto the beginning of the array...">unshift</a>(<a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a> &amp;i) {
-<a name="l00310"></a>00310             this-&gt;<a class="code" href="classpl_1_1Array.html#c8d9026dddf71c1628b7023aac56c2fa" title="Unshift the given number of &amp;quot;undef&amp;quot; values onto the beginning of the array...">unshift</a>(i.<a class="code" href="classpl_1_1Int.html#8c8a2ba015e746539b621bfdeb612246" title="convert to C level integer">to_c</a>());
-<a name="l00311"></a>00311         }
-<a name="l00312"></a>00312         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#c8d9026dddf71c1628b7023aac56c2fa" title="Unshift the given number of &amp;quot;undef&amp;quot; values onto the beginning of the array...">unshift</a>(I32 i) {
-<a name="l00313"></a>00313             av_unshift((AV*)this-&gt;val, i);
-<a name="l00314"></a>00314         }
-<a name="l00316"></a>00316         Scalar * <a class="code" href="classpl_1_1Array.html#d12f66148abafefd2f5d6dbcce572bf7" title="pops value from the array">pop</a>();
-<a name="l00318"></a>00318         Scalar * <a class="code" href="classpl_1_1Array.html#4ef220374709024670c2a29d6f81fe01" title="shifts value from the array">shift</a>();
-<a name="l00320"></a>00320         Reference * <a class="code" href="classpl_1_1Array.html#2f2d807620a1a2a0d81593d0ad36b3dd" title="fetch value from the array">fetch</a>(I32 key);
-<a name="l00321"></a>00321 
-<a name="l00323"></a><a class="code" href="classpl_1_1Array.html#ebcd126087966476ac07dcc587e6d728">00323</a>         I32 <a class="code" href="classpl_1_1Array.html#ebcd126087966476ac07dcc587e6d728" title="len returns highest index in array">len</a>() {
-<a name="l00324"></a>00324             <span class="keywordflow">return</span> av_len((AV*)this-&gt;val);
-<a name="l00325"></a>00325         }
-<a name="l00326"></a>00326 
-<a name="l00328"></a>00328         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Array.html#ca5cf203c33f225f90e3141145fcf819" title="store values to array">store</a>(I32 key, <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>* v);
-<a name="l00330"></a><a class="code" href="classpl_1_1Array.html#b0951e87009397349e7f7ca0f74997e6">00330</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#b0951e87009397349e7f7ca0f74997e6" title="Clears an array, making it empty.">clear</a>() {
-<a name="l00331"></a>00331             av_clear((AV*)this-&gt;val);
-<a name="l00332"></a>00332         }
-<a name="l00334"></a><a class="code" href="classpl_1_1Array.html#7e33df31e6260cf630c4bbdfb8ff783a">00334</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#7e33df31e6260cf630c4bbdfb8ff783a" title="Undefines this value.">undef</a>() {
-<a name="l00335"></a>00335             av_undef((AV*)this-&gt;val);
-<a name="l00336"></a>00336         }
-<a name="l00338"></a><a class="code" href="classpl_1_1Array.html#474184b3489a7e95f3d8567e3f2235a2">00338</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#474184b3489a7e95f3d8567e3f2235a2" title="Pre-extend an array.">extend</a>(I32 n) {
-<a name="l00339"></a>00339             av_extend((AV*)this-&gt;val, n);
-<a name="l00340"></a>00340         }
-<a name="l00341"></a>00341     };
-<a name="l00342"></a>00342 
-<a name="l00346"></a><a class="code" href="classpl_1_1Ctx.html">00346</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Ctx.html" title="XSUB context class.">Ctx</a> {
-<a name="l00347"></a>00347     <span class="keyword">public</span>:
-<a name="l00348"></a>00348         <a class="code" href="classpl_1_1Ctx.html" title="XSUB context class.">Ctx</a>();
-<a name="l00349"></a>00349         ~<a class="code" href="classpl_1_1Ctx.html" title="XSUB context class.">Ctx</a>();
-<a name="l00351"></a><a class="code" href="classpl_1_1Ctx.html#a0076b67fb305a08aed8eadbfa07d6b3">00351</a>         I32 <a class="code" href="classpl_1_1Ctx.html#a0076b67fb305a08aed8eadbfa07d6b3" title="length of arguments">arg_len</a>() {
-<a name="l00352"></a>00352             <span class="keywordflow">return</span> (I32)(PL_stack_sp - mark);
-<a name="l00353"></a>00353         }
-<a name="l00355"></a><a class="code" href="classpl_1_1Ctx.html#b085bb4742fb62272e41a1c68e8e6ddf">00355</a>         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>* <a class="code" href="classpl_1_1Ctx.html#b085bb4742fb62272e41a1c68e8e6ddf" title="get the argument indexed by n">arg</a>(<span class="keywordtype">int</span> n) {
-<a name="l00356"></a>00356             <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>*s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(<a class="code" href="classpl_1_1Ctx.html#886b0ab63bf447e88528da5c484e0ca4" title="fetch the top &amp;#39;n&amp;#39; of stack">fetch_stack</a>(n));
-<a name="l00357"></a>00357             this-&gt;<a class="code" href="classpl_1_1Ctx.html#94a800ec92df6188532f91e00fb6431a" title="register the allocated Value.">register_allocated</a>(s);
-<a name="l00358"></a>00358             <span class="keywordflow">return</span> s;
-<a name="l00359"></a>00359         }
-<a name="l00361"></a><a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a">00361</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(<a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> s) {
-<a name="l00362"></a>00362             this-&gt;<a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(0, &amp;s);
-<a name="l00363"></a>00363         }
-<a name="l00364"></a>00364         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(<a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>* s) {
-<a name="l00365"></a>00365             this-&gt;<a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(0, s);
-<a name="l00366"></a>00366         }
-<a name="l00367"></a>00367         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(<span class="keywordtype">int</span> n, Scalar* s) {
-<a name="l00368"></a>00368             this-&gt;<a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(n, s ? s-&gt;serialize() : &amp;PL_sv_undef);
-<a name="l00369"></a>00369         }
-<a name="l00370"></a>00370         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(<span class="keywordtype">int</span> n, SV* s) {
-<a name="l00371"></a>00371             PL_stack_base[ax + n] = s;
-<a name="l00372"></a>00372         }
-<a name="l00374"></a><a class="code" href="classpl_1_1Ctx.html#532ece844b205a83e2f4766f5c0517d5">00374</a>         <span class="keywordtype">bool</span> <a class="code" href="classpl_1_1Ctx.html#532ece844b205a83e2f4766f5c0517d5" title="same as perl level wantarray()">wantarray</a>() {
-<a name="l00375"></a>00375             <span class="keywordflow">return</span> GIMME_V &amp; G_ARRAY ? <span class="keyword">true</span> : <span class="keyword">false</span>;
-<a name="l00376"></a>00376         }
-<a name="l00378"></a><a class="code" href="classpl_1_1Ctx.html#2840c62517080c62a11e401322aacf2c">00378</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#2840c62517080c62a11e401322aacf2c" title="return multiple values">return_multi</a>(std::vector&lt;Scalar*&gt;&amp; vec) {
-<a name="l00379"></a>00379             <span class="keywordflow">if</span> (vec.size() != 0) {
-<a name="l00380"></a>00380                 SV** sp = PL_stack_sp;
-<a name="l00381"></a>00381                 <span class="keywordflow">if</span> ((<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)(PL_stack_max - sp) &lt; vec.size()) {
-<a name="l00382"></a>00382                     sp = stack_grow(sp, sp, vec.size());
-<a name="l00383"></a>00383                 }
-<a name="l00384"></a>00384 
-<a name="l00385"></a>00385                 std::vector&lt;Scalar*&gt;::iterator iter;
-<a name="l00386"></a>00386                 <span class="keywordflow">for</span> (iter = vec.begin(); iter != vec.end(); iter++) {
-<a name="l00387"></a>00387                     PL_stack_base[ax++] = *iter ? (*iter)-&gt;serialize() : &amp;PL_sv_undef;
-<a name="l00388"></a>00388                 }
-<a name="l00389"></a>00389                 ax--;
-<a name="l00390"></a>00390             } <span class="keywordflow">else</span> {
-<a name="l00391"></a>00391                 this-&gt;<a class="code" href="classpl_1_1Ctx.html#07a9e68690e9218583b146cb0ced9936" title="return undef value">return_undef</a>();
-<a name="l00392"></a>00392             }
-<a name="l00393"></a>00393         }
-<a name="l00395"></a><a class="code" href="classpl_1_1Ctx.html#f05444cc3bbe7a88c4a9b3115ac786a6">00395</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#f05444cc3bbe7a88c4a9b3115ac786a6" title="return true value">return_true</a>() {
-<a name="l00396"></a>00396             this-&gt;<a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(0, &amp;PL_sv_yes);
-<a name="l00397"></a>00397         }
-<a name="l00399"></a><a class="code" href="classpl_1_1Ctx.html#07a9e68690e9218583b146cb0ced9936">00399</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#07a9e68690e9218583b146cb0ced9936" title="return undef value">return_undef</a>() {
-<a name="l00400"></a>00400             this-&gt;<a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(0, &amp;PL_sv_undef);
-<a name="l00401"></a>00401         }
-<a name="l00407"></a><a class="code" href="classpl_1_1Ctx.html#94a800ec92df6188532f91e00fb6431a">00407</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#94a800ec92df6188532f91e00fb6431a" title="register the allocated Value.">register_allocated</a>(<a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>* v) {
-<a name="l00408"></a>00408             allocated.push_back(v);
-<a name="l00409"></a>00409         }
-<a name="l00410"></a>00410     <span class="keyword">protected</span>:
-<a name="l00415"></a><a class="code" href="classpl_1_1Ctx.html#886b0ab63bf447e88528da5c484e0ca4">00415</a>         SV* <a class="code" href="classpl_1_1Ctx.html#886b0ab63bf447e88528da5c484e0ca4" title="fetch the top &amp;#39;n&amp;#39; of stack">fetch_stack</a>(<span class="keywordtype">int</span> n) {
-<a name="l00416"></a>00416             <span class="keywordflow">return</span> PL_stack_base[this-&gt;ax + n];
-<a name="l00417"></a>00417         }
-<a name="l00418"></a>00418         I32 ax;
-<a name="l00419"></a>00419         SV ** mark;
-<a name="l00420"></a>00420         std::vector&lt;Value*&gt; allocated;
-<a name="l00421"></a>00421     };
-<a name="l00422"></a>00422     std::vector&lt;Ctx*&gt; ctxstack;
-<a name="l00423"></a>00423     Ctx::Ctx() {
-<a name="l00424"></a>00424         <span class="comment">// same as dAXMARK</span>
-<a name="l00425"></a>00425         this-&gt;ax = *PL_markstack_ptr + 1;
-<a name="l00426"></a>00426         --PL_markstack_ptr;
-<a name="l00427"></a>00427         this-&gt;mark = PL_stack_base + ax - 1;
-<a name="l00428"></a>00428 
-<a name="l00429"></a>00429         ctxstack.push_back(<span class="keyword">this</span>);
-<a name="l00430"></a>00430     }
-<a name="l00431"></a>00431     Ctx::~Ctx() {
-<a name="l00432"></a>00432         std::vector&lt;Value*&gt;::iterator iter;
-<a name="l00433"></a>00433         <span class="keywordflow">for</span> (iter = allocated.begin(); iter != allocated.end(); iter++) {
-<a name="l00434"></a>00434             <span class="keyword">delete</span> *iter;
-<a name="l00435"></a>00435         }
-<a name="l00436"></a>00436 
-<a name="l00437"></a>00437         PL_stack_sp = PL_stack_base + ax;
-<a name="l00438"></a>00438 
-<a name="l00439"></a>00439         ctxstack.pop_back();
-<a name="l00440"></a>00440     }
-<a name="l00441"></a>00441 
-<a name="l00445"></a><a class="code" href="classpl_1_1CurCtx.html">00445</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1CurCtx.html" title="current context registrar">CurCtx</a> {
-<a name="l00446"></a>00446     <span class="keyword">public</span>:
-<a name="l00447"></a>00447         <span class="keyword">static</span> <a class="code" href="classpl_1_1Ctx.html" title="XSUB context class.">Ctx</a> * <span class="keyword">get</span>() {
-<a name="l00448"></a>00448             <span class="keywordflow">return</span> ctxstack[ctxstack.size()-1];
-<a name="l00449"></a>00449         }
-<a name="l00450"></a>00450     };
-<a name="l00451"></a>00451 
-<a name="l00452"></a><a class="code" href="classpl_1_1Reference.html#42408bce41a8b68f104f0ba1b8bb23a5">00452</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875" title="create a new reference with refcnt increment">Reference::new_inc</a>(SV* thing) {
-<a name="l00453"></a>00453         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* ref = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(newRV_inc(thing));
-<a name="l00454"></a>00454         CurCtx::get()-&gt;register_allocated(ref);
-<a name="l00455"></a>00455         <span class="keywordflow">return</span> ref;
-<a name="l00456"></a>00456     }
-<a name="l00457"></a>00457 
-<a name="l00458"></a><a class="code" href="classpl_1_1Hash.html#2257e1856bd1aa9499125848b7e799df">00458</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Hash.html#2257e1856bd1aa9499125848b7e799df" title="fetch the value of hash">Hash::fetch</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key) {
-<a name="l00459"></a>00459         <span class="comment">// SV**    hv_fetch(HV* tb, const char* key, I32 klen, I32 lval)</span>
-<a name="l00460"></a>00460         SV ** v = hv_fetch((HV*)this-&gt;val, key, strlen(key), 0);
-<a name="l00461"></a>00461         <span class="keywordflow">if</span> (v) {
-<a name="l00462"></a>00462             <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * ref = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(*v);
-<a name="l00463"></a>00463             CurCtx::get()-&gt;register_allocated(ref);
-<a name="l00464"></a>00464             <span class="keywordflow">return</span> ref;
-<a name="l00465"></a>00465         } <span class="keywordflow">else</span> {
-<a name="l00466"></a>00466             <span class="keywordflow">return</span> NULL;
-<a name="l00467"></a>00467         }
-<a name="l00468"></a>00468     }
-<a name="l00469"></a><a class="code" href="classpl_1_1Array.html#2f2d807620a1a2a0d81593d0ad36b3dd">00469</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Array.html#2f2d807620a1a2a0d81593d0ad36b3dd" title="fetch value from the array">Array::fetch</a>(I32 key) {
-<a name="l00470"></a>00470         SV ** v = av_fetch((AV*)this-&gt;val, key, 0);
-<a name="l00471"></a>00471         <span class="keywordflow">if</span> (v) {
-<a name="l00472"></a>00472             <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * ref = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(*v);
-<a name="l00473"></a>00473             CurCtx::get()-&gt;register_allocated(ref);
-<a name="l00474"></a>00474             <span class="keywordflow">return</span> ref;
-<a name="l00475"></a>00475         } <span class="keywordflow">else</span> {
-<a name="l00476"></a>00476             <span class="keywordflow">return</span> NULL;
-<a name="l00477"></a>00477         }
-<a name="l00478"></a>00478     }
-<a name="l00479"></a><a class="code" href="classpl_1_1Array.html#d12f66148abafefd2f5d6dbcce572bf7">00479</a>     <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Array.html#d12f66148abafefd2f5d6dbcce572bf7" title="pops value from the array">Array::pop</a>() {
-<a name="l00480"></a>00480         SV* v = av_pop((AV*)this-&gt;val);
-<a name="l00481"></a>00481         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> *s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(v);
-<a name="l00482"></a>00482         CurCtx::get()-&gt;register_allocated(s);
-<a name="l00483"></a>00483         <span class="keywordflow">return</span> s;
-<a name="l00484"></a>00484     }
-<a name="l00485"></a><a class="code" href="classpl_1_1Array.html#4ef220374709024670c2a29d6f81fe01">00485</a>     <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Array.html#4ef220374709024670c2a29d6f81fe01" title="shifts value from the array">Array::shift</a>() {
-<a name="l00486"></a>00486         SV* v = av_shift((AV*)this-&gt;val);
-<a name="l00487"></a>00487         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> *s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(v);
-<a name="l00488"></a>00488         CurCtx::get()-&gt;register_allocated(s);
-<a name="l00489"></a>00489         <span class="keywordflow">return</span> s;
-<a name="l00490"></a>00490     }
-<a name="l00491"></a><a class="code" href="classpl_1_1Array.html#ca5cf203c33f225f90e3141145fcf819">00491</a>     <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Array.html#ca5cf203c33f225f90e3141145fcf819" title="store values to array">Array::store</a>(I32 key, <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>* _v) {
-<a name="l00492"></a>00492         _v-&gt;<a class="code" href="classpl_1_1Value.html#03cd7efcf6532a680d98052984dbc201" title="increment the reference counter for this value">refcnt_inc</a>();
-<a name="l00493"></a>00493         SV** v = av_store((AV*)this-&gt;val, key, _v-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>);
-<a name="l00494"></a>00494         <span class="keywordflow">if</span> (v) {
-<a name="l00495"></a>00495             <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * ref = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(*v);
-<a name="l00496"></a>00496             CurCtx::get()-&gt;register_allocated(ref);
-<a name="l00497"></a>00497             <span class="keywordflow">return</span> ref;
-<a name="l00498"></a>00498         } <span class="keywordflow">else</span> {
-<a name="l00499"></a>00499             <span class="keywordflow">return</span> NULL;
-<a name="l00500"></a>00500         }
-<a name="l00501"></a>00501     }
-<a name="l00502"></a>00502 
-<a name="l00506"></a><a class="code" href="classpl_1_1Package.html">00506</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Package.html" title="package class">Package</a> {
-<a name="l00507"></a>00507     <span class="keyword">public</span>:
-<a name="l00508"></a>00508         <a class="code" href="classpl_1_1Package.html" title="package class">Package</a>(std::string _pkg) {
-<a name="l00509"></a>00509             pkg = _pkg;
-<a name="l00510"></a>00510         }
-<a name="l00515"></a><a class="code" href="classpl_1_1Package.html#b487d148c742f1b018f861e2d06b4f14">00515</a>         <span class="keywordtype">void</span> add_method(<span class="keyword">const</span> <span class="keywordtype">char</span>*name, XSUBADDR_t func, <span class="keyword">const</span> <span class="keywordtype">char</span> *file) {
-<a name="l00516"></a>00516             newXS((pkg + <span class="stringliteral">"::"</span> + name).c_str(), func, file);
-<a name="l00517"></a>00517         }
-<a name="l00518"></a>00518     <span class="keyword">private</span>:
-<a name="l00519"></a>00519         std::string pkg;
-<a name="l00520"></a>00520     };
-<a name="l00521"></a>00521 
-<a name="l00525"></a><a class="code" href="classpl_1_1BootstrapCtx.html">00525</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1BootstrapCtx.html" title="special context class for bootstrap_* method">BootstrapCtx</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Ctx.html" title="XSUB context class.">Ctx</a> {
-<a name="l00526"></a>00526     <span class="keyword">public</span>:
-<a name="l00527"></a>00527         <a class="code" href="classpl_1_1BootstrapCtx.html" title="special context class for bootstrap_* method">BootstrapCtx</a>() : <a class="code" href="classpl_1_1Ctx.html" title="XSUB context class.">Ctx</a>() {
-<a name="l00528"></a>00528             xs_version_bootcheck();
+<a name="l00039"></a>00039         <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classpl_1_1Package.html" title="package class">Package</a>;
+<a name="l00040"></a>00040 
+<a name="l00041"></a>00041     <span class="keyword">public</span>:
+<a name="l00042"></a>00042         <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>(SV* _v) {
+<a name="l00043"></a>00043             this-&gt;val = _v;
+<a name="l00044"></a>00044         }
+<a name="l00049"></a><a class="code" href="classpl_1_1Value.html#6443d62e19940e96d92ecd455e854b57">00049</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Value.html#6443d62e19940e96d92ecd455e854b57" title="dump value">dump</a>() {
+<a name="l00050"></a>00050             sv_dump(val);
+<a name="l00051"></a>00051         }
+<a name="l00056"></a><a class="code" href="classpl_1_1Value.html#03cd7efcf6532a680d98052984dbc201">00056</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Value.html#03cd7efcf6532a680d98052984dbc201" title="increment the reference counter for this value">refcnt_inc</a>() {
+<a name="l00057"></a>00057             SvREFCNT_inc(this-&gt;val);
+<a name="l00058"></a>00058         }
+<a name="l00063"></a><a class="code" href="classpl_1_1Value.html#d5f6ceaf4d82be935157fd4711add187">00063</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Value.html#d5f6ceaf4d82be935157fd4711add187" title="decrement the reference counter for this value">refcnt_dec</a>() {
+<a name="l00064"></a>00064             SvREFCNT_dec(this-&gt;val);
+<a name="l00065"></a>00065         }
+<a name="l00069"></a>00069         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Value.html#1be79542b1fdb3fe9106a73a184f0e5c" title="get a reference of this value">reference</a>();
+<a name="l00070"></a>00070     <span class="keyword">protected</span>:
+<a name="l00071"></a>00071         SV* val;
+<a name="l00072"></a>00072         <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>() { }
+<a name="l00073"></a>00073     };
+<a name="l00074"></a>00074 
+<a name="l00078"></a><a class="code" href="classpl_1_1Scalar.html">00078</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a> {
+<a name="l00079"></a>00079     <span class="keyword">public</span>:
+<a name="l00080"></a>00080         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(SV* _v) : <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>(_v) { }
+<a name="l00085"></a><a class="code" href="classpl_1_1Scalar.html#7250120a7904b5f11e24ca9771d120eb">00085</a>         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Scalar.html#7250120a7904b5f11e24ca9771d120eb" title="make this value as mortal.">mortal</a>() {
+<a name="l00086"></a>00086             sv_2mortal(this-&gt;val);
+<a name="l00087"></a>00087             <span class="keywordflow">return</span> <span class="keyword">this</span>;
+<a name="l00088"></a>00088         }
+<a name="l00092"></a><a class="code" href="classpl_1_1Scalar.html#0f57def7d69b1e02beb8a37c6b9fd87a">00092</a>         SV * <a class="code" href="classpl_1_1Scalar.html#0f57def7d69b1e02beb8a37c6b9fd87a" title="serialize this object to real perl variable">serialize</a>() {
+<a name="l00093"></a>00093             <span class="keywordflow">return</span> val;
+<a name="l00094"></a>00094         }
+<a name="l00098"></a>00098         <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>* <a class="code" href="classpl_1_1Scalar.html#b0074dc66d437b353a30d1c721f10963" title="this variable is just a string.change the type">as_str</a>();
+<a name="l00102"></a>00102         <a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a>* <a class="code" href="classpl_1_1Scalar.html#c122bb7bd0574e2069aeea874df26fef" title="this variable is just a int.change the type">as_int</a>();
+<a name="l00106"></a>00106         <a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a>* <a class="code" href="classpl_1_1Scalar.html#793dca992805eb85cf3a9ca81c2c435f" title="this variable is just a uint.change the type">as_uint</a>();
+<a name="l00110"></a>00110         <a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a>* <a class="code" href="classpl_1_1Scalar.html#d097f65651a61f5abc1f306017c7588c" title="this variable is just a double.change the type">as_double</a>();
+<a name="l00114"></a>00114         <a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a>* <a class="code" href="classpl_1_1Scalar.html#6dadfa0cebaefc72cb999923e436db3a" title="this variable is just a pointer.change the type">as_pointer</a>();
+<a name="l00118"></a>00118         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Scalar.html#9f56af8688eb87c31af7b4c061dbafb4" title="this variable is just a reference.change the type">as_ref</a>();
+<a name="l00119"></a>00119     };
+<a name="l00120"></a>00120 
+<a name="l00124"></a><a class="code" href="classpl_1_1Boolean.html">00124</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
+<a name="l00125"></a>00125     <span class="keyword">public</span>:
+<a name="l00126"></a>00126         <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>(<span class="keywordtype">bool</span> b) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(b ? &amp;PL_sv_yes : &amp;PL_sv_no) { }
+<a name="l00131"></a>00131         <span class="keyword">static</span> <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>* <a class="code" href="classpl_1_1Boolean.html#40f1b6e887d1bff72eb1a28b9993e413" title="get a &amp;#39;yes&amp;#39; indicator variable">yes</a>();
+<a name="l00136"></a>00136         <span class="keyword">static</span> <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>* <a class="code" href="classpl_1_1Boolean.html#78241cf06d823ae38f466e57a30f2732" title="get a &amp;#39;no&amp;#39; indicator variable">no</a>();
+<a name="l00137"></a>00137     };
+<a name="l00141"></a><a class="code" href="classpl_1_1Int.html">00141</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
+<a name="l00142"></a>00142     <span class="keyword">public</span>:
+<a name="l00143"></a>00143         <a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a>(SV* _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(_s) { }
+<a name="l00144"></a>00144         <a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a>(<span class="keywordtype">int</span> _i) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(newSViv(_i)) { }
+<a name="l00148"></a><a class="code" href="classpl_1_1Int.html#8c8a2ba015e746539b621bfdeb612246">00148</a>         <span class="keywordtype">int</span> <a class="code" href="classpl_1_1Int.html#8c8a2ba015e746539b621bfdeb612246" title="convert to C level integer">to_c</a>() {
+<a name="l00149"></a>00149             <span class="keywordflow">return</span> SvIV(this-&gt;val);
+<a name="l00150"></a>00150         }
+<a name="l00151"></a>00151     };
+<a name="l00155"></a><a class="code" href="classpl_1_1UInt.html">00155</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
+<a name="l00156"></a>00156     <span class="keyword">public</span>:
+<a name="l00157"></a>00157         <a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a>(SV* _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(_s) { }
+<a name="l00158"></a>00158         <a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> _i) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(newSVuv(_i)) { }
+<a name="l00162"></a><a class="code" href="classpl_1_1UInt.html#2d057cbb9783b4a1a333381a440e8479">00162</a>         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classpl_1_1UInt.html#2d057cbb9783b4a1a333381a440e8479" title="convert to C level unsigned integer">to_c</a>() {
+<a name="l00163"></a>00163             <span class="keywordflow">return</span> SvUV(this-&gt;val);
+<a name="l00164"></a>00164         }
+<a name="l00165"></a>00165     };
+<a name="l00169"></a><a class="code" href="classpl_1_1Double.html">00169</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
+<a name="l00170"></a>00170     <span class="keyword">public</span>:
+<a name="l00171"></a>00171         <a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a>(SV* _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(_s) { }
+<a name="l00172"></a>00172         <a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a>(<span class="keywordtype">double</span> _i) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(newSVnv(_i)) { }
+<a name="l00176"></a><a class="code" href="classpl_1_1Double.html#313f231fc279521cca5f729c567bc86e">00176</a>         <span class="keywordtype">double</span> <a class="code" href="classpl_1_1Double.html#313f231fc279521cca5f729c567bc86e" title="convert to C level double">to_c</a>() {
+<a name="l00177"></a>00177             <span class="keywordflow">return</span> SvNV(this-&gt;val);
+<a name="l00178"></a>00178         }
+<a name="l00179"></a>00179     };
+<a name="l00183"></a><a class="code" href="classpl_1_1Str.html">00183</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
+<a name="l00184"></a>00184     <span class="keyword">public</span>:
+<a name="l00185"></a>00185         <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>(SV* _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(_s) { }
+<a name="l00186"></a>00186         <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>(std::string &amp; _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(newSVpv(_s.c_str(), _s.length())) { }
+<a name="l00187"></a>00187         <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(newSVpv(_s, strlen(_s))) { }
+<a name="l00188"></a>00188         <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* _s, <span class="keywordtype">int</span> _n) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(newSVpv(_s, _n)) { }
+<a name="l00192"></a><a class="code" href="classpl_1_1Str.html#259e84bdba8316e737a72513aa160732">00192</a>         <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classpl_1_1Str.html#259e84bdba8316e737a72513aa160732" title="convert to C level const char*">to_c</a>() {
+<a name="l00193"></a>00193             <span class="keywordflow">return</span> SvPV_nolen(this-&gt;val);
+<a name="l00194"></a>00194         }
+<a name="l00198"></a><a class="code" href="classpl_1_1Str.html#27bbb69e1408215613123ca3c114c45c">00198</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Str.html#27bbb69e1408215613123ca3c114c45c" title="concat the string">concat</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* s, I32 len) {
+<a name="l00199"></a>00199             sv_catpvn(this-&gt;val, s, len);
+<a name="l00200"></a>00200         }
+<a name="l00204"></a><a class="code" href="classpl_1_1Str.html#630cc3bcad7f04159184d987c79ca0b9">00204</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Str.html#27bbb69e1408215613123ca3c114c45c" title="concat the string">concat</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* s) {
+<a name="l00205"></a>00205             sv_catpv(this-&gt;val, s);
+<a name="l00206"></a>00206         }
+<a name="l00210"></a><a class="code" href="classpl_1_1Str.html#51d72cc7f1fa6cf8693176fd927bb552">00210</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Str.html#27bbb69e1408215613123ca3c114c45c" title="concat the string">concat</a>(<a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>* s) {
+<a name="l00211"></a>00211             sv_catsv(this-&gt;val, s-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>);
+<a name="l00212"></a>00212         }
+<a name="l00213"></a>00213     };
+<a name="l00214"></a>00214 
+<a name="l00218"></a><a class="code" href="classpl_1_1Reference.html">00218</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
+<a name="l00219"></a>00219     <span class="keyword">public</span>:
+<a name="l00220"></a>00220         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(SV*v) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(v) { }
+<a name="l00224"></a><a class="code" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875">00224</a>         <span class="keyword">static</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875" title="create a new reference with refcnt increment">new_inc</a>(<a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>* thing) {
+<a name="l00225"></a>00225             <span class="keywordflow">return</span> <a class="code" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875" title="create a new reference with refcnt increment">new_inc</a>(thing-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>);
+<a name="l00226"></a>00226         }
+<a name="l00230"></a>00230         <span class="keyword">static</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875" title="create a new reference with refcnt increment">new_inc</a>(SV* thing);
+<a name="l00232"></a><a class="code" href="classpl_1_1Reference.html#45b208b5a4b9fde26e3f89a8f8e016e8">00232</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Reference.html#45b208b5a4b9fde26e3f89a8f8e016e8" title="bless the reference">bless</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *pkg) {
+<a name="l00233"></a>00233             HV * stash = gv_stashpv(pkg, TRUE);
+<a name="l00234"></a>00234             sv_bless(this-&gt;val, stash);
+<a name="l00235"></a>00235         }
+<a name="l00237"></a>00237         <a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a> * <a class="code" href="classpl_1_1Reference.html#c30666c0043cb5650dc166f70004d4aa" title="dereference">as_hash</a>();
+<a name="l00239"></a>00239         <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a> * <a class="code" href="classpl_1_1Reference.html#1c0ffb031c70ba2082acee856ef86943" title="dereference">as_array</a>();
+<a name="l00241"></a>00241         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Reference.html#5c14eb6224ba437f41988391296804be" title="dereference">as_scalar</a>();
+<a name="l00243"></a>00243         <a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a>* <a class="code" href="classpl_1_1Reference.html#8c43817fba60083ab9fc95883e28d7b7" title="dereference">as_code</a>();
+<a name="l00247"></a><a class="code" href="classpl_1_1Reference.html#d60864b07307021b2d780a0d8b703249">00247</a>         <span class="keywordtype">bool</span> <a class="code" href="classpl_1_1Reference.html#d60864b07307021b2d780a0d8b703249" title="is this object?">is_object</a>() {
+<a name="l00248"></a>00248             <span class="keywordflow">return</span> sv_isobject(this-&gt;val);
+<a name="l00249"></a>00249         }
+<a name="l00250"></a>00250     };
+<a name="l00251"></a>00251 
+<a name="l00255"></a><a class="code" href="classpl_1_1Hash.html">00255</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a> {
+<a name="l00256"></a>00256     <span class="keyword">public</span>:
+<a name="l00257"></a>00257         <a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a>() : <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>((SV*)newHV()) { }
+<a name="l00258"></a>00258         <a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a>(HV* _h) : <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>((SV*)_h) { }
+<a name="l00260"></a>00260         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Hash.html#2257e1856bd1aa9499125848b7e799df" title="fetch the value of hash">fetch</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *key);
+<a name="l00262"></a><a class="code" href="classpl_1_1Hash.html#3048a6aeba2a9ad21e581623c4aca27b">00262</a>         <span class="keywordtype">bool</span> <a class="code" href="classpl_1_1Hash.html#3048a6aeba2a9ad21e581623c4aca27b" title="exists(a, $key)">exists</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key) {
+<a name="l00263"></a>00263             <span class="keywordflow">return</span> this-&gt;<a class="code" href="classpl_1_1Hash.html#3048a6aeba2a9ad21e581623c4aca27b" title="exists(a, $key)">exists</a>(key, strlen(key));
+<a name="l00264"></a>00264         }
+<a name="l00266"></a><a class="code" href="classpl_1_1Hash.html#2ce6a198fb7268fca37eff94efc823ce">00266</a>         <span class="keywordtype">bool</span> <a class="code" href="classpl_1_1Hash.html#3048a6aeba2a9ad21e581623c4aca27b" title="exists(a, $key)">exists</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key, I32 klen) {
+<a name="l00267"></a>00267             <span class="keywordflow">return</span> hv_exists((HV*)this-&gt;val, key, klen);
+<a name="l00268"></a>00268         }
+<a name="l00270"></a><a class="code" href="classpl_1_1Hash.html#405d9cac6c91e8ad8dfcc0eafd81a896">00270</a>         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Hash.html#405d9cac6c91e8ad8dfcc0eafd81a896" title="remove the key in hash">del</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key) {
+<a name="l00271"></a>00271             <span class="keywordflow">return</span> this-&gt;<a class="code" href="classpl_1_1Hash.html#405d9cac6c91e8ad8dfcc0eafd81a896" title="remove the key in hash">del</a>(key, strlen(key));
+<a name="l00272"></a>00272         }
+<a name="l00274"></a>00274         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Hash.html#405d9cac6c91e8ad8dfcc0eafd81a896" title="remove the key in hash">del</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key, I32 klen);
+<a name="l00275"></a>00275 
+<a name="l00277"></a><a class="code" href="classpl_1_1Hash.html#f4137cad6e85223a1d586ae2e6601bbf">00277</a>         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Hash.html#f4137cad6e85223a1d586ae2e6601bbf" title="store value to hash">store</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key, <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>*value) {
+<a name="l00278"></a>00278             <span class="keywordflow">return</span> this-&gt;<a class="code" href="classpl_1_1Hash.html#f4137cad6e85223a1d586ae2e6601bbf" title="store value to hash">store</a>(key, strlen(key), value);
+<a name="l00279"></a>00279         }
+<a name="l00281"></a>00281         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Hash.html#f4137cad6e85223a1d586ae2e6601bbf" title="store value to hash">store</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key, I32 klen, <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>*value);
+<a name="l00283"></a>00283         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>* <a class="code" href="classpl_1_1Hash.html#feff4b98ab2924e72e9fca62c9b5a143" title="Evaluates the hash in scalar context and returns the result.">scalar</a>();
+<a name="l00285"></a>00285         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Hash.html#dc95a75ed77af5deb2af542a775eacf8" title="Undefines the hash.">undef</a>();
+<a name="l00287"></a>00287         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Hash.html#8264d5ed4a4dd4eac8711004889e4be9" title="Clears a hash, making it empty.">clear</a>();
+<a name="l00288"></a>00288     };
+<a name="l00289"></a>00289 
+<a name="l00293"></a><a class="code" href="classpl_1_1Array.html">00293</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a> {
+<a name="l00294"></a>00294     <span class="keyword">public</span>:
+<a name="l00295"></a>00295         <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a>() : <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>((SV*)newAV()) { }
+<a name="l00296"></a>00296         <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a>(AV* _a) : <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>((SV*)_a) { }
+<a name="l00298"></a><a class="code" href="classpl_1_1Array.html#69828ce611257d62d1109c28ccbd3d77">00298</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#69828ce611257d62d1109c28ccbd3d77" title="push the value">push</a>(<a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a> v) {
+<a name="l00299"></a>00299             this-&gt;<a class="code" href="classpl_1_1Array.html#69828ce611257d62d1109c28ccbd3d77" title="push the value">push</a>(&amp;v);
+<a name="l00300"></a>00300         }
+<a name="l00302"></a><a class="code" href="classpl_1_1Array.html#9768fa9a46e82ce797d3053cbbc02318">00302</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#69828ce611257d62d1109c28ccbd3d77" title="push the value">push</a>(<a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a> * v) {
+<a name="l00303"></a>00303             v-&gt;<a class="code" href="classpl_1_1Value.html#03cd7efcf6532a680d98052984dbc201" title="increment the reference counter for this value">refcnt_inc</a>();
+<a name="l00304"></a>00304             av_push((AV*)this-&gt;val, v-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>);
+<a name="l00305"></a>00305         }
+<a name="l00310"></a><a class="code" href="classpl_1_1Array.html#c8d9026dddf71c1628b7023aac56c2fa">00310</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#c8d9026dddf71c1628b7023aac56c2fa" title="Unshift the given number of &amp;quot;undef&amp;quot; values onto the beginning of the array...">unshift</a>(<a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a> &amp;i) {
+<a name="l00311"></a>00311             this-&gt;<a class="code" href="classpl_1_1Array.html#c8d9026dddf71c1628b7023aac56c2fa" title="Unshift the given number of &amp;quot;undef&amp;quot; values onto the beginning of the array...">unshift</a>(i.<a class="code" href="classpl_1_1Int.html#8c8a2ba015e746539b621bfdeb612246" title="convert to C level integer">to_c</a>());
+<a name="l00312"></a>00312         }
+<a name="l00313"></a>00313         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#c8d9026dddf71c1628b7023aac56c2fa" title="Unshift the given number of &amp;quot;undef&amp;quot; values onto the beginning of the array...">unshift</a>(I32 i) {
+<a name="l00314"></a>00314             av_unshift((AV*)this-&gt;val, i);
+<a name="l00315"></a>00315         }
+<a name="l00317"></a>00317         Scalar * <a class="code" href="classpl_1_1Array.html#d12f66148abafefd2f5d6dbcce572bf7" title="pops value from the array">pop</a>();
+<a name="l00319"></a>00319         Scalar * <a class="code" href="classpl_1_1Array.html#4ef220374709024670c2a29d6f81fe01" title="shifts value from the array">shift</a>();
+<a name="l00321"></a>00321         Reference * <a class="code" href="classpl_1_1Array.html#2f2d807620a1a2a0d81593d0ad36b3dd" title="fetch value from the array">fetch</a>(I32 key);
+<a name="l00322"></a>00322 
+<a name="l00324"></a><a class="code" href="classpl_1_1Array.html#ebcd126087966476ac07dcc587e6d728">00324</a>         I32 <a class="code" href="classpl_1_1Array.html#ebcd126087966476ac07dcc587e6d728" title="len returns highest index in array">len</a>() {
+<a name="l00325"></a>00325             <span class="keywordflow">return</span> av_len((AV*)this-&gt;val);
+<a name="l00326"></a>00326         }
+<a name="l00327"></a>00327 
+<a name="l00329"></a>00329         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Array.html#ca5cf203c33f225f90e3141145fcf819" title="store values to array">store</a>(I32 key, <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>* v);
+<a name="l00331"></a><a class="code" href="classpl_1_1Array.html#b0951e87009397349e7f7ca0f74997e6">00331</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#b0951e87009397349e7f7ca0f74997e6" title="Clears an array, making it empty.">clear</a>() {
+<a name="l00332"></a>00332             av_clear((AV*)this-&gt;val);
+<a name="l00333"></a>00333         }
+<a name="l00335"></a><a class="code" href="classpl_1_1Array.html#7e33df31e6260cf630c4bbdfb8ff783a">00335</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#7e33df31e6260cf630c4bbdfb8ff783a" title="Undefines this value.">undef</a>() {
+<a name="l00336"></a>00336             av_undef((AV*)this-&gt;val);
+<a name="l00337"></a>00337         }
+<a name="l00339"></a><a class="code" href="classpl_1_1Array.html#474184b3489a7e95f3d8567e3f2235a2">00339</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Array.html#474184b3489a7e95f3d8567e3f2235a2" title="Pre-extend an array.">extend</a>(I32 n) {
+<a name="l00340"></a>00340             av_extend((AV*)this-&gt;val, n);
+<a name="l00341"></a>00341         }
+<a name="l00342"></a>00342     };
+<a name="l00343"></a>00343 
+<a name="l00347"></a><a class="code" href="classpl_1_1Ctx.html">00347</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Ctx.html" title="XSUB context class.">Ctx</a> {
+<a name="l00348"></a>00348     <span class="keyword">public</span>:
+<a name="l00349"></a>00349         <a class="code" href="classpl_1_1Ctx.html" title="XSUB context class.">Ctx</a>();
+<a name="l00350"></a>00350         ~<a class="code" href="classpl_1_1Ctx.html" title="XSUB context class.">Ctx</a>();
+<a name="l00352"></a><a class="code" href="classpl_1_1Ctx.html#a0076b67fb305a08aed8eadbfa07d6b3">00352</a>         I32 <a class="code" href="classpl_1_1Ctx.html#a0076b67fb305a08aed8eadbfa07d6b3" title="length of arguments">arg_len</a>() {
+<a name="l00353"></a>00353             <span class="keywordflow">return</span> (I32)(PL_stack_sp - mark);
+<a name="l00354"></a>00354         }
+<a name="l00356"></a><a class="code" href="classpl_1_1Ctx.html#b085bb4742fb62272e41a1c68e8e6ddf">00356</a>         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>* <a class="code" href="classpl_1_1Ctx.html#b085bb4742fb62272e41a1c68e8e6ddf" title="get the argument indexed by n">arg</a>(<span class="keywordtype">int</span> n) {
+<a name="l00357"></a>00357             <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>*s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(<a class="code" href="classpl_1_1Ctx.html#886b0ab63bf447e88528da5c484e0ca4" title="fetch the top &amp;#39;n&amp;#39; of stack">fetch_stack</a>(n));
+<a name="l00358"></a>00358             this-&gt;<a class="code" href="classpl_1_1Ctx.html#94a800ec92df6188532f91e00fb6431a" title="register the allocated Value.">register_allocated</a>(s);
+<a name="l00359"></a>00359             <span class="keywordflow">return</span> s;
+<a name="l00360"></a>00360         }
+<a name="l00362"></a><a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a">00362</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(<a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> s) {
+<a name="l00363"></a>00363             this-&gt;<a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(0, &amp;s);
+<a name="l00364"></a>00364         }
+<a name="l00365"></a>00365         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(<a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>* s) {
+<a name="l00366"></a>00366             this-&gt;<a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(0, s);
+<a name="l00367"></a>00367         }
+<a name="l00368"></a>00368         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(<span class="keywordtype">int</span> n, Scalar* s) {
+<a name="l00369"></a>00369             this-&gt;<a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(n, s ? s-&gt;serialize() : &amp;PL_sv_undef);
+<a name="l00370"></a>00370         }
+<a name="l00371"></a>00371         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(<span class="keywordtype">int</span> n, SV* s) {
+<a name="l00372"></a>00372             PL_stack_base[ax + n] = s;
+<a name="l00373"></a>00373         }
+<a name="l00375"></a><a class="code" href="classpl_1_1Ctx.html#532ece844b205a83e2f4766f5c0517d5">00375</a>         <span class="keywordtype">bool</span> <a class="code" href="classpl_1_1Ctx.html#532ece844b205a83e2f4766f5c0517d5" title="same as perl level wantarray()">wantarray</a>() {
+<a name="l00376"></a>00376             <span class="keywordflow">return</span> GIMME_V &amp; G_ARRAY ? <span class="keyword">true</span> : <span class="keyword">false</span>;
+<a name="l00377"></a>00377         }
+<a name="l00379"></a><a class="code" href="classpl_1_1Ctx.html#2840c62517080c62a11e401322aacf2c">00379</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#2840c62517080c62a11e401322aacf2c" title="return multiple values">return_multi</a>(std::vector&lt;Scalar*&gt;&amp; vec) {
+<a name="l00380"></a>00380             <span class="keywordflow">if</span> (vec.size() != 0) {
+<a name="l00381"></a>00381                 SV** sp = PL_stack_sp;
+<a name="l00382"></a>00382                 <span class="keywordflow">if</span> ((<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)(PL_stack_max - sp) &lt; vec.size()) {
+<a name="l00383"></a>00383                     sp = stack_grow(sp, sp, vec.size());
+<a name="l00384"></a>00384                 }
+<a name="l00385"></a>00385 
+<a name="l00386"></a>00386                 std::vector&lt;Scalar*&gt;::iterator iter;
+<a name="l00387"></a>00387                 <span class="keywordflow">for</span> (iter = vec.begin(); iter != vec.end(); iter++) {
+<a name="l00388"></a>00388                     PL_stack_base[ax++] = *iter ? (*iter)-&gt;serialize() : &amp;PL_sv_undef;
+<a name="l00389"></a>00389                 }
+<a name="l00390"></a>00390                 ax--;
+<a name="l00391"></a>00391             } <span class="keywordflow">else</span> {
+<a name="l00392"></a>00392                 this-&gt;<a class="code" href="classpl_1_1Ctx.html#07a9e68690e9218583b146cb0ced9936" title="return undef value">return_undef</a>();
+<a name="l00393"></a>00393             }
+<a name="l00394"></a>00394         }
+<a name="l00396"></a><a class="code" href="classpl_1_1Ctx.html#f05444cc3bbe7a88c4a9b3115ac786a6">00396</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#f05444cc3bbe7a88c4a9b3115ac786a6" title="return true value">return_true</a>() {
+<a name="l00397"></a>00397             this-&gt;<a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(0, &amp;PL_sv_yes);
+<a name="l00398"></a>00398         }
+<a name="l00400"></a><a class="code" href="classpl_1_1Ctx.html#07a9e68690e9218583b146cb0ced9936">00400</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#07a9e68690e9218583b146cb0ced9936" title="return undef value">return_undef</a>() {
+<a name="l00401"></a>00401             this-&gt;<a class="code" href="classpl_1_1Ctx.html#f6517f94a6e6c2fa4138725f9ce4184a" title="return the one scalar value">ret</a>(0, &amp;PL_sv_undef);
+<a name="l00402"></a>00402         }
+<a name="l00408"></a><a class="code" href="classpl_1_1Ctx.html#94a800ec92df6188532f91e00fb6431a">00408</a>         <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Ctx.html#94a800ec92df6188532f91e00fb6431a" title="register the allocated Value.">register_allocated</a>(<a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a>* v) {
+<a name="l00409"></a>00409             allocated.push_back(v);
+<a name="l00410"></a>00410         }
+<a name="l00411"></a>00411     <span class="keyword">protected</span>:
+<a name="l00416"></a><a class="code" href="classpl_1_1Ctx.html#886b0ab63bf447e88528da5c484e0ca4">00416</a>         SV* <a class="code" href="classpl_1_1Ctx.html#886b0ab63bf447e88528da5c484e0ca4" title="fetch the top &amp;#39;n&amp;#39; of stack">fetch_stack</a>(<span class="keywordtype">int</span> n) {
+<a name="l00417"></a>00417             <span class="keywordflow">return</span> PL_stack_base[this-&gt;ax + n];
+<a name="l00418"></a>00418         }
+<a name="l00419"></a>00419         I32 ax;
+<a name="l00420"></a>00420         SV ** mark;
+<a name="l00421"></a>00421         std::vector&lt;Value*&gt; allocated;
+<a name="l00422"></a>00422     };
+<a name="l00423"></a>00423     std::vector&lt;Ctx*&gt; ctxstack;
+<a name="l00424"></a>00424     Ctx::Ctx() {
+<a name="l00425"></a>00425         <span class="comment">// same as dAXMARK</span>
+<a name="l00426"></a>00426         this-&gt;ax = *PL_markstack_ptr + 1;
+<a name="l00427"></a>00427         --PL_markstack_ptr;
+<a name="l00428"></a>00428         this-&gt;mark = PL_stack_base + ax - 1;
+<a name="l00429"></a>00429 
+<a name="l00430"></a>00430         ctxstack.push_back(<span class="keyword">this</span>);
+<a name="l00431"></a>00431     }
+<a name="l00432"></a>00432     Ctx::~Ctx() {
+<a name="l00433"></a>00433         std::vector&lt;Value*&gt;::iterator iter;
+<a name="l00434"></a>00434         <span class="keywordflow">for</span> (iter = allocated.begin(); iter != allocated.end(); iter++) {
+<a name="l00435"></a>00435             <span class="keyword">delete</span> *iter;
+<a name="l00436"></a>00436         }
+<a name="l00437"></a>00437 
+<a name="l00438"></a>00438         PL_stack_sp = PL_stack_base + ax;
+<a name="l00439"></a>00439 
+<a name="l00440"></a>00440         ctxstack.pop_back();
+<a name="l00441"></a>00441     }
+<a name="l00442"></a>00442 
+<a name="l00446"></a><a class="code" href="classpl_1_1CurCtx.html">00446</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1CurCtx.html" title="current context registrar">CurCtx</a> {
+<a name="l00447"></a>00447     <span class="keyword">public</span>:
+<a name="l00448"></a>00448         <span class="keyword">static</span> <a class="code" href="classpl_1_1Ctx.html" title="XSUB context class.">Ctx</a> * <span class="keyword">get</span>() {
+<a name="l00449"></a>00449             <span class="keywordflow">return</span> ctxstack[ctxstack.size()-1];
+<a name="l00450"></a>00450         }
+<a name="l00451"></a>00451     };
+<a name="l00452"></a>00452 
+<a name="l00453"></a><a class="code" href="classpl_1_1Reference.html#42408bce41a8b68f104f0ba1b8bb23a5">00453</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875" title="create a new reference with refcnt increment">Reference::new_inc</a>(SV* thing) {
+<a name="l00454"></a>00454         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* ref = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(newRV_inc(thing));
+<a name="l00455"></a>00455         CurCtx::get()-&gt;register_allocated(ref);
+<a name="l00456"></a>00456         <span class="keywordflow">return</span> ref;
+<a name="l00457"></a>00457     }
+<a name="l00458"></a>00458 
+<a name="l00459"></a><a class="code" href="classpl_1_1Hash.html#2257e1856bd1aa9499125848b7e799df">00459</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Hash.html#2257e1856bd1aa9499125848b7e799df" title="fetch the value of hash">Hash::fetch</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key) {
+<a name="l00460"></a>00460         <span class="comment">// SV**    hv_fetch(HV* tb, const char* key, I32 klen, I32 lval)</span>
+<a name="l00461"></a>00461         SV ** v = hv_fetch((HV*)this-&gt;val, key, strlen(key), 0);
+<a name="l00462"></a>00462         <span class="keywordflow">if</span> (v) {
+<a name="l00463"></a>00463             <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * ref = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(*v);
+<a name="l00464"></a>00464             CurCtx::get()-&gt;register_allocated(ref);
+<a name="l00465"></a>00465             <span class="keywordflow">return</span> ref;
+<a name="l00466"></a>00466         } <span class="keywordflow">else</span> {
+<a name="l00467"></a>00467             <span class="keywordflow">return</span> NULL;
+<a name="l00468"></a>00468         }
+<a name="l00469"></a>00469     }
+<a name="l00470"></a><a class="code" href="classpl_1_1Array.html#2f2d807620a1a2a0d81593d0ad36b3dd">00470</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Array.html#2f2d807620a1a2a0d81593d0ad36b3dd" title="fetch value from the array">Array::fetch</a>(I32 key) {
+<a name="l00471"></a>00471         SV ** v = av_fetch((AV*)this-&gt;val, key, 0);
+<a name="l00472"></a>00472         <span class="keywordflow">if</span> (v) {
+<a name="l00473"></a>00473             <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * ref = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(*v);
+<a name="l00474"></a>00474             CurCtx::get()-&gt;register_allocated(ref);
+<a name="l00475"></a>00475             <span class="keywordflow">return</span> ref;
+<a name="l00476"></a>00476         } <span class="keywordflow">else</span> {
+<a name="l00477"></a>00477             <span class="keywordflow">return</span> NULL;
+<a name="l00478"></a>00478         }
+<a name="l00479"></a>00479     }
+<a name="l00480"></a><a class="code" href="classpl_1_1Array.html#d12f66148abafefd2f5d6dbcce572bf7">00480</a>     <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Array.html#d12f66148abafefd2f5d6dbcce572bf7" title="pops value from the array">Array::pop</a>() {
+<a name="l00481"></a>00481         SV* v = av_pop((AV*)this-&gt;val);
+<a name="l00482"></a>00482         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> *s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(v);
+<a name="l00483"></a>00483         CurCtx::get()-&gt;register_allocated(s);
+<a name="l00484"></a>00484         <span class="keywordflow">return</span> s;
+<a name="l00485"></a>00485     }
+<a name="l00486"></a><a class="code" href="classpl_1_1Array.html#4ef220374709024670c2a29d6f81fe01">00486</a>     <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Array.html#4ef220374709024670c2a29d6f81fe01" title="shifts value from the array">Array::shift</a>() {
+<a name="l00487"></a>00487         SV* v = av_shift((AV*)this-&gt;val);
+<a name="l00488"></a>00488         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> *s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(v);
+<a name="l00489"></a>00489         CurCtx::get()-&gt;register_allocated(s);
+<a name="l00490"></a>00490         <span class="keywordflow">return</span> s;
+<a name="l00491"></a>00491     }
+<a name="l00492"></a><a class="code" href="classpl_1_1Array.html#ca5cf203c33f225f90e3141145fcf819">00492</a>     <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Array.html#ca5cf203c33f225f90e3141145fcf819" title="store values to array">Array::store</a>(I32 key, <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>* _v) {
+<a name="l00493"></a>00493         _v-&gt;<a class="code" href="classpl_1_1Value.html#03cd7efcf6532a680d98052984dbc201" title="increment the reference counter for this value">refcnt_inc</a>();
+<a name="l00494"></a>00494         SV** v = av_store((AV*)this-&gt;val, key, _v-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>);
+<a name="l00495"></a>00495         <span class="keywordflow">if</span> (v) {
+<a name="l00496"></a>00496             <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * ref = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(*v);
+<a name="l00497"></a>00497             CurCtx::get()-&gt;register_allocated(ref);
+<a name="l00498"></a>00498             <span class="keywordflow">return</span> ref;
+<a name="l00499"></a>00499         } <span class="keywordflow">else</span> {
+<a name="l00500"></a>00500             <span class="keywordflow">return</span> NULL;
+<a name="l00501"></a>00501         }
+<a name="l00502"></a>00502     }
+<a name="l00503"></a>00503 
+<a name="l00507"></a><a class="code" href="classpl_1_1Package.html">00507</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Package.html" title="package class">Package</a> {
+<a name="l00508"></a>00508     <span class="keyword">public</span>:
+<a name="l00509"></a>00509         <a class="code" href="classpl_1_1Package.html" title="package class">Package</a>(std::string _pkg) {
+<a name="l00510"></a>00510             pkg = _pkg;
+<a name="l00511"></a>00511             stash = gv_stashpvn(pkg.c_str(), pkg.length(), TRUE);
+<a name="l00512"></a>00512         }
+<a name="l00517"></a><a class="code" href="classpl_1_1Package.html#b487d148c742f1b018f861e2d06b4f14">00517</a>         <span class="keywordtype">void</span> add_method(<span class="keyword">const</span> <span class="keywordtype">char</span>*name, XSUBADDR_t func, <span class="keyword">const</span> <span class="keywordtype">char</span> *file) {
+<a name="l00518"></a>00518             newXS((pkg + <span class="stringliteral">"::"</span> + name).c_str(), func, file);
+<a name="l00519"></a>00519         }
+<a name="l00524"></a><a class="code" href="classpl_1_1Package.html#e4365794a9953988019e50ad1e731a47">00524</a>         <span class="keywordtype">void</span> add_constant(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, SV* val) {
+<a name="l00525"></a>00525             newCONSTSUB(stash, name, val);
+<a name="l00526"></a>00526         }
+<a name="l00527"></a>00527         <span class="keywordtype">void</span> add_constant(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, <a class="code" href="classpl_1_1Value.html" title="abstract base class for perl values">Value</a> * val) {
+<a name="l00528"></a>00528             this-&gt;add_constant(name, val-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>);
 <a name="l00529"></a>00529         }
-<a name="l00530"></a>00530         ~<a class="code" href="classpl_1_1BootstrapCtx.html" title="special context class for bootstrap_* method">BootstrapCtx</a>() {
-<a name="l00531"></a>00531             PL_stack_base[this-&gt;ax] = &amp;PL_sv_yes;
-<a name="l00532"></a>00532             PL_stack_sp = PL_stack_base + this-&gt;ax;
-<a name="l00533"></a>00533         }
-<a name="l00534"></a>00534     <span class="keyword">protected</span>:
-<a name="l00535"></a>00535         <span class="comment">// XS_VERSION_BOOTCHECK</span>
-<a name="l00536"></a>00536         <span class="keywordtype">void</span> xs_version_bootcheck() {
-<a name="l00537"></a>00537             SV *_sv;
-<a name="l00538"></a>00538             <span class="keyword">const</span> <span class="keywordtype">char</span> *vn = NULL, *module = SvPV_nolen_const(ST(0));
-<a name="l00539"></a>00539             <span class="keywordflow">if</span> (this-&gt;arg_len() &gt;= 2) {
-<a name="l00540"></a>00540                 <span class="comment">/* version supplied as bootstrap arg */</span>
-<a name="l00541"></a>00541                 _sv = PL_stack_base[ax+1];
-<a name="l00542"></a>00542             } <span class="keywordflow">else</span> {
-<a name="l00543"></a>00543                 <span class="comment">/* XXX GV_ADDWARN */</span>
-<a name="l00544"></a>00544                 _sv = get_sv(Perl_form(aTHX_ <span class="stringliteral">"%s::%s"</span>, module,
-<a name="l00545"></a>00545                         vn = <span class="stringliteral">"XS_VERSION"</span>), FALSE);
-<a name="l00546"></a>00546                 <span class="keywordflow">if</span> (!_sv || !SvOK(_sv))
-<a name="l00547"></a>00547                 _sv = get_sv(Perl_form(aTHX_ <span class="stringliteral">"%s::%s"</span>, module,
-<a name="l00548"></a>00548                             vn = <span class="stringliteral">"VERSION"</span>), FALSE);
-<a name="l00549"></a>00549             }
-<a name="l00550"></a>00550             <span class="keywordflow">if</span> (_sv) {
-<a name="l00551"></a>00551                 SV *xssv = Perl_newSVpv(aTHX_ XS_VERSION, 0);
-<a name="l00552"></a>00552                 xssv = new_version(xssv);
-<a name="l00553"></a>00553                 <span class="keywordflow">if</span> ( !sv_derived_from(_sv, <span class="stringliteral">"version"</span>) ) {
-<a name="l00554"></a>00554                     _sv = new_version(_sv);
-<a name="l00555"></a>00555                 }
-<a name="l00556"></a>00556                 <span class="keywordflow">if</span> ( vcmp(_sv,xssv) ) {
-<a name="l00557"></a>00557                     Perl_croak(aTHX_ <span class="stringliteral">"%s object version %"</span>SVf<span class="stringliteral">" does not match %s%s%s%s %"</span>SVf,
-<a name="l00558"></a>00558                         module, SVfARG(vstringify(xssv)),
-<a name="l00559"></a>00559                         vn ? <span class="stringliteral">"$"</span> : <span class="stringliteral">""</span>, vn ? module : <span class="stringliteral">""</span>, vn ? <span class="stringliteral">"::"</span> : <span class="stringliteral">""</span>,
-<a name="l00560"></a>00560                         vn ? vn : <span class="stringliteral">"bootstrap parameter"</span>, SVfARG(vstringify(_sv)));
-<a name="l00561"></a>00561                 }
-<a name="l00562"></a>00562             }
-<a name="l00563"></a>00563         }
-<a name="l00564"></a>00564     };
-<a name="l00565"></a>00565 
-<a name="l00569"></a><a class="code" href="classpl_1_1Code.html">00569</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
-<a name="l00570"></a>00570     <span class="keyword">public</span>:
-<a name="l00571"></a>00571         <a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a>(SV * _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(_s) { }
-<a name="l00572"></a>00572     };
-<a name="l00573"></a>00573 
-<a name="l00577"></a><a class="code" href="classpl_1_1Pointer.html">00577</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
-<a name="l00578"></a>00578     <span class="keyword">public</span>:
-<a name="l00579"></a>00579         <a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a>(SV* s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(s) { }
-<a name="l00581"></a><a class="code" href="classpl_1_1Pointer.html#b207903228557c47d5a96426b9b981af">00581</a>         <a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a>(<span class="keywordtype">void</span>* _ptr, <span class="keyword">const</span> <span class="keywordtype">char</span>* klass) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(sv_newmortal()) {
-<a name="l00582"></a>00582             <span class="keywordflow">if</span> (_ptr == NULL) {
-<a name="l00583"></a>00583                 sv_setsv(this-&gt;val, &amp;PL_sv_undef);
-<a name="l00584"></a>00584             } <span class="keywordflow">else</span> {
-<a name="l00585"></a>00585                 sv_setref_pv(this-&gt;val, klass, _ptr);
-<a name="l00586"></a>00586             }
-<a name="l00587"></a>00587         }
-<a name="l00588"></a>00588 
-<a name="l00592"></a>00592         <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;
-<a name="l00593"></a><a class="code" href="classpl_1_1Pointer.html#94997396567708ad5c792871e34ca2a5">00593</a>         T* extract() {
-<a name="l00594"></a>00594             <span class="keywordflow">return</span> INT2PTR(T *, SvROK(this-&gt;val) ? SvIV(SvRV(this-&gt;val)) : SvIV(this-&gt;val));
-<a name="l00595"></a>00595         }
-<a name="l00596"></a>00596     };
-<a name="l00597"></a>00597 
-<a name="l00601"></a><a class="code" href="classpl_1_1Perl.html">00601</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Perl.html" title="utility functions">Perl</a> {
-<a name="l00602"></a>00602     <span class="keyword">public</span>:
-<a name="l00603"></a>00603         <span class="keyword">static</span> <span class="keywordtype">void</span> call(<a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a>* code, U32 flags, <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a> * args, <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a>* retval) {
-<a name="l00604"></a>00604             SV **sp = PL_stack_sp;
-<a name="l00605"></a>00605 
-<a name="l00606"></a>00606             push_scope(); <span class="comment">// ENTER</span>
-<a name="l00607"></a>00607             save_int((<span class="keywordtype">int</span>*)&amp;PL_tmps_floor); <span class="comment">// SAVETMPS</span>
-<a name="l00608"></a>00608             PL_tmps_floor = PL_tmps_ix;
-<a name="l00609"></a>00609 
-<a name="l00610"></a>00610             <span class="keywordflow">if</span> (++PL_markstack_ptr == PL_markstack_max) { <span class="comment">// PUSHMARK(SP);</span>
-<a name="l00611"></a>00611                 markstack_grow();
-<a name="l00612"></a>00612             }
-<a name="l00613"></a>00613             *PL_markstack_ptr = (I32)((sp) - PL_stack_base);
-<a name="l00614"></a>00614 
-<a name="l00615"></a>00615             std::vector&lt;Scalar*&gt;::iterator iter;
-<a name="l00616"></a>00616             <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i =0; i &lt; args-&gt;<a class="code" href="classpl_1_1Array.html#ebcd126087966476ac07dcc587e6d728" title="len returns highest index in array">len</a>()+1; i++) {
-<a name="l00617"></a>00617                 <span class="keywordflow">if</span> (PL_stack_max - sp &lt; 1) { <span class="comment">// EXTEND()</span>
-<a name="l00618"></a>00618                     <span class="comment">// optimize?</span>
-<a name="l00619"></a>00619                     sp = stack_grow(sp, sp, 1);
-<a name="l00620"></a>00620                 }
-<a name="l00621"></a>00621                 *++sp = args-&gt;<a class="code" href="classpl_1_1Array.html#d12f66148abafefd2f5d6dbcce572bf7" title="pops value from the array">pop</a>()-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>; <span class="comment">// XPUSHs</span>
-<a name="l00622"></a>00622             }
-<a name="l00623"></a>00623             PL_stack_sp = sp; <span class="comment">// PUTBACK</span>
-<a name="l00624"></a>00624 
-<a name="l00625"></a>00625             <span class="keywordtype">int</span> count = call_sv(code-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>, flags);
-<a name="l00626"></a>00626 
-<a name="l00627"></a>00627             sp = PL_stack_sp; <span class="comment">// SPAGAIN</span>
-<a name="l00628"></a>00628 
-<a name="l00629"></a>00629             <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=0; i&lt;count; i++) {
-<a name="l00630"></a>00630                 <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(*sp--);
-<a name="l00631"></a>00631                 CurCtx::get()-&gt;register_allocated(s);
-<a name="l00632"></a>00632                 retval-&gt;<a class="code" href="classpl_1_1Array.html#ca5cf203c33f225f90e3141145fcf819" title="store values to array">store</a>(i, s);
-<a name="l00633"></a>00633             }
-<a name="l00634"></a>00634 
-<a name="l00635"></a>00635             PL_stack_sp = sp; <span class="comment">// PUTBACK</span>
-<a name="l00636"></a>00636             <span class="keywordflow">if</span> (PL_tmps_ix &gt; PL_tmps_floor) { <span class="comment">// FREETMPS</span>
-<a name="l00637"></a>00637                 free_tmps();
+<a name="l00530"></a>00530         <span class="keywordtype">void</span> add_constant(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, Value val) {
+<a name="l00531"></a>00531             this-&gt;add_constant(name, val.val);
+<a name="l00532"></a>00532         }
+<a name="l00533"></a>00533     <span class="keyword">private</span>:
+<a name="l00534"></a>00534         std::string pkg;
+<a name="l00535"></a>00535         HV * stash;
+<a name="l00536"></a>00536     };
+<a name="l00537"></a>00537 
+<a name="l00541"></a><a class="code" href="classpl_1_1BootstrapCtx.html">00541</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1BootstrapCtx.html" title="special context class for bootstrap_* method">BootstrapCtx</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Ctx.html" title="XSUB context class.">Ctx</a> {
+<a name="l00542"></a>00542     <span class="keyword">public</span>:
+<a name="l00543"></a>00543         <a class="code" href="classpl_1_1BootstrapCtx.html" title="special context class for bootstrap_* method">BootstrapCtx</a>() : <a class="code" href="classpl_1_1Ctx.html" title="XSUB context class.">Ctx</a>() {
+<a name="l00544"></a>00544             xs_version_bootcheck();
+<a name="l00545"></a>00545         }
+<a name="l00546"></a>00546         ~<a class="code" href="classpl_1_1BootstrapCtx.html" title="special context class for bootstrap_* method">BootstrapCtx</a>() {
+<a name="l00547"></a>00547             PL_stack_base[this-&gt;ax] = &amp;PL_sv_yes;
+<a name="l00548"></a>00548             PL_stack_sp = PL_stack_base + this-&gt;ax;
+<a name="l00549"></a>00549         }
+<a name="l00550"></a>00550     <span class="keyword">protected</span>:
+<a name="l00551"></a>00551         <span class="comment">// XS_VERSION_BOOTCHECK</span>
+<a name="l00552"></a>00552         <span class="keywordtype">void</span> xs_version_bootcheck() {
+<a name="l00553"></a>00553             SV *_sv;
+<a name="l00554"></a>00554             <span class="keyword">const</span> <span class="keywordtype">char</span> *vn = NULL, *module = SvPV_nolen_const(ST(0));
+<a name="l00555"></a>00555             <span class="keywordflow">if</span> (this-&gt;arg_len() &gt;= 2) {
+<a name="l00556"></a>00556                 <span class="comment">/* version supplied as bootstrap arg */</span>
+<a name="l00557"></a>00557                 _sv = PL_stack_base[ax+1];
+<a name="l00558"></a>00558             } <span class="keywordflow">else</span> {
+<a name="l00559"></a>00559                 <span class="comment">/* XXX GV_ADDWARN */</span>
+<a name="l00560"></a>00560                 _sv = get_sv(Perl_form(aTHX_ <span class="stringliteral">"%s::%s"</span>, module,
+<a name="l00561"></a>00561                         vn = <span class="stringliteral">"XS_VERSION"</span>), FALSE);
+<a name="l00562"></a>00562                 <span class="keywordflow">if</span> (!_sv || !SvOK(_sv))
+<a name="l00563"></a>00563                 _sv = get_sv(Perl_form(aTHX_ <span class="stringliteral">"%s::%s"</span>, module,
+<a name="l00564"></a>00564                             vn = <span class="stringliteral">"VERSION"</span>), FALSE);
+<a name="l00565"></a>00565             }
+<a name="l00566"></a>00566             <span class="keywordflow">if</span> (_sv) {
+<a name="l00567"></a>00567                 SV *xssv = Perl_newSVpv(aTHX_ XS_VERSION, 0);
+<a name="l00568"></a>00568                 xssv = new_version(xssv);
+<a name="l00569"></a>00569                 <span class="keywordflow">if</span> ( !sv_derived_from(_sv, <span class="stringliteral">"version"</span>) ) {
+<a name="l00570"></a>00570                     _sv = new_version(_sv);
+<a name="l00571"></a>00571                 }
+<a name="l00572"></a>00572                 <span class="keywordflow">if</span> ( vcmp(_sv,xssv) ) {
+<a name="l00573"></a>00573                     Perl_croak(aTHX_ <span class="stringliteral">"%s object version %"</span>SVf<span class="stringliteral">" does not match %s%s%s%s %"</span>SVf,
+<a name="l00574"></a>00574                         module, SVfARG(vstringify(xssv)),
+<a name="l00575"></a>00575                         vn ? <span class="stringliteral">"$"</span> : <span class="stringliteral">""</span>, vn ? module : <span class="stringliteral">""</span>, vn ? <span class="stringliteral">"::"</span> : <span class="stringliteral">""</span>,
+<a name="l00576"></a>00576                         vn ? vn : <span class="stringliteral">"bootstrap parameter"</span>, SVfARG(vstringify(_sv)));
+<a name="l00577"></a>00577                 }
+<a name="l00578"></a>00578             }
+<a name="l00579"></a>00579         }
+<a name="l00580"></a>00580     };
+<a name="l00581"></a>00581 
+<a name="l00585"></a><a class="code" href="classpl_1_1Code.html">00585</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
+<a name="l00586"></a>00586     <span class="keyword">public</span>:
+<a name="l00587"></a>00587         <a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a>(SV * _s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(_s) { }
+<a name="l00588"></a>00588     };
+<a name="l00589"></a>00589 
+<a name="l00593"></a><a class="code" href="classpl_1_1Pointer.html">00593</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a> : <span class="keyword">public</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> {
+<a name="l00594"></a>00594     <span class="keyword">public</span>:
+<a name="l00595"></a>00595         <a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a>(SV* s) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(s) { }
+<a name="l00597"></a><a class="code" href="classpl_1_1Pointer.html#b207903228557c47d5a96426b9b981af">00597</a>         <a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a>(<span class="keywordtype">void</span>* _ptr, <span class="keyword">const</span> <span class="keywordtype">char</span>* klass) : <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(sv_newmortal()) {
+<a name="l00598"></a>00598             <span class="keywordflow">if</span> (_ptr == NULL) {
+<a name="l00599"></a>00599                 sv_setsv(this-&gt;val, &amp;PL_sv_undef);
+<a name="l00600"></a>00600             } <span class="keywordflow">else</span> {
+<a name="l00601"></a>00601                 sv_setref_pv(this-&gt;val, klass, _ptr);
+<a name="l00602"></a>00602             }
+<a name="l00603"></a>00603         }
+<a name="l00604"></a>00604 
+<a name="l00608"></a>00608         <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;
+<a name="l00609"></a><a class="code" href="classpl_1_1Pointer.html#94997396567708ad5c792871e34ca2a5">00609</a>         T* extract() {
+<a name="l00610"></a>00610             <span class="keywordflow">return</span> INT2PTR(T *, SvROK(this-&gt;val) ? SvIV(SvRV(this-&gt;val)) : SvIV(this-&gt;val));
+<a name="l00611"></a>00611         }
+<a name="l00612"></a>00612     };
+<a name="l00613"></a>00613 
+<a name="l00617"></a><a class="code" href="classpl_1_1Perl.html">00617</a>     <span class="keyword">class </span><a class="code" href="classpl_1_1Perl.html" title="utility functions">Perl</a> {
+<a name="l00618"></a>00618     <span class="keyword">public</span>:
+<a name="l00619"></a>00619         <span class="keyword">static</span> <span class="keywordtype">void</span> call(<a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a>* code, U32 flags, <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a> * args, <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a>* retval) {
+<a name="l00620"></a>00620             SV **sp = PL_stack_sp;
+<a name="l00621"></a>00621 
+<a name="l00622"></a>00622             push_scope(); <span class="comment">// ENTER</span>
+<a name="l00623"></a>00623             save_int((<span class="keywordtype">int</span>*)&amp;PL_tmps_floor); <span class="comment">// SAVETMPS</span>
+<a name="l00624"></a>00624             PL_tmps_floor = PL_tmps_ix;
+<a name="l00625"></a>00625 
+<a name="l00626"></a>00626             <span class="keywordflow">if</span> (++PL_markstack_ptr == PL_markstack_max) { <span class="comment">// PUSHMARK(SP);</span>
+<a name="l00627"></a>00627                 markstack_grow();
+<a name="l00628"></a>00628             }
+<a name="l00629"></a>00629             *PL_markstack_ptr = (I32)((sp) - PL_stack_base);
+<a name="l00630"></a>00630 
+<a name="l00631"></a>00631             std::vector&lt;Scalar*&gt;::iterator iter;
+<a name="l00632"></a>00632             <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i =0; i &lt; args-&gt;<a class="code" href="classpl_1_1Array.html#ebcd126087966476ac07dcc587e6d728" title="len returns highest index in array">len</a>()+1; i++) {
+<a name="l00633"></a>00633                 <span class="keywordflow">if</span> (PL_stack_max - sp &lt; 1) { <span class="comment">// EXTEND()</span>
+<a name="l00634"></a>00634                     <span class="comment">// optimize?</span>
+<a name="l00635"></a>00635                     sp = stack_grow(sp, sp, 1);
+<a name="l00636"></a>00636                 }
+<a name="l00637"></a>00637                 *++sp = args-&gt;<a class="code" href="classpl_1_1Array.html#d12f66148abafefd2f5d6dbcce572bf7" title="pops value from the array">pop</a>()-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>; <span class="comment">// XPUSHs</span>
 <a name="l00638"></a>00638             }
-<a name="l00639"></a>00639             pop_scope(); <span class="comment">// LEAVE</span>
-<a name="l00640"></a>00640         }
-<a name="l00641"></a>00641         <span class="comment">// static Hash* get_stash(Str* name);</span>
-<a name="l00642"></a>00642 <span class="comment">//      template&lt;class U&gt;</span>
-<a name="l00643"></a>00643 <span class="comment">//      static void* alloc(int size) {</span>
-<a name="l00644"></a>00644 <span class="comment">//          void *buf;</span>
-<a name="l00645"></a>00645 <span class="comment">//          Newx(buf, size, U);</span>
-<a name="l00646"></a>00646 <span class="comment">//          return buf;</span>
-<a name="l00647"></a>00647 <span class="comment">//      }</span>
-<a name="l00648"></a>00648     };
-<a name="l00649"></a>00649 
-<a name="l00650"></a><a class="code" href="classpl_1_1Value.html#1be79542b1fdb3fe9106a73a184f0e5c">00650</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Value.html#1be79542b1fdb3fe9106a73a184f0e5c" title="get a reference of this value">Value::reference</a>() {
-<a name="l00651"></a>00651         <span class="keywordflow">return</span> <a class="code" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875" title="create a new reference with refcnt increment">Reference::new_inc</a>(this-&gt;val);
-<a name="l00652"></a>00652     }
-<a name="l00653"></a>00653 
-<a name="l00654"></a><a class="code" href="classpl_1_1Scalar.html#b0074dc66d437b353a30d1c721f10963">00654</a>     <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>* <a class="code" href="classpl_1_1Scalar.html#b0074dc66d437b353a30d1c721f10963" title="this variable is just a string.change the type">Scalar::as_str</a>() {
-<a name="l00655"></a>00655         <span class="keywordflow">if</span> (SvPOK(this-&gt;val)) {
-<a name="l00656"></a>00656             <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a> * s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>(this-&gt;val);
-<a name="l00657"></a>00657             CurCtx::get()-&gt;register_allocated(s);
-<a name="l00658"></a>00658             <span class="keywordflow">return</span> s;
-<a name="l00659"></a>00659         } <span class="keywordflow">else</span> {
-<a name="l00660"></a>00660             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a string"</span>,
-<a name="l00661"></a>00661                 <span class="stringliteral">"Devel::BindPP"</span>,
-<a name="l00662"></a>00662                 <span class="stringliteral">"sv"</span>);
-<a name="l00663"></a>00663         }
-<a name="l00664"></a>00664     }
-<a name="l00665"></a><a class="code" href="classpl_1_1Scalar.html#6dadfa0cebaefc72cb999923e436db3a">00665</a>     <a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a>* <a class="code" href="classpl_1_1Scalar.html#6dadfa0cebaefc72cb999923e436db3a" title="this variable is just a pointer.change the type">Scalar::as_pointer</a>() {
-<a name="l00666"></a>00666         <span class="keywordflow">if</span> (SvROK(this-&gt;val)) {
-<a name="l00667"></a>00667             <a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a> * s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a>(this-&gt;val);
-<a name="l00668"></a>00668             CurCtx::get()-&gt;register_allocated(s);
-<a name="l00669"></a>00669             <span class="keywordflow">return</span> s;
-<a name="l00670"></a>00670         } <span class="keywordflow">else</span> {
-<a name="l00671"></a>00671             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a pointer"</span>,
-<a name="l00672"></a>00672                 <span class="stringliteral">"Devel::BindPP"</span>,
-<a name="l00673"></a>00673                 <span class="stringliteral">"sv"</span>);
-<a name="l00674"></a>00674         }
-<a name="l00675"></a>00675     }
-<a name="l00676"></a><a class="code" href="classpl_1_1Scalar.html#c122bb7bd0574e2069aeea874df26fef">00676</a>     <a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a>* <a class="code" href="classpl_1_1Scalar.html#c122bb7bd0574e2069aeea874df26fef" title="this variable is just a int.change the type">Scalar::as_int</a>() {
-<a name="l00677"></a>00677         <span class="keywordflow">if</span> (SvIOK(this-&gt;val)) {
-<a name="l00678"></a>00678             <a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a> * s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a>(this-&gt;val);
-<a name="l00679"></a>00679             CurCtx::get()-&gt;register_allocated(s);
-<a name="l00680"></a>00680             <span class="keywordflow">return</span> s;
-<a name="l00681"></a>00681         } <span class="keywordflow">else</span> {
-<a name="l00682"></a>00682             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a int"</span>,
-<a name="l00683"></a>00683                 <span class="stringliteral">"Devel::BindPP"</span>,
-<a name="l00684"></a>00684                 <span class="stringliteral">"sv"</span>);
-<a name="l00685"></a>00685         }
-<a name="l00686"></a>00686     }
-<a name="l00687"></a><a class="code" href="classpl_1_1Scalar.html#793dca992805eb85cf3a9ca81c2c435f">00687</a>     <a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a>* <a class="code" href="classpl_1_1Scalar.html#793dca992805eb85cf3a9ca81c2c435f" title="this variable is just a uint.change the type">Scalar::as_uint</a>() {
-<a name="l00688"></a>00688         <span class="keywordflow">if</span> (SvIOK(this-&gt;val)) {
-<a name="l00689"></a>00689             <a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a> * s = <span class="keyword">new</span> <a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a>(this-&gt;val);
-<a name="l00690"></a>00690             CurCtx::get()-&gt;register_allocated(s);
-<a name="l00691"></a>00691             <span class="keywordflow">return</span> s;
-<a name="l00692"></a>00692         } <span class="keywordflow">else</span> {
-<a name="l00693"></a>00693             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a uint"</span>,
-<a name="l00694"></a>00694                 <span class="stringliteral">"Devel::BindPP"</span>,
-<a name="l00695"></a>00695                 <span class="stringliteral">"sv"</span>);
-<a name="l00696"></a>00696         }
-<a name="l00697"></a>00697     }
-<a name="l00698"></a><a class="code" href="classpl_1_1Scalar.html#d097f65651a61f5abc1f306017c7588c">00698</a>     <a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a>* <a class="code" href="classpl_1_1Scalar.html#d097f65651a61f5abc1f306017c7588c" title="this variable is just a double.change the type">Scalar::as_double</a>() {
-<a name="l00699"></a>00699         <span class="keywordflow">if</span> (SvNOK(this-&gt;val)) {
-<a name="l00700"></a>00700             <a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a> * s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a>(this-&gt;val);
-<a name="l00701"></a>00701             CurCtx::get()-&gt;register_allocated(s);
-<a name="l00702"></a>00702             <span class="keywordflow">return</span> s;
-<a name="l00703"></a>00703         } <span class="keywordflow">else</span> {
-<a name="l00704"></a>00704             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a double"</span>,
-<a name="l00705"></a>00705                 <span class="stringliteral">"Devel::BindPP"</span>,
-<a name="l00706"></a>00706                 <span class="stringliteral">"sv"</span>);
-<a name="l00707"></a>00707         }
-<a name="l00708"></a>00708     }
-<a name="l00709"></a><a class="code" href="classpl_1_1Scalar.html#9f56af8688eb87c31af7b4c061dbafb4">00709</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Scalar.html#9f56af8688eb87c31af7b4c061dbafb4" title="this variable is just a reference.change the type">Scalar::as_ref</a>() {
-<a name="l00710"></a>00710         <span class="keywordflow">if</span> (SvROK(this-&gt;val)) {
-<a name="l00711"></a>00711             <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * obj = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(this-&gt;val);
-<a name="l00712"></a>00712             CurCtx::get()-&gt;register_allocated(obj);
-<a name="l00713"></a>00713             <span class="keywordflow">return</span> obj;
-<a name="l00714"></a>00714         } <span class="keywordflow">else</span> {
-<a name="l00715"></a>00715             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a reference"</span>,
-<a name="l00716"></a>00716                 <span class="stringliteral">"Devel::BindPP"</span>,
-<a name="l00717"></a>00717                 <span class="stringliteral">"sv"</span>);
-<a name="l00718"></a>00718         }
-<a name="l00719"></a>00719     }
-<a name="l00720"></a>00720     <span class="comment">/*</span>
-<a name="l00721"></a>00721 <span class="comment">    Hash* Perl::get_stash(Str * name) {</span>
-<a name="l00722"></a>00722 <span class="comment">        HV * stash = gv_stashpv(name-&gt;to_c(), 0);</span>
-<a name="l00723"></a>00723 <span class="comment">        Hash * h = new Hash(stash);</span>
-<a name="l00724"></a>00724 <span class="comment">        CurCtx::get()-&gt;register_allocated(h);</span>
-<a name="l00725"></a>00725 <span class="comment">        return h;</span>
-<a name="l00726"></a>00726 <span class="comment">    }</span>
-<a name="l00727"></a>00727 <span class="comment">    */</span>
-<a name="l00728"></a>00728 
-<a name="l00729"></a><a class="code" href="classpl_1_1Reference.html#c30666c0043cb5650dc166f70004d4aa">00729</a>     <a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a> * <a class="code" href="classpl_1_1Reference.html#c30666c0043cb5650dc166f70004d4aa" title="dereference">Reference::as_hash</a>() {
-<a name="l00730"></a>00730         <span class="keywordflow">if</span> (SvROK(this-&gt;val) &amp;&amp; SvTYPE(SvRV(this-&gt;val))==SVt_PVHV) {
-<a name="l00731"></a>00731             HV* h = (HV*)SvRV(this-&gt;val);
-<a name="l00732"></a>00732             <a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a> * hobj = <span class="keyword">new</span> <a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a>(h);
-<a name="l00733"></a>00733             CurCtx::get()-&gt;register_allocated(hobj);
-<a name="l00734"></a>00734             <span class="keywordflow">return</span> hobj;
-<a name="l00735"></a>00735         } <span class="keywordflow">else</span> {
-<a name="l00736"></a>00736             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a hash reference"</span>,
-<a name="l00737"></a>00737                 <span class="stringliteral">"Devel::BindPP"</span>,
-<a name="l00738"></a>00738                 <span class="stringliteral">"hv"</span>);
-<a name="l00739"></a>00739         }
-<a name="l00740"></a>00740     }
-<a name="l00741"></a><a class="code" href="classpl_1_1Reference.html#1c0ffb031c70ba2082acee856ef86943">00741</a>     <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a> * <a class="code" href="classpl_1_1Reference.html#1c0ffb031c70ba2082acee856ef86943" title="dereference">Reference::as_array</a>() {
-<a name="l00742"></a>00742         SV* v = this-&gt;val;
-<a name="l00743"></a>00743         <span class="keywordflow">if</span> (SvROK(v) &amp;&amp; SvTYPE(SvRV(v))==SVt_PVAV) {
-<a name="l00744"></a>00744             AV* a = (AV*)SvRV(v);
-<a name="l00745"></a>00745             <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a> * obj = <span class="keyword">new</span> <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a>(a);
-<a name="l00746"></a>00746             CurCtx::get()-&gt;register_allocated(obj);
-<a name="l00747"></a>00747             <span class="keywordflow">return</span> obj;
-<a name="l00748"></a>00748         } <span class="keywordflow">else</span> {
-<a name="l00749"></a>00749             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a array reference"</span>,
-<a name="l00750"></a>00750                 <span class="stringliteral">"Devel::BindPP"</span>,
-<a name="l00751"></a>00751                 <span class="stringliteral">"av"</span>);
-<a name="l00752"></a>00752         }
-<a name="l00753"></a>00753     }
-<a name="l00754"></a><a class="code" href="classpl_1_1Reference.html#5c14eb6224ba437f41988391296804be">00754</a>     <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Reference.html#5c14eb6224ba437f41988391296804be" title="dereference">Reference::as_scalar</a>() {
-<a name="l00755"></a>00755         SV* v = this-&gt;val;
-<a name="l00756"></a>00756         <span class="keywordflow">if</span> (v &amp;&amp; SvROK(v)) {
-<a name="l00757"></a>00757             SV* a = (SV*)SvRV(v);
-<a name="l00758"></a>00758             <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * obj = <span class="keyword">new</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(a);
-<a name="l00759"></a>00759             CurCtx::get()-&gt;register_allocated(obj);
-<a name="l00760"></a>00760             <span class="keywordflow">return</span> obj;
-<a name="l00761"></a>00761         } <span class="keywordflow">else</span> {
-<a name="l00762"></a>00762             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a array reference"</span>,
-<a name="l00763"></a>00763                 <span class="stringliteral">"Devel::BindPP"</span>,
-<a name="l00764"></a>00764                 <span class="stringliteral">"sv"</span>);
-<a name="l00765"></a>00765         }
-<a name="l00766"></a>00766     }
-<a name="l00767"></a><a class="code" href="classpl_1_1Reference.html#8c43817fba60083ab9fc95883e28d7b7">00767</a>     <a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a> * <a class="code" href="classpl_1_1Reference.html#8c43817fba60083ab9fc95883e28d7b7" title="dereference">Reference::as_code</a>() {
-<a name="l00768"></a>00768         SV* v = this-&gt;val;
-<a name="l00769"></a>00769         <span class="keywordflow">if</span> (v &amp;&amp; SvROK(v)) {
-<a name="l00770"></a>00770             SV* a = (SV*)SvRV(v);
-<a name="l00771"></a>00771             <a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a> * obj = <span class="keyword">new</span> <a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a>(a);
-<a name="l00772"></a>00772             CurCtx::get()-&gt;register_allocated(obj);
-<a name="l00773"></a>00773             <span class="keywordflow">return</span> obj;
-<a name="l00774"></a>00774         } <span class="keywordflow">else</span> {
-<a name="l00775"></a>00775             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a array reference"</span>,
-<a name="l00776"></a>00776                 <span class="stringliteral">"Devel::BindPP"</span>,
-<a name="l00777"></a>00777                 <span class="stringliteral">"sv"</span>);
-<a name="l00778"></a>00778         }
-<a name="l00779"></a>00779     }
-<a name="l00780"></a>00780 
-<a name="l00781"></a><a class="code" href="classpl_1_1Hash.html#7c9a0c77351401036d03131adfc9fdd9">00781</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Hash.html#405d9cac6c91e8ad8dfcc0eafd81a896" title="remove the key in hash">Hash::del</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key, I32 klen) {
-<a name="l00782"></a>00782         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * ref = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(hv_delete((HV*)this-&gt;val, key, klen, 0));
-<a name="l00783"></a>00783         CurCtx::get()-&gt;register_allocated(ref);
-<a name="l00784"></a>00784         <span class="keywordflow">return</span> ref;
-<a name="l00785"></a>00785     }
-<a name="l00786"></a><a class="code" href="classpl_1_1Hash.html#2916efa16a35e564e80e733819a910ea">00786</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Hash.html#f4137cad6e85223a1d586ae2e6601bbf" title="store value to hash">Hash::store</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key, I32 klen, <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>*value) {
-<a name="l00787"></a>00787         value-&gt;<a class="code" href="classpl_1_1Value.html#03cd7efcf6532a680d98052984dbc201" title="increment the reference counter for this value">refcnt_inc</a>();
-<a name="l00788"></a>00788         SV ** s = hv_store((HV*)this-&gt;val, key, klen, value-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>, 0);
-<a name="l00789"></a>00789         assert(s &amp;&amp; SvROK(*s));
-<a name="l00790"></a>00790         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * ref = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(*s);
-<a name="l00791"></a>00791         CurCtx::get()-&gt;register_allocated(ref);
-<a name="l00792"></a>00792         <span class="keywordflow">return</span> ref;
-<a name="l00793"></a>00793     }
-<a name="l00794"></a><a class="code" href="classpl_1_1Hash.html#feff4b98ab2924e72e9fca62c9b5a143">00794</a>     <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>* <a class="code" href="classpl_1_1Hash.html#feff4b98ab2924e72e9fca62c9b5a143" title="Evaluates the hash in scalar context and returns the result.">Hash::scalar</a>() {
-<a name="l00795"></a>00795         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>*s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(hv_scalar((HV*)this-&gt;val));
-<a name="l00796"></a>00796         CurCtx::get()-&gt;register_allocated(s);
-<a name="l00797"></a>00797         <span class="keywordflow">return</span> s;
-<a name="l00798"></a>00798     }
-<a name="l00799"></a><a class="code" href="classpl_1_1Hash.html#dc95a75ed77af5deb2af542a775eacf8">00799</a>     <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Hash.html#dc95a75ed77af5deb2af542a775eacf8" title="Undefines the hash.">Hash::undef</a>() {
-<a name="l00800"></a>00800         hv_undef((HV*)this-&gt;val);
+<a name="l00639"></a>00639             PL_stack_sp = sp; <span class="comment">// PUTBACK</span>
+<a name="l00640"></a>00640 
+<a name="l00641"></a>00641             <span class="keywordtype">int</span> count = call_sv(code-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>, flags);
+<a name="l00642"></a>00642 
+<a name="l00643"></a>00643             sp = PL_stack_sp; <span class="comment">// SPAGAIN</span>
+<a name="l00644"></a>00644 
+<a name="l00645"></a>00645             <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=0; i&lt;count; i++) {
+<a name="l00646"></a>00646                 <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(*sp--);
+<a name="l00647"></a>00647                 CurCtx::get()-&gt;register_allocated(s);
+<a name="l00648"></a>00648                 retval-&gt;<a class="code" href="classpl_1_1Array.html#ca5cf203c33f225f90e3141145fcf819" title="store values to array">store</a>(i, s);
+<a name="l00649"></a>00649             }
+<a name="l00650"></a>00650 
+<a name="l00651"></a>00651             PL_stack_sp = sp; <span class="comment">// PUTBACK</span>
+<a name="l00652"></a>00652             <span class="keywordflow">if</span> (PL_tmps_ix &gt; PL_tmps_floor) { <span class="comment">// FREETMPS</span>
+<a name="l00653"></a>00653                 free_tmps();
+<a name="l00654"></a>00654             }
+<a name="l00655"></a>00655             pop_scope(); <span class="comment">// LEAVE</span>
+<a name="l00656"></a>00656         }
+<a name="l00657"></a>00657         <span class="comment">// static Hash* get_stash(Str* name);</span>
+<a name="l00658"></a>00658 <span class="comment">//      template&lt;class U&gt;</span>
+<a name="l00659"></a>00659 <span class="comment">//      static void* alloc(int size) {</span>
+<a name="l00660"></a>00660 <span class="comment">//          void *buf;</span>
+<a name="l00661"></a>00661 <span class="comment">//          Newx(buf, size, U);</span>
+<a name="l00662"></a>00662 <span class="comment">//          return buf;</span>
+<a name="l00663"></a>00663 <span class="comment">//      }</span>
+<a name="l00664"></a>00664     };
+<a name="l00665"></a>00665 
+<a name="l00666"></a><a class="code" href="classpl_1_1Value.html#1be79542b1fdb3fe9106a73a184f0e5c">00666</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * <a class="code" href="classpl_1_1Value.html#1be79542b1fdb3fe9106a73a184f0e5c" title="get a reference of this value">Value::reference</a>() {
+<a name="l00667"></a>00667         <span class="keywordflow">return</span> <a class="code" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875" title="create a new reference with refcnt increment">Reference::new_inc</a>(this-&gt;val);
+<a name="l00668"></a>00668     }
+<a name="l00669"></a>00669 
+<a name="l00670"></a><a class="code" href="classpl_1_1Scalar.html#b0074dc66d437b353a30d1c721f10963">00670</a>     <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>* <a class="code" href="classpl_1_1Scalar.html#b0074dc66d437b353a30d1c721f10963" title="this variable is just a string.change the type">Scalar::as_str</a>() {
+<a name="l00671"></a>00671         <span class="keywordflow">if</span> (SvPOK(this-&gt;val)) {
+<a name="l00672"></a>00672             <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a> * s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Str.html" title="string(PV)">Str</a>(this-&gt;val);
+<a name="l00673"></a>00673             CurCtx::get()-&gt;register_allocated(s);
+<a name="l00674"></a>00674             <span class="keywordflow">return</span> s;
+<a name="l00675"></a>00675         } <span class="keywordflow">else</span> {
+<a name="l00676"></a>00676             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a string"</span>,
+<a name="l00677"></a>00677                 <span class="stringliteral">"Devel::BindPP"</span>,
+<a name="l00678"></a>00678                 <span class="stringliteral">"sv"</span>);
+<a name="l00679"></a>00679         }
+<a name="l00680"></a>00680     }
+<a name="l00681"></a><a class="code" href="classpl_1_1Scalar.html#6dadfa0cebaefc72cb999923e436db3a">00681</a>     <a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a>* <a class="code" href="classpl_1_1Scalar.html#6dadfa0cebaefc72cb999923e436db3a" title="this variable is just a pointer.change the type">Scalar::as_pointer</a>() {
+<a name="l00682"></a>00682         <span class="keywordflow">if</span> (SvROK(this-&gt;val)) {
+<a name="l00683"></a>00683             <a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a> * s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Pointer.html" title="pointer class(blessed object, contains pointer for C struct/class/etc.">Pointer</a>(this-&gt;val);
+<a name="l00684"></a>00684             CurCtx::get()-&gt;register_allocated(s);
+<a name="l00685"></a>00685             <span class="keywordflow">return</span> s;
+<a name="l00686"></a>00686         } <span class="keywordflow">else</span> {
+<a name="l00687"></a>00687             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a pointer"</span>,
+<a name="l00688"></a>00688                 <span class="stringliteral">"Devel::BindPP"</span>,
+<a name="l00689"></a>00689                 <span class="stringliteral">"sv"</span>);
+<a name="l00690"></a>00690         }
+<a name="l00691"></a>00691     }
+<a name="l00692"></a><a class="code" href="classpl_1_1Scalar.html#c122bb7bd0574e2069aeea874df26fef">00692</a>     <a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a>* <a class="code" href="classpl_1_1Scalar.html#c122bb7bd0574e2069aeea874df26fef" title="this variable is just a int.change the type">Scalar::as_int</a>() {
+<a name="l00693"></a>00693         <span class="keywordflow">if</span> (SvIOK(this-&gt;val)) {
+<a name="l00694"></a>00694             <a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a> * s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Int.html" title="integer(IV)">Int</a>(this-&gt;val);
+<a name="l00695"></a>00695             CurCtx::get()-&gt;register_allocated(s);
+<a name="l00696"></a>00696             <span class="keywordflow">return</span> s;
+<a name="l00697"></a>00697         } <span class="keywordflow">else</span> {
+<a name="l00698"></a>00698             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a int"</span>,
+<a name="l00699"></a>00699                 <span class="stringliteral">"Devel::BindPP"</span>,
+<a name="l00700"></a>00700                 <span class="stringliteral">"sv"</span>);
+<a name="l00701"></a>00701         }
+<a name="l00702"></a>00702     }
+<a name="l00703"></a><a class="code" href="classpl_1_1Scalar.html#793dca992805eb85cf3a9ca81c2c435f">00703</a>     <a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a>* <a class="code" href="classpl_1_1Scalar.html#793dca992805eb85cf3a9ca81c2c435f" title="this variable is just a uint.change the type">Scalar::as_uint</a>() {
+<a name="l00704"></a>00704         <span class="keywordflow">if</span> (SvIOK(this-&gt;val)) {
+<a name="l00705"></a>00705             <a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a> * s = <span class="keyword">new</span> <a class="code" href="classpl_1_1UInt.html" title="unsigned integer(UV)">UInt</a>(this-&gt;val);
+<a name="l00706"></a>00706             CurCtx::get()-&gt;register_allocated(s);
+<a name="l00707"></a>00707             <span class="keywordflow">return</span> s;
+<a name="l00708"></a>00708         } <span class="keywordflow">else</span> {
+<a name="l00709"></a>00709             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a uint"</span>,
+<a name="l00710"></a>00710                 <span class="stringliteral">"Devel::BindPP"</span>,
+<a name="l00711"></a>00711                 <span class="stringliteral">"sv"</span>);
+<a name="l00712"></a>00712         }
+<a name="l00713"></a>00713     }
+<a name="l00714"></a><a class="code" href="classpl_1_1Scalar.html#d097f65651a61f5abc1f306017c7588c">00714</a>     <a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a>* <a class="code" href="classpl_1_1Scalar.html#d097f65651a61f5abc1f306017c7588c" title="this variable is just a double.change the type">Scalar::as_double</a>() {
+<a name="l00715"></a>00715         <span class="keywordflow">if</span> (SvNOK(this-&gt;val)) {
+<a name="l00716"></a>00716             <a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a> * s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Double.html" title="double(NV)">Double</a>(this-&gt;val);
+<a name="l00717"></a>00717             CurCtx::get()-&gt;register_allocated(s);
+<a name="l00718"></a>00718             <span class="keywordflow">return</span> s;
+<a name="l00719"></a>00719         } <span class="keywordflow">else</span> {
+<a name="l00720"></a>00720             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a double"</span>,
+<a name="l00721"></a>00721                 <span class="stringliteral">"Devel::BindPP"</span>,
+<a name="l00722"></a>00722                 <span class="stringliteral">"sv"</span>);
+<a name="l00723"></a>00723         }
+<a name="l00724"></a>00724     }
+<a name="l00725"></a><a class="code" href="classpl_1_1Scalar.html#9f56af8688eb87c31af7b4c061dbafb4">00725</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Scalar.html#9f56af8688eb87c31af7b4c061dbafb4" title="this variable is just a reference.change the type">Scalar::as_ref</a>() {
+<a name="l00726"></a>00726         <span class="keywordflow">if</span> (SvROK(this-&gt;val)) {
+<a name="l00727"></a>00727             <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * obj = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(this-&gt;val);
+<a name="l00728"></a>00728             CurCtx::get()-&gt;register_allocated(obj);
+<a name="l00729"></a>00729             <span class="keywordflow">return</span> obj;
+<a name="l00730"></a>00730         } <span class="keywordflow">else</span> {
+<a name="l00731"></a>00731             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a reference"</span>,
+<a name="l00732"></a>00732                 <span class="stringliteral">"Devel::BindPP"</span>,
+<a name="l00733"></a>00733                 <span class="stringliteral">"sv"</span>);
+<a name="l00734"></a>00734         }
+<a name="l00735"></a>00735     }
+<a name="l00736"></a>00736     <span class="comment">/*</span>
+<a name="l00737"></a>00737 <span class="comment">    Hash* Perl::get_stash(Str * name) {</span>
+<a name="l00738"></a>00738 <span class="comment">        HV * stash = gv_stashpv(name-&gt;to_c(), 0);</span>
+<a name="l00739"></a>00739 <span class="comment">        Hash * h = new Hash(stash);</span>
+<a name="l00740"></a>00740 <span class="comment">        CurCtx::get()-&gt;register_allocated(h);</span>
+<a name="l00741"></a>00741 <span class="comment">        return h;</span>
+<a name="l00742"></a>00742 <span class="comment">    }</span>
+<a name="l00743"></a>00743 <span class="comment">    */</span>
+<a name="l00744"></a>00744 
+<a name="l00745"></a><a class="code" href="classpl_1_1Reference.html#c30666c0043cb5650dc166f70004d4aa">00745</a>     <a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a> * <a class="code" href="classpl_1_1Reference.html#c30666c0043cb5650dc166f70004d4aa" title="dereference">Reference::as_hash</a>() {
+<a name="l00746"></a>00746         <span class="keywordflow">if</span> (SvROK(this-&gt;val) &amp;&amp; SvTYPE(SvRV(this-&gt;val))==SVt_PVHV) {
+<a name="l00747"></a>00747             HV* h = (HV*)SvRV(this-&gt;val);
+<a name="l00748"></a>00748             <a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a> * hobj = <span class="keyword">new</span> <a class="code" href="classpl_1_1Hash.html" title="hash(HV)">Hash</a>(h);
+<a name="l00749"></a>00749             CurCtx::get()-&gt;register_allocated(hobj);
+<a name="l00750"></a>00750             <span class="keywordflow">return</span> hobj;
+<a name="l00751"></a>00751         } <span class="keywordflow">else</span> {
+<a name="l00752"></a>00752             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a hash reference"</span>,
+<a name="l00753"></a>00753                 <span class="stringliteral">"Devel::BindPP"</span>,
+<a name="l00754"></a>00754                 <span class="stringliteral">"hv"</span>);
+<a name="l00755"></a>00755         }
+<a name="l00756"></a>00756     }
+<a name="l00757"></a><a class="code" href="classpl_1_1Reference.html#1c0ffb031c70ba2082acee856ef86943">00757</a>     <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a> * <a class="code" href="classpl_1_1Reference.html#1c0ffb031c70ba2082acee856ef86943" title="dereference">Reference::as_array</a>() {
+<a name="l00758"></a>00758         SV* v = this-&gt;val;
+<a name="l00759"></a>00759         <span class="keywordflow">if</span> (SvROK(v) &amp;&amp; SvTYPE(SvRV(v))==SVt_PVAV) {
+<a name="l00760"></a>00760             AV* a = (AV*)SvRV(v);
+<a name="l00761"></a>00761             <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a> * obj = <span class="keyword">new</span> <a class="code" href="classpl_1_1Array.html" title="array(AV)">Array</a>(a);
+<a name="l00762"></a>00762             CurCtx::get()-&gt;register_allocated(obj);
+<a name="l00763"></a>00763             <span class="keywordflow">return</span> obj;
+<a name="l00764"></a>00764         } <span class="keywordflow">else</span> {
+<a name="l00765"></a>00765             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a array reference"</span>,
+<a name="l00766"></a>00766                 <span class="stringliteral">"Devel::BindPP"</span>,
+<a name="l00767"></a>00767                 <span class="stringliteral">"av"</span>);
+<a name="l00768"></a>00768         }
+<a name="l00769"></a>00769     }
+<a name="l00770"></a><a class="code" href="classpl_1_1Reference.html#5c14eb6224ba437f41988391296804be">00770</a>     <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * <a class="code" href="classpl_1_1Reference.html#5c14eb6224ba437f41988391296804be" title="dereference">Reference::as_scalar</a>() {
+<a name="l00771"></a>00771         SV* v = this-&gt;val;
+<a name="l00772"></a>00772         <span class="keywordflow">if</span> (v &amp;&amp; SvROK(v)) {
+<a name="l00773"></a>00773             SV* a = (SV*)SvRV(v);
+<a name="l00774"></a>00774             <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a> * obj = <span class="keyword">new</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(a);
+<a name="l00775"></a>00775             CurCtx::get()-&gt;register_allocated(obj);
+<a name="l00776"></a>00776             <span class="keywordflow">return</span> obj;
+<a name="l00777"></a>00777         } <span class="keywordflow">else</span> {
+<a name="l00778"></a>00778             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a array reference"</span>,
+<a name="l00779"></a>00779                 <span class="stringliteral">"Devel::BindPP"</span>,
+<a name="l00780"></a>00780                 <span class="stringliteral">"sv"</span>);
+<a name="l00781"></a>00781         }
+<a name="l00782"></a>00782     }
+<a name="l00783"></a><a class="code" href="classpl_1_1Reference.html#8c43817fba60083ab9fc95883e28d7b7">00783</a>     <a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a> * <a class="code" href="classpl_1_1Reference.html#8c43817fba60083ab9fc95883e28d7b7" title="dereference">Reference::as_code</a>() {
+<a name="l00784"></a>00784         SV* v = this-&gt;val;
+<a name="l00785"></a>00785         <span class="keywordflow">if</span> (v &amp;&amp; SvROK(v)) {
+<a name="l00786"></a>00786             SV* a = (SV*)SvRV(v);
+<a name="l00787"></a>00787             <a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a> * obj = <span class="keyword">new</span> <a class="code" href="classpl_1_1Code.html" title="coderef(CV)">Code</a>(a);
+<a name="l00788"></a>00788             CurCtx::get()-&gt;register_allocated(obj);
+<a name="l00789"></a>00789             <span class="keywordflow">return</span> obj;
+<a name="l00790"></a>00790         } <span class="keywordflow">else</span> {
+<a name="l00791"></a>00791             Perl_croak(aTHX_ <span class="stringliteral">"%s: %s is not a array reference"</span>,
+<a name="l00792"></a>00792                 <span class="stringliteral">"Devel::BindPP"</span>,
+<a name="l00793"></a>00793                 <span class="stringliteral">"sv"</span>);
+<a name="l00794"></a>00794         }
+<a name="l00795"></a>00795     }
+<a name="l00796"></a>00796 
+<a name="l00797"></a><a class="code" href="classpl_1_1Hash.html#7c9a0c77351401036d03131adfc9fdd9">00797</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Hash.html#405d9cac6c91e8ad8dfcc0eafd81a896" title="remove the key in hash">Hash::del</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key, I32 klen) {
+<a name="l00798"></a>00798         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * ref = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(hv_delete((HV*)this-&gt;val, key, klen, 0));
+<a name="l00799"></a>00799         CurCtx::get()-&gt;register_allocated(ref);
+<a name="l00800"></a>00800         <span class="keywordflow">return</span> ref;
 <a name="l00801"></a>00801     }
-<a name="l00802"></a><a class="code" href="classpl_1_1Hash.html#8264d5ed4a4dd4eac8711004889e4be9">00802</a>     <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Hash.html#8264d5ed4a4dd4eac8711004889e4be9" title="Clears a hash, making it empty.">Hash::clear</a>() {
-<a name="l00803"></a>00803         hv_clear((HV*)this-&gt;val);
-<a name="l00804"></a>00804     }
-<a name="l00805"></a><a class="code" href="classpl_1_1Boolean.html#40f1b6e887d1bff72eb1a28b9993e413">00805</a>     <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>* <a class="code" href="classpl_1_1Boolean.html#40f1b6e887d1bff72eb1a28b9993e413" title="get a &amp;#39;yes&amp;#39; indicator variable">Boolean::yes</a>() {
-<a name="l00806"></a>00806         <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>* s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>(<span class="keyword">true</span>);
-<a name="l00807"></a>00807         CurCtx::get()-&gt;register_allocated(s);
-<a name="l00808"></a>00808         <span class="keywordflow">return</span> s;
+<a name="l00802"></a><a class="code" href="classpl_1_1Hash.html#2916efa16a35e564e80e733819a910ea">00802</a>     <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>* <a class="code" href="classpl_1_1Hash.html#f4137cad6e85223a1d586ae2e6601bbf" title="store value to hash">Hash::store</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*key, I32 klen, <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>*value) {
+<a name="l00803"></a>00803         value-&gt;<a class="code" href="classpl_1_1Value.html#03cd7efcf6532a680d98052984dbc201" title="increment the reference counter for this value">refcnt_inc</a>();
+<a name="l00804"></a>00804         SV ** s = hv_store((HV*)this-&gt;val, key, klen, value-&gt;<a class="code" href="classpl_1_1Value.html#ccbf8c00be167c8e743906842534b5c4">val</a>, 0);
+<a name="l00805"></a>00805         assert(s &amp;&amp; SvROK(*s));
+<a name="l00806"></a>00806         <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a> * ref = <span class="keyword">new</span> <a class="code" href="classpl_1_1Reference.html" title="reference(RV)">Reference</a>(*s);
+<a name="l00807"></a>00807         CurCtx::get()-&gt;register_allocated(ref);
+<a name="l00808"></a>00808         <span class="keywordflow">return</span> ref;
 <a name="l00809"></a>00809     }
-<a name="l00810"></a><a class="code" href="classpl_1_1Boolean.html#78241cf06d823ae38f466e57a30f2732">00810</a>     <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>* <a class="code" href="classpl_1_1Boolean.html#78241cf06d823ae38f466e57a30f2732" title="get a &amp;#39;no&amp;#39; indicator variable">Boolean::no</a>() {
-<a name="l00811"></a>00811         <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>* s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>(<span class="keyword">false</span>);
+<a name="l00810"></a><a class="code" href="classpl_1_1Hash.html#feff4b98ab2924e72e9fca62c9b5a143">00810</a>     <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>* <a class="code" href="classpl_1_1Hash.html#feff4b98ab2924e72e9fca62c9b5a143" title="Evaluates the hash in scalar context and returns the result.">Hash::scalar</a>() {
+<a name="l00811"></a>00811         <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>*s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Scalar.html" title="Scalar class(SV).">Scalar</a>(hv_scalar((HV*)this-&gt;val));
 <a name="l00812"></a>00812         CurCtx::get()-&gt;register_allocated(s);
 <a name="l00813"></a>00813         <span class="keywordflow">return</span> s;
 <a name="l00814"></a>00814     }
-<a name="l00815"></a>00815 };
+<a name="l00815"></a><a class="code" href="classpl_1_1Hash.html#dc95a75ed77af5deb2af542a775eacf8">00815</a>     <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Hash.html#dc95a75ed77af5deb2af542a775eacf8" title="Undefines the hash.">Hash::undef</a>() {
+<a name="l00816"></a>00816         hv_undef((HV*)this-&gt;val);
+<a name="l00817"></a>00817     }
+<a name="l00818"></a><a class="code" href="classpl_1_1Hash.html#8264d5ed4a4dd4eac8711004889e4be9">00818</a>     <span class="keywordtype">void</span> <a class="code" href="classpl_1_1Hash.html#8264d5ed4a4dd4eac8711004889e4be9" title="Clears a hash, making it empty.">Hash::clear</a>() {
+<a name="l00819"></a>00819         hv_clear((HV*)this-&gt;val);
+<a name="l00820"></a>00820     }
+<a name="l00821"></a><a class="code" href="classpl_1_1Boolean.html#40f1b6e887d1bff72eb1a28b9993e413">00821</a>     <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>* <a class="code" href="classpl_1_1Boolean.html#40f1b6e887d1bff72eb1a28b9993e413" title="get a &amp;#39;yes&amp;#39; indicator variable">Boolean::yes</a>() {
+<a name="l00822"></a>00822         <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>* s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>(<span class="keyword">true</span>);
+<a name="l00823"></a>00823         CurCtx::get()-&gt;register_allocated(s);
+<a name="l00824"></a>00824         <span class="keywordflow">return</span> s;
+<a name="l00825"></a>00825     }
+<a name="l00826"></a><a class="code" href="classpl_1_1Boolean.html#78241cf06d823ae38f466e57a30f2732">00826</a>     <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>* <a class="code" href="classpl_1_1Boolean.html#78241cf06d823ae38f466e57a30f2732" title="get a &amp;#39;no&amp;#39; indicator variable">Boolean::no</a>() {
+<a name="l00827"></a>00827         <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>* s = <span class="keyword">new</span> <a class="code" href="classpl_1_1Boolean.html" title="boolean class">Boolean</a>(<span class="keyword">false</span>);
+<a name="l00828"></a>00828         CurCtx::get()-&gt;register_allocated(s);
+<a name="l00829"></a>00829         <span class="keywordflow">return</span> s;
+<a name="l00830"></a>00830     }
+<a name="l00831"></a>00831 };
 </pre></div></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Tue Mar 24 08:49:06 2009 for Devel::BindPP by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Tue Mar 24 09:32:04 2009 for Devel::BindPP by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
