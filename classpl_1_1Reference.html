@@ -44,9 +44,6 @@ Inheritance diagram for pl::Reference:</div>
 <a href="classpl_1_1Reference-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="145000147a7b3392680e9268d36ea279"></a><!-- doxytag: member="pl::Reference::Reference" ref="145000147a7b3392680e9268d36ea279" args="(SV *v)" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>Reference</b> (SV *v)</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="45b208b5a4b9fde26e3f89a8f8e016e8"></a><!-- doxytag: member="pl::Reference::bless" ref="45b208b5a4b9fde26e3f89a8f8e016e8" args="(const char *pkg)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Reference.html#45b208b5a4b9fde26e3f89a8f8e016e8">bless</a> (const char *pkg)</td></tr>
 
@@ -115,17 +112,27 @@ SV *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">get a reference of this value <br></td></tr>
 <tr><td colspan="2"><br><h2>Static Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="4a1f2ffef72176ba4ed0f2ca9a0ce875"></a><!-- doxytag: member="pl::Reference::new_inc" ref="4a1f2ffef72176ba4ed0f2ca9a0ce875" args="(Value *thing)" -->
-static <a class="el" href="classpl_1_1Reference.html">Reference</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Reference.html#4a1f2ffef72176ba4ed0f2ca9a0ce875">new_inc</a> (<a class="el" href="classpl_1_1Value.html">Value</a> *thing)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="e17b684253e2c48abe0d6273e4f183be"></a><!-- doxytag: member="pl::Reference::new_inc" ref="e17b684253e2c48abe0d6273e4f183be" args="(Value *thing)" -->
+static <a class="el" href="classpl_1_1Reference.html">Reference</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Reference.html#e17b684253e2c48abe0d6273e4f183be">new_inc</a> (<a class="el" href="classpl_1_1Value.html">Value</a> *thing)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">create a new reference with refcnt increment <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="42408bce41a8b68f104f0ba1b8bb23a5"></a><!-- doxytag: member="pl::Reference::new_inc" ref="42408bce41a8b68f104f0ba1b8bb23a5" args="(SV *thing)" -->
-static <a class="el" href="classpl_1_1Reference.html">Reference</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Reference.html#42408bce41a8b68f104f0ba1b8bb23a5">new_inc</a> (SV *thing)</td></tr>
+<tr><td colspan="2"><br><h2>Protected Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="145000147a7b3392680e9268d36ea279"></a><!-- doxytag: member="pl::Reference::Reference" ref="145000147a7b3392680e9268d36ea279" args="(SV *v)" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><b>Reference</b> (SV *v)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">ditto <br></td></tr>
 <tr><td colspan="2"><br><h2>Protected Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ccbf8c00be167c8e743906842534b5c4"></a><!-- doxytag: member="pl::Reference::val" ref="ccbf8c00be167c8e743906842534b5c4" args="" -->
 SV *&nbsp;</td><td class="memItemRight" valign="bottom"><b>val</b></td></tr>
+
+<tr><td colspan="2"><br><h2>Friends</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="549ee9c54843c923473fc59a4c3acdd9"></a><!-- doxytag: member="pl::Reference::Scalar" ref="549ee9c54843c923473fc59a4c3acdd9" args="" -->
+class&nbsp;</td><td class="memItemRight" valign="bottom"><b>Scalar</b></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="e6b92b2e0be47b032ba4d225e8b01663"></a><!-- doxytag: member="pl::Reference::Hash" ref="e6b92b2e0be47b032ba4d225e8b01663" args="" -->
+class&nbsp;</td><td class="memItemRight" valign="bottom"><b>Hash</b></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="e5050cd67e450419cf638e2a09bf11c9"></a><!-- doxytag: member="pl::Reference::Array" ref="e5050cd67e450419cf638e2a09bf11c9" args="" -->
+class&nbsp;</td><td class="memItemRight" valign="bottom"><b>Array</b></td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -242,7 +249,7 @@ decrement the reference counter for this value
 <hr>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="bindpp_8h-source.html">bindpp.h</a></ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Tue Mar 24 10:05:54 2009 for Devel::BindPP by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Tue Mar 24 10:17:25 2009 for Devel::BindPP by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
