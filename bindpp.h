@@ -214,15 +214,9 @@ namespace pl {
         void concat(const char* s, I32 len) {
             sv_catpvn(this->val, s, len);
         }
-        /**
-         * ditto
-         */
         void concat(const char* s) {
             sv_catpv(this->val, s);
         }
-        /**
-         * ditto
-         */
         void concat(Str* s) {
             sv_catsv(this->val, s->val);
         }
