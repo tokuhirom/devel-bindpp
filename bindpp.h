@@ -665,8 +665,8 @@ namespace pl {
          * get the pointer from scalar
          */
         template <class T>
-        T* extract() {
-            return INT2PTR(T *, SvROK(this->val) ? SvIV(SvRV(this->val)) : SvIV(this->val));
+        T extract() {
+            return INT2PTR(T, SvROK(this->val) ? SvIV(SvRV(this->val)) : SvIV(this->val));
         }
     };
 

@@ -51,7 +51,7 @@ XS(xs_p_get) {
 
     pl::Pointer * p = c.arg(0)->as_pointer();
 
-    char *self = p->extract<char>();
+    char *self = p->extract<char*>();
     c.ret(pl::Str(self));
 }
 
@@ -59,7 +59,7 @@ XS(xs_p_destroy) {
     pl::Ctx c;
 
     pl::Pointer * p = c.arg(0)->as_pointer();
-    Safefree(p->extract<char>());
+    Safefree(p->extract<char*>());
     c.return_true();
 }
 
