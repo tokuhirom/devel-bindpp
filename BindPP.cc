@@ -41,7 +41,7 @@ XS(xs_s_call_cv) {
     args.push(pl::Int(4649));
 
     pl::Array retval;
-    pl::Perl::call(code, G_ARRAY, &args, &retval);
+    code->call(&args, &retval);
 
     c.ret(retval.reference());
 }

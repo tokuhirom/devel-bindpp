@@ -37,6 +37,7 @@ namespace pl {
         friend class Perl;
         friend class Hash;
         friend class Package;
+        friend class Code;
 
     public:
         Value(SV* _v) {
@@ -585,6 +586,44 @@ namespace pl {
     class Code : public Scalar {
     public:
         Code(SV * _s) : Scalar(_s) { }
+        /// call the coderef by list context
+        void call(Array * args, Array* retval) {
+            SV **sp = PL_stack_sp;
+
+            push_scope(); // ENTER
+            save_int((int*)&PL_tmps_floor); // SAVETMPS
+            PL_tmps_floor = PL_tmps_ix;
+
+            if (++PL_markstack_ptr == PL_markstack_max) { // PUSHMARK(SP);
+                markstack_grow();
+            }
+            *PL_markstack_ptr = (I32)((sp) - PL_stack_base);
+
+            for (int i =0; i < args->len()+1; i++) {
+                if (PL_stack_max - sp < 1) { // EXTEND()
+                    // optimize?
+                    sp = stack_grow(sp, sp, 1);
+                }
+                *++sp = args->pop()->val; // XPUSHs
+            }
+            PL_stack_sp = sp; // PUTBACK
+
+            int count = call_sv(this->val, G_ARRAY);
+
+            sp = PL_stack_sp; // SPAGAIN
+
+            for (int i=0; i<count; i++) {
+                Scalar * s = new Scalar(*sp--);
+                CurCtx::get()->register_allocated(s);
+                retval->store(i, s);
+            }
+
+            PL_stack_sp = sp; // PUTBACK
+            if (PL_tmps_ix > PL_tmps_floor) { // FREETMPS
+                free_tmps();
+            }
+            pop_scope(); // LEAVE
+        }
     };
 
     /**
@@ -616,44 +655,6 @@ namespace pl {
      */
     class Perl {
     public:
-        static void call(Code* code, U32 flags, Array * args, Array* retval) {
-            SV **sp = PL_stack_sp;
-
-            push_scope(); // ENTER
-            save_int((int*)&PL_tmps_floor); // SAVETMPS
-            PL_tmps_floor = PL_tmps_ix;
-
-            if (++PL_markstack_ptr == PL_markstack_max) { // PUSHMARK(SP);
-                markstack_grow();
-            }
-            *PL_markstack_ptr = (I32)((sp) - PL_stack_base);
-
-            std::vector<Scalar*>::iterator iter;
-            for (int i =0; i < args->len()+1; i++) {
-                if (PL_stack_max - sp < 1) { // EXTEND()
-                    // optimize?
-                    sp = stack_grow(sp, sp, 1);
-                }
-                *++sp = args->pop()->val; // XPUSHs
-            }
-            PL_stack_sp = sp; // PUTBACK
-
-            int count = call_sv(code->val, flags);
-
-            sp = PL_stack_sp; // SPAGAIN
-
-            for (int i=0; i<count; i++) {
-                Scalar * s = new Scalar(*sp--);
-                CurCtx::get()->register_allocated(s);
-                retval->store(i, s);
-            }
-
-            PL_stack_sp = sp; // PUTBACK
-            if (PL_tmps_ix > PL_tmps_floor) { // FREETMPS
-                free_tmps();
-            }
-            pop_scope(); // LEAVE
-        }
         // static Hash* get_stash(Str* name);
 //      template<class U>
 //      static void* alloc(int size) {
