@@ -4,6 +4,9 @@
 // TODO: use Newx instead of new
 // TODO: use Safefree instead of delete
 // TODO: handle gv
+// TODO: Str->utf8_on/Str->utf8_off
+// TODO: Str->len_bytes() / Str->len()
+// TODO: Value->true() # SvTRUE()
 
 extern "C" {
 #include "EXTERN.h"
@@ -706,17 +709,22 @@ namespace pl {
     };
 
     /**
-     * utility functions
+     * croak/warn
      */
-    class Perl {
+    class Carp {
     public:
-        // static Hash* get_stash(Str* name);
-//      template<class U>
-//      static void* alloc(int size) {
-//          void *buf;
-//          Newx(buf, size, U);
-//          return buf;
-//      }
+        static void croak(const char * format, ...) {
+            va_list args;
+            va_start(args, format);
+            Perl_vcroak(aTHX_ format, &args);
+            va_end(args);
+        }
+        static void warn(const char * format, ...) {
+            va_list args;
+            va_start(args, format);
+            Perl_vwarn(aTHX_ format, &args);
+            va_end(args);
+        }
     };
 
     Reference * Value::reference() {
