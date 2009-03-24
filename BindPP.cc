@@ -438,6 +438,7 @@ extern "C" {
         b.add_method("mult", xs_basic_mult, __FILE__);
         b.add_method("mult2", xs_basic_mult2, __FILE__);
         b.add_method("wantarray", xs_wantarray, __FILE__);
+        b.add_constant("FOO", pl::Int(1981));
 
         pl::Package s("Devel::BindPP::Scalar");
         s.add_method("twice", XS_Devel__BindPP_twice, __FILE__);

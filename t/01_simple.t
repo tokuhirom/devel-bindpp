@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 48;
+use Test::More tests => 49;
 
 use Devel::BindPP;
 
@@ -18,6 +18,7 @@ use Devel::BindPP;
     my $a = Devel::BindPP::Basic::wantarray();
     is "$a", 'no';
 }
+is Devel::BindPP::Basic::FOO, 1981;
 
 # scalar
 is Devel::BindPP::Scalar::twice(5), 10;

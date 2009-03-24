@@ -36,6 +36,7 @@ namespace pl {
         friend class Array;
         friend class Perl;
         friend class Hash;
+        friend class Package;
 
     public:
         Value(SV* _v) {
@@ -507,6 +508,7 @@ namespace pl {
     public:
         Package(std::string _pkg) {
             pkg = _pkg;
+            stash = gv_stashpvn(pkg.c_str(), pkg.length(), TRUE);
         }
         /**
          * install xsub
@@ -515,8 +517,22 @@ namespace pl {
         void add_method(const char*name, XSUBADDR_t func, const char *file) {
             newXS((pkg + "::" + name).c_str(), func, file);
         }
+        /**
+         * add new const sub
+         * same as sub FOO() { 1 }
+         */
+        void add_constant(const char *name, SV* val) {
+            newCONSTSUB(stash, name, val);
+        }
+        void add_constant(const char *name, Value * val) {
+            this->add_constant(name, val->val);
+        }
+        void add_constant(const char *name, Value val) {
+            this->add_constant(name, val.val);
+        }
     private:
         std::string pkg;
+        HV * stash;
     };
 
     /**
