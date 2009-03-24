@@ -387,11 +387,11 @@ XS(xs_basic_mult) {
 
     pl::Int s1(4);
     pl::Int s2(9);
-    std::vector<pl::Scalar*> v;
-    v.push_back(&s1);
-    v.push_back(&s2);
+    pl::Array v;
+    v.push(&s1);
+    v.push(&s2);
 
-    c.return_multi(v);
+    c.ret(&v);
 }
 XS(xs_basic_mult2) {
     pl::Ctx c;
@@ -400,9 +400,8 @@ XS(xs_basic_mult2) {
        Perl_croak(aTHX_ "orz");
     }
 
-    std::vector<pl::Scalar*> v;
-
-    c.return_multi(v);
+    pl::Array v;
+    c.ret(&v);
 }
 
 XS(xs_wantarray) {

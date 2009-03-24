@@ -342,6 +342,10 @@ namespace pl {
         I32 len() {
             return av_len((AV*)this->val);
         }
+        /// size() returns size of array(= len()+1)
+        U32 size() {
+            return this->len() + 1;
+        }
 
         /// store values to array
         Scalar * store(I32 key, Scalar* v);
@@ -393,16 +397,17 @@ namespace pl {
             return GIMME_V & G_ARRAY ? true : false;
         }
         /// return multiple values
-        void return_multi(std::vector<Scalar*>& vec) {
-            if (vec.size() != 0) {
+        void ret(Array* ary) {
+            unsigned int size = ary->size();
+            if (size != 0) {
                 SV** sp = PL_stack_sp;
-                if ((unsigned int)(PL_stack_max - sp) < vec.size()) {
-                    sp = stack_grow(sp, sp, vec.size());
+                if ((unsigned int)(PL_stack_max - sp) < size) {
+                    sp = stack_grow(sp, sp, size);
                 }
 
-                std::vector<Scalar*>::iterator iter;
-                for (iter = vec.begin(); iter != vec.end(); iter++) {
-                    PL_stack_base[ax++] = *iter ? (*iter)->serialize() : &PL_sv_undef;
+                for (unsigned int i=0; i < size; ++i) {
+                    Scalar * s = ary->fetch(i);
+                    PL_stack_base[ax++] = s->val;
                 }
                 ax--;
             } else {
