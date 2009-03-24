@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 49;
+use Test::More tests => 50;
 
 use Devel::BindPP;
 
@@ -59,6 +59,7 @@ ok Devel::BindPP::Scalar::is_object(bless []);
     is join(',', @{Devel::BindPP::Scalar::call_cv(sub { @_, qw/1 2 3/ })}), '3,2,1,4649';
     is join(',', @{Devel::BindPP::Scalar::call_cv(sub { @_, qw/1 2/ })}), '2,1,4649';
     is join(',', @{Devel::BindPP::Scalar::call_cv(sub { qw/1 2/ })}), '2,1';
+    is Devel::BindPP::Scalar::call_cv_scalarcon(sub { 2 }), '4';
 }
 
 # hash

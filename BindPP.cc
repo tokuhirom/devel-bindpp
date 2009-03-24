@@ -45,6 +45,20 @@ XS(xs_s_call_cv) {
 
     c.ret(retval.reference());
 }
+XS(xs_s_call_cv_scalarcon) {
+    pl::Ctx c;
+
+    pl::Code * code = c.arg(0)->as_ref()->as_code();
+
+    pl::Array args;
+    args.push(pl::Int(4649));
+
+    pl::Scalar *retval;
+    code->call(&args, &retval);
+    int i = retval->as_int()->to_c();
+
+    c.ret(pl::Int(i*2));
+}
 
 XS(xs_p_get) {
     pl::Ctx c;
@@ -452,6 +466,7 @@ extern "C" {
         s.add_method("cats", xs_s_cats, __FILE__);
         s.add_method("is_object", xs_s_is_object, __FILE__);
         s.add_method("call_cv", xs_s_call_cv, __FILE__);
+        s.add_method("call_cv_scalarcon", xs_s_call_cv_scalarcon, __FILE__);
 
         // Hash
         pl::Package h("Devel::BindPP::Hash");

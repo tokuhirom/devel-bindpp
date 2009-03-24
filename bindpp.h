@@ -632,9 +632,46 @@ namespace pl {
             sp = PL_stack_sp; // SPAGAIN
 
             for (int i=0; i<count; i++) {
-                Scalar * s = new Scalar(*sp--);
+                Scalar * s = new Scalar(newSVsv(*sp--));
                 CurCtx::get()->register_allocated(s);
                 retval->store(i, s);
+            }
+
+            PL_stack_sp = sp; // PUTBACK
+            if (PL_tmps_ix > PL_tmps_floor) { // FREETMPS
+                free_tmps();
+            }
+            pop_scope(); // LEAVE
+        }
+        /// call the coderef by scalar context
+        void call(Array * args, Scalar** retval) {
+            SV **sp = PL_stack_sp;
+
+            push_scope(); // ENTER
+            save_int((int*)&PL_tmps_floor); // SAVETMPS
+            PL_tmps_floor = PL_tmps_ix;
+
+            if (++PL_markstack_ptr == PL_markstack_max) { // PUSHMARK(SP);
+                markstack_grow();
+            }
+            *PL_markstack_ptr = (I32)((sp) - PL_stack_base);
+
+            for (int i =0; i < args->len()+1; i++) {
+                if (PL_stack_max - sp < 1) { // EXTEND()
+                    // optimize?
+                    sp = stack_grow(sp, sp, 1);
+                }
+                *++sp = args->pop()->val; // XPUSHs
+            }
+            PL_stack_sp = sp; // PUTBACK
+
+            int count = call_sv(this->val, G_SCALAR);
+
+            sp = PL_stack_sp; // SPAGAIN
+
+            if (count != 0) {
+                *retval = new Scalar(newSVsv(*sp--));
+                CurCtx::get()->register_allocated(*retval);
             }
 
             PL_stack_sp = sp; // PUTBACK
@@ -710,7 +747,7 @@ namespace pl {
         }
     }
     Int* Scalar::as_int() {
-        if (SvIOK(this->val)) {
+        if (SvIOKp(this->val)) {
             Int * s = new Int(this->val);
             CurCtx::get()->register_allocated(s);
             return s;
