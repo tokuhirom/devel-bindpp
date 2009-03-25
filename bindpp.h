@@ -13,8 +13,6 @@
 // TODO: Str->utf8_on/Str->utf8_off
 // TODO: Str->len_bytes() / Str->len()
 // TODO: Value->true() # SvTRUE()
-// TODO: FileType::is_file() # means -f _
-// TODO: FileType::is_file("filename")
 
 extern "C" {
 #include "EXTERN.h"
