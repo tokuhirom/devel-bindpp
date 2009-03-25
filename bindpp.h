@@ -1,12 +1,19 @@
 #include <string>
 #include <vector>
 
+/**
+ * Devel::BindPP - bind C++ to Perl
+ * @author tokuhirom
+ */
+
 // TODO: use Newx instead of new
 // TODO: use Safefree instead of delete
 // TODO: handle gv
 // TODO: Str->utf8_on/Str->utf8_off
 // TODO: Str->len_bytes() / Str->len()
 // TODO: Value->true() # SvTRUE()
+// TODO: FileType::is_file() # means -f _
+// TODO: FileType::is_file("filename")
 
 extern "C" {
 #include "EXTERN.h"
@@ -724,6 +731,40 @@ namespace pl {
             va_start(args, format);
             Perl_vwarn(aTHX_ format, &args);
             va_end(args);
+        }
+    };
+
+    /**
+     * FileTest is a utility class for file testing.
+     * FileTest means -f, -d, etc.
+     */
+    class FileTest {
+    public:
+        /**
+         * Is this regular file?
+         * This method is same as "-f $fname" in perl
+         */
+        static bool is_regular_file(const char * fname) {
+            Stat_t buf;
+            int ret = PerlLIO_stat(fname, &buf);
+            if (ret == 0 && S_ISREG(buf.st_mode)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        /**
+         * Is this directory?
+         * This method is same as "-d $fname" in perl
+         */
+        static bool is_dir(const char * fname) {
+            Stat_t buf;
+            int ret = PerlLIO_stat(fname, &buf);
+            if (ret == 0 && S_ISDIR(buf.st_mode)) {
+                return true;
+            } else {
+                return false;
+            }
         }
     };
 

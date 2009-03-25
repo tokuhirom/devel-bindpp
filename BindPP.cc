@@ -4,8 +4,7 @@
 XS(xs_p_new) {
     pl::Ctx c;
 
-    char *self;
-    Newx(self, 3, char);
+    char *self = new char [3];
     strcpy(self, "ok");
 
     c.ret(pl::Pointer((void*)self, "Devel::BindPP::Pointer"));
@@ -73,7 +72,7 @@ XS(xs_p_destroy) {
     pl::Ctx c;
 
     pl::Pointer * p = c.arg(0)->as_pointer();
-    Safefree(p->extract<char*>());
+    delete [] p->extract<char*>();
     c.return_true();
 }
 
@@ -432,6 +431,32 @@ XS(xs_wantarray) {
     }
 }
 
+// -f $fname
+XS(xs_ft_file) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+       Perl_croak(aTHX_ "orz");
+    }
+
+    const char * fname = c.arg(0)->as_str()->to_c();
+
+    c.ret( pl::Boolean( pl::FileTest::is_regular_file( fname ) ) );
+}
+
+// -d $dname
+XS(xs_ft_dir) {
+    pl::Ctx c;
+
+    if (c.arg_len() != 1) {
+       Perl_croak(aTHX_ "orz");
+    }
+
+    const char * dname = c.arg(0)->as_str()->to_c();
+
+    c.ret( pl::Boolean( pl::FileTest::is_dir( dname ) ) );
+}
+
 /*
 XS(xs_pkg_stash) {
     pl::Ctx c;
@@ -495,6 +520,13 @@ extern "C" {
         p.add_method("new", xs_p_new, __FILE__);
         p.add_method("get", xs_p_get, __FILE__);
         p.add_method("DESTROY", xs_p_destroy, __FILE__);
+
+        {
+            // FileTest
+            pl::Package p("Devel::BindPP::FileTest");
+            p.add_method("is_file", xs_ft_file, __FILE__);
+            p.add_method("is_dir", xs_ft_dir, __FILE__);
+        }
 
         // package
         /*

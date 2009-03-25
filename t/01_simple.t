@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 50;
+use Test::More tests => 55;
 
 use Devel::BindPP;
 
@@ -114,6 +114,16 @@ is Devel::BindPP::Array::avref_fetch([qw/a b c/], 9), undef, 'fetch';
     my $a = Devel::BindPP::Pointer->new();
     isa_ok $a, 'Devel::BindPP::Pointer';
     is $a->get(), 'ok';
+}
+
+# file test
+{
+    use File::Temp;
+    my $tmp = File::Temp->new(UNLINK => 0);
+    ok !-d $tmp, 'file test';
+    ok !Devel::BindPP::FileTest::is_dir($tmp->filename);
+    ok -f $tmp;
+    ok ok Devel::BindPP::FileTest::is_file($tmp->filename);
 }
 
 # package
