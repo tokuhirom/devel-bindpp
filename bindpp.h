@@ -1,10 +1,11 @@
-#include <string>
-#include <vector>
-
 /**
  * Devel::BindPP - bind C++ to Perl
  * @author tokuhirom
+ * @see http://tokuhirom.github.com/devel-bindpp/hierarchy.html
  */
+
+#include <string>
+#include <vector>
 
 // TODO: use Newx instead of new
 // TODO: use Safefree instead of delete
