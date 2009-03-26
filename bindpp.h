@@ -1,5 +1,6 @@
 /**
  * Devel::BindPP - bind C++ to Perl
+ * @version 0.02
  * @author tokuhirom
  * @see http://tokuhirom.github.com/devel-bindpp/hierarchy.html
  */
@@ -297,14 +298,14 @@ namespace pl {
         Reference* del(const char*key, I32 klen);
 
         /// store value to hash
-        Reference* store(const char*key, Scalar*value) {
-            return this->store(key, strlen(key), value);
+        void store(const char*key, Scalar*value) {
+            this->store(key, strlen(key), value);
         }
-        Reference* store(const char*key, Scalar value) {
-            return this->store(key, strlen(key), &value);
+        void store(const char*key, Scalar value) {
+            this->store(key, strlen(key), &value);
         }
         /// store value to hash
-        Reference* store(const char*key, I32 klen, Scalar*value);
+        void  store(const char*key, I32 klen, Scalar*value);
         /// Evaluates the hash in scalar context and returns the result.
         Scalar* scalar();
         /// Undefines the hash.
@@ -588,7 +589,8 @@ namespace pl {
          * @see newXS
          */
         void add_method(const char*name, XSUBADDR_t func, const char *file) {
-            newXS((pkg + "::" + name).c_str(), func, file);
+            char * buf = const_cast<char*>( (pkg + "::" + name).c_str() );
+            newXS(buf, func, const_cast<char*>(file));
         }
         /**
          * add new const sub
@@ -602,7 +604,7 @@ namespace pl {
         }
     protected:
         void add_constant(const char *name, SV* val) {
-            newCONSTSUB(stash, name, val);
+            newCONSTSUB(stash, const_cast<char*>(name), val);
         }
     private:
         std::string pkg;
@@ -637,18 +639,12 @@ namespace pl {
                 _sv = get_sv(Perl_form(aTHX_ "%s::%s", module,
                             vn = "VERSION"), FALSE);
             }
-            if (_sv) {
-                SV *xssv = Perl_newSVpv(aTHX_ XS_VERSION, 0);
-                xssv = new_version(xssv);
-                if ( !sv_derived_from(_sv, "version") ) {
-                    _sv = new_version(_sv);
-                }
-                if ( vcmp(_sv,xssv) ) {
-                    Perl_croak(aTHX_ "%s object version %"SVf" does not match %s%s%s%s %"SVf,
-                        module, SVfARG(vstringify(xssv)),
-                        vn ? "$" : "", vn ? module : "", vn ? "::" : "",
-                        vn ? vn : "bootstrap parameter", SVfARG(vstringify(_sv)));
-                }
+            if (_sv && (!SvOK(_sv) || strNE(XS_VERSION, SvPV_nolen(_sv)))) {
+                Perl_croak(aTHX_ "%s object version %s does not match %s%s%s%s %"SVf,
+                    module, XS_VERSION, 
+                    vn ? "$" : "", vn ? module : "", vn ? "::" : "",
+                    vn ? vn : "bootstrap parameter", _sv
+                );
             }
         }
     };
@@ -930,13 +926,9 @@ namespace pl {
         CurCtx::get()->register_allocated(ref);
         return ref;
     }
-    Reference* Hash::store(const char*key, I32 klen, Scalar*value) {
+    void Hash::store(const char*key, I32 klen, Scalar*value) {
         value->refcnt_inc();
-        SV ** s = hv_store((HV*)this->val, key, klen, value->val, 0);
-        assert(s && SvROK(*s));
-        Reference * ref = new Reference(*s);
-        CurCtx::get()->register_allocated(ref);
-        return ref;
+        hv_store((HV*)this->val, key, klen, value->val, 0);
     }
     Scalar* Hash::scalar() {
         Scalar*s = new Scalar(hv_scalar((HV*)this->val));

@@ -266,7 +266,8 @@ XS(xs_hv_store) {
     const char * key = c.arg(1)->as_str()->to_c();
     pl::Scalar * val = c.arg(2);
 
-    c.ret(h->store(key, val));
+    h->store(key, val);
+    c.return_true();
 }
 
 XS(xs_hv_scalar) {
