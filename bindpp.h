@@ -300,6 +300,9 @@ namespace pl {
         Reference* store(const char*key, Scalar*value) {
             return this->store(key, strlen(key), value);
         }
+        Reference* store(const char*key, Scalar value) {
+            return this->store(key, strlen(key), &value);
+        }
         /// store value to hash
         Reference* store(const char*key, I32 klen, Scalar*value);
         /// Evaluates the hash in scalar context and returns the result.
