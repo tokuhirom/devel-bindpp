@@ -13,6 +13,7 @@
 // TODO: Str->utf8_on/Str->utf8_off
 // TODO: Str->len_bytes() / Str->len()
 // TODO: Value->true() # SvTRUE()
+// TODO: Scalar->weaken / Scalar->is_weak
 
 extern "C" {
 #include "EXTERN.h"
@@ -228,6 +229,10 @@ namespace pl {
         void concat(Str* s) {
             sv_catsv(this->val, s->val);
         }
+        /// get a length
+        int length() {
+            return sv_len(this->val);
+        }
     protected:
         Str(SV* _s) : Scalar(_s) { }
     };
@@ -368,11 +373,32 @@ namespace pl {
     };
 
     /**
+     * croak/warn
+     */
+    class Carp {
+    public:
+        static void croak(const char * format, ...) {
+            va_list args;
+            va_start(args, format);
+            Perl_vcroak(aTHX_ format, &args);
+            va_end(args);
+        }
+        static void warn(const char * format, ...) {
+            va_list args;
+            va_start(args, format);
+            Perl_vwarn(aTHX_ format, &args);
+            va_end(args);
+        }
+    };
+
+
+    /**
      * XSUB context class
      */
     class Ctx {
     public:
         Ctx();
+        Ctx(int arg_cnt);
         ~Ctx();
         /// length of arguments
         I32 arg_len() {
@@ -443,16 +469,28 @@ namespace pl {
         void ret(int n, SV* s) {
             PL_stack_base[ax + n] = s;
         }
+        void initialize();
         I32 ax;
         SV ** mark;
         std::vector<Value*> allocated;
     };
     std::vector<Ctx*> ctxstack;
     Ctx::Ctx() {
+        this->initialize();
+    }
+    Ctx::Ctx(int arg_cnt) {
+        this->initialize();
+
+        int got = arg_len();
+        if (arg_cnt != got) {
+            Carp::croak("This method requires %d arguments, but %d", arg_cnt, got);
+        }
+    }
+    void Ctx::initialize() {
         // same as dAXMARK
         this->ax = *PL_markstack_ptr + 1;
         --PL_markstack_ptr;
-        this->mark = PL_stack_base + ax - 1;
+        this->mark = PL_stack_base + this->ax - 1;
 
         ctxstack.push_back(this);
     }
@@ -473,7 +511,12 @@ namespace pl {
     class CurCtx {
     public:
         static Ctx * get() {
-            return ctxstack[ctxstack.size()-1];
+            if (ctxstack.size() > 0) {
+                return ctxstack[ctxstack.size()-1];
+            } else {
+                Carp::croak("Devel::BindPP: missing context");
+                throw; // don't reach here
+            }
         }
     };
 
@@ -711,25 +754,6 @@ namespace pl {
         template <class T>
         T extract() {
             return INT2PTR(T, SvROK(this->val) ? SvIV(SvRV(this->val)) : SvIV(this->val));
-        }
-    };
-
-    /**
-     * croak/warn
-     */
-    class Carp {
-    public:
-        static void croak(const char * format, ...) {
-            va_list args;
-            va_start(args, format);
-            Perl_vcroak(aTHX_ format, &args);
-            va_end(args);
-        }
-        static void warn(const char * format, ...) {
-            va_list args;
-            va_start(args, format);
-            Perl_vwarn(aTHX_ format, &args);
-            va_end(args);
         }
     };
 

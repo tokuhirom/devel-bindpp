@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 55;
+use Test::More tests => 57;
 
 use Devel::BindPP;
 
@@ -61,6 +61,8 @@ ok Devel::BindPP::Scalar::is_object(bless []);
     is join(',', @{Devel::BindPP::Scalar::call_cv(sub { qw/1 2/ })}), '2,1';
     is Devel::BindPP::Scalar::call_cv_scalarcon(sub { 2 }), '4';
 }
+is Devel::BindPP::Scalar::len('hogehoge'), length('hogehoge');
+is Devel::BindPP::Scalar::len(''), 0;
 
 # hash
 is Devel::BindPP::Hash::hvref_fetch(+{a => 'b'}, 'a'), 'b';

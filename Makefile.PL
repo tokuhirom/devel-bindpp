@@ -7,7 +7,7 @@ can_cc or die "This module requires a C compiler";
 makemaker_args(
     OBJECT => '$(O_FILES)',
     LIBS => ['-lstdc++'],
-    CCFLAGS => '-Wall -O2 -Wformat=2 -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wfloat-equal -Wpointer-arith',
+    CCFLAGS => '-g -Wall -O2 -Wformat=2 -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wfloat-equal -Wpointer-arith',
     clean => {
         FILES => q{
             *.stackdump

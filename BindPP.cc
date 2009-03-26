@@ -380,11 +380,7 @@ XS(xs_hv_undef) {
     c.return_true();
 }
 XS(xs_hv_clear) {
-    pl::Ctx c;
-
-    if (c.arg_len() != 1) {
-       Perl_croak(aTHX_ "orz");
-    }
+    pl::Ctx c(1);
 
     pl::Hash * h = c.arg(0)->as_ref()->as_hash();
     h->clear();
@@ -392,11 +388,7 @@ XS(xs_hv_clear) {
 }
 
 XS(xs_basic_mult) {
-    pl::Ctx c;
-
-    if (c.arg_len() != 0) {
-       Perl_croak(aTHX_ "orz");
-    }
+    pl::Ctx c(0);
 
     pl::Int s1(4);
     pl::Int s2(9);
@@ -407,22 +399,14 @@ XS(xs_basic_mult) {
     c.ret(&v);
 }
 XS(xs_basic_mult2) {
-    pl::Ctx c;
-
-    if (c.arg_len() != 0) {
-       Perl_croak(aTHX_ "orz");
-    }
+    pl::Ctx c(0);
 
     pl::Array v;
     c.ret(&v);
 }
 
 XS(xs_wantarray) {
-    pl::Ctx c;
-
-    if (c.arg_len() != 0) {
-       Perl_croak(aTHX_ "orz");
-    }
+    pl::Ctx c(0);
 
     if (c.wantarray()) {
         c.ret(pl::Str("yes"));
@@ -433,11 +417,7 @@ XS(xs_wantarray) {
 
 // -f $fname
 XS(xs_ft_file) {
-    pl::Ctx c;
-
-    if (c.arg_len() != 1) {
-       Perl_croak(aTHX_ "orz");
-    }
+    pl::Ctx c(1);
 
     const char * fname = c.arg(0)->as_str()->to_c();
 
@@ -446,15 +426,18 @@ XS(xs_ft_file) {
 
 // -d $dname
 XS(xs_ft_dir) {
-    pl::Ctx c;
-
-    if (c.arg_len() != 1) {
-       Perl_croak(aTHX_ "orz");
-    }
+    pl::Ctx c(1);
 
     const char * dname = c.arg(0)->as_str()->to_c();
 
     c.ret( pl::Boolean( pl::FileTest::is_dir( dname ) ) );
+}
+
+XS(xs_s_len) {
+    pl::Ctx c(1);
+
+    int len = c.arg(0)->as_str()->length();
+    c.ret(pl::Int(len));
 }
 
 /*
@@ -492,6 +475,7 @@ extern "C" {
         s.add_method("is_object", xs_s_is_object, __FILE__);
         s.add_method("call_cv", xs_s_call_cv, __FILE__);
         s.add_method("call_cv_scalarcon", xs_s_call_cv_scalarcon, __FILE__);
+        s.add_method("len", xs_s_len, __FILE__);
 
         // Hash
         pl::Package h("Devel::BindPP::Hash");
