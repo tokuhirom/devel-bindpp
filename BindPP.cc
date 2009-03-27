@@ -345,6 +345,13 @@ XS(xs_s_len) {
     c.ret(pl::Int(len));
 }
 
+XS(xs_s_refcnt) {
+    pl::Ctx c(1);
+
+    int refcnt = c.arg(0)->refcnt();
+    c.ret(pl::Int(refcnt));
+}
+
 /*
 XS(xs_pkg_stash) {
     pl::Ctx c;
@@ -381,6 +388,7 @@ extern "C" {
         s.add_method("call_cv", xs_s_call_cv, __FILE__);
         s.add_method("call_cv_scalarcon", xs_s_call_cv_scalarcon, __FILE__);
         s.add_method("len", xs_s_len, __FILE__);
+        s.add_method("refcnt", xs_s_refcnt, __FILE__);
 
         // Hash
         pl::Package h("Devel::BindPP::Hash");

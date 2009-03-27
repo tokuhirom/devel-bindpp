@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 56;
+use Test::More tests => 58;
 
 use Devel::BindPP;
 
@@ -63,6 +63,12 @@ ok Devel::BindPP::Scalar::is_object(bless []);
 }
 is Devel::BindPP::Scalar::len('hogehoge'), length('hogehoge');
 is Devel::BindPP::Scalar::len(''), 0;
+{
+    my $a = 1;
+    is Devel::BindPP::Scalar::refcnt($a), 1;
+    my $b = \$a;
+    is Devel::BindPP::Scalar::refcnt($a), 2;
+}
 
 # hash
 is Devel::BindPP::Hash::hvref_fetch(+{a => 'b'}, 'a'), 'b';

@@ -71,6 +71,12 @@ namespace pl {
         void refcnt_dec() {
             SvREFCNT_dec(this->val);
         }
+        /** get a reference count
+         * @see SvREFCNT
+         */
+        int refcnt() {
+            return SvREFCNT(this->val);
+        }
         /**
          * get a reference of this value
          */
