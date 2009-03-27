@@ -205,6 +205,9 @@ namespace pl {
          * this variable is just a reference.change the type
          */
         Reference* as_ref();
+        Scalar * clone () {
+            return Scalar::create(newSVsv(this->val));
+        }
 
         static Scalar *to_perl(const char* s) {
             return Scalar::create(newSVpv(s, strlen(s)));
@@ -223,7 +226,7 @@ namespace pl {
         }
         static Scalar *to_perl(Scalar * v) {
             if (v && v->val) {
-                return Scalar::create(newSVsv(v->val));
+                return Scalar::create(v->val);
             } else {
                 return Scalar::create(&PL_sv_undef);
             }
@@ -498,7 +501,7 @@ namespace pl {
         template <class T>
         void ret(T n) {
             Scalar * s = Scalar::to_perl(n);
-            this->ret(0, s->serialize());
+            this->ret(0, s->val);
         }
         template <class T>
         void ret(int n, T v) {
