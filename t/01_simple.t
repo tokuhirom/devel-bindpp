@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 58;
+use Test::More tests => 26;
 
 use Devel::BindPP;
 
@@ -19,77 +19,6 @@ use Devel::BindPP;
     is "$a", 'no';
 }
 is Devel::BindPP::Basic::FOO, 1981;
-
-# scalar
-is Devel::BindPP::Scalar::twice(5), 10;
-is Devel::BindPP::Scalar::catfoo('hoge'), 'hogefoo';
-is Devel::BindPP::Scalar::twice_n(3.2), 6.4;
-is Devel::BindPP::Scalar::twice_u(5), 10;
-isa_ok Devel::BindPP::Scalar::do_bless([], 'OK'), 'OK';
-{
-    my $a = 'OK';
-    Devel::BindPP::Scalar::refcnt_inc($a);
-    Devel::BindPP::Scalar::refcnt_inc($a);
-    Devel::BindPP::Scalar::refcnt_inc($a);
-    is Internals::SvREFCNT($a), 4;
-}
-{
-    my $b = 'OK';
-    Devel::BindPP::Scalar::refcnt_inc($b);
-    Devel::BindPP::Scalar::refcnt_inc($b);
-    Devel::BindPP::Scalar::refcnt_inc($b);
-    Devel::BindPP::Scalar::refcnt_dec($b);
-    is Internals::SvREFCNT($b), 3;
-}
-{
-    local $@;
-    eval {
-        Devel::BindPP::Scalar::to_c('ok');
-    };
-    like $@, qr{OK: 'ok'};
-}
-is Devel::BindPP::Scalar::twice_deref(\3), 6;
-{
-    my $a = 'a';
-    is Devel::BindPP::Scalar::cats($a, 'b', 'c', 'de'), 'abcd';
-}
-ok !Devel::BindPP::Scalar::is_object([]);
-ok Devel::BindPP::Scalar::is_object(bless []);
-{
-    is join(',', @{Devel::BindPP::Scalar::call_cv(sub { @_, qw/1 2 3/ })}), '3,2,1,4649';
-    is join(',', @{Devel::BindPP::Scalar::call_cv(sub { @_, qw/1 2/ })}), '2,1,4649';
-    is join(',', @{Devel::BindPP::Scalar::call_cv(sub { qw/1 2/ })}), '2,1';
-    is Devel::BindPP::Scalar::call_cv_scalarcon(sub { 2 }), '4';
-}
-is Devel::BindPP::Scalar::len('hogehoge'), length('hogehoge');
-is Devel::BindPP::Scalar::len(''), 0;
-{
-    my $a = 1;
-    is Devel::BindPP::Scalar::refcnt($a), 1;
-    my $b = \$a;
-    is Devel::BindPP::Scalar::refcnt($a), 2;
-}
-
-# hash
-is Devel::BindPP::Hash::hvref_fetch(+{a => 'b'}, 'a'), 'b';
-is Devel::BindPP::Hash::hvref_fetch(+{a => 'b'}, 'c'), undef;
-ok !Devel::BindPP::Hash::exists(+{a => 'b'}, 'c');
-ok Devel::BindPP::Hash::exists(+{a => 'b'}, 'a');
-{
-    my $a = +{a => 'b', 'c' => 'd'};
-    is Devel::BindPP::Hash::delete($a, 'a'), 'b';
-    is_deeply $a, {'c' => 'd'};
-    is(Devel::BindPP::Hash::delete($a, 'a'), undef);
-    Devel::BindPP::Hash::store($a, 'm', 'o');
-    is_deeply $a, +{'c' => 'd', 'm' => 'o'};
-    is(Devel::BindPP::Hash::scalar($a), '2/8');
-    Devel::BindPP::Hash::undef($a);
-    is_deeply $a, +{};
-    $a->{'b'} = 1;
-    is_deeply $a, +{'b' => 1};
-    Devel::BindPP::Hash::clear($a);
-    is_deeply $a, +{}, 'clear';
-}
 
 # array
 is Devel::BindPP::Array::avref_fetch([qw/a b c/], 1), 'b';
