@@ -1,6 +1,6 @@
 /**
  * Devel::BindPP - bind C++ to Perl
- * @version 0.02
+ * @version 0.03
  * @author tokuhirom
  * @see http://tokuhirom.github.com/devel-bindpp/hierarchy.html
  */
