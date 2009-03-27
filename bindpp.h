@@ -450,11 +450,29 @@ namespace pl {
             return s;
         }
         /// return the one scalar value
-        void ret(Scalar s) {
-            this->ret(0, &s);
-        }
         void ret(Scalar* s) {
             this->ret(0, s);
+        }
+        void ret(bool b) {
+            this->ret(0, b ? &PL_sv_yes : &PL_sv_no);
+        }
+        void ret(unsigned int n) {
+            this->ret(0, sv_2mortal(newSVuv(n)));
+        }
+        void ret(double n) {
+            this->ret(0, sv_2mortal(newSVnv(n)));
+        }
+        void ret(int n) {
+            this->ret(0, sv_2mortal(newSViv(n)));
+        }
+        void ret(I32 n) {
+            this->ret(0, sv_2mortal(newSViv(n)));
+        }
+        void ret(const char * n) {
+            this->ret(0, sv_2mortal(newSVpv(n, strlen(n))));
+        }
+        void ret(std::string & s) {
+            this->ret(0, sv_2mortal(newSVpv(s.c_str(), s.length())));
         }
         void ret(int n, Scalar* s) {
             this->ret(n, s ? s->serialize() : &PL_sv_undef);

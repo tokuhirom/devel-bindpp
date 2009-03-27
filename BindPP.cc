@@ -4,10 +4,11 @@
 XS(xs_p_new) {
     pl::Ctx c(1);
 
-    char *self = new char [3];
-    strcpy(self, "ok");
+    char *msg = new char [3];
+    strcpy(msg, "ok");
+    pl::Pointer self((void*)msg, "Devel::BindPP::Pointer");
 
-    c.ret(pl::Pointer((void*)self, "Devel::BindPP::Pointer"));
+    c.ret(&self);
 }
 
 XS(xs_s_cats) {
@@ -29,7 +30,7 @@ XS(xs_s_is_object) {
     pl::Ctx c(1);
 
     pl::Reference * r = c.arg(0)->as_ref();
-    c.ret(pl::Boolean(r->is_object()));
+    c.ret(r->is_object());
 }
 XS(xs_s_call_cv) {
     pl::Ctx c(1);
@@ -56,7 +57,7 @@ XS(xs_s_call_cv_scalarcon) {
     code->call(&args, &retval);
     int i = retval->as_int()->to_c();
 
-    c.ret(pl::Int(i*2));
+    c.ret(i*2);
 }
 
 XS(xs_p_get) {
@@ -65,7 +66,7 @@ XS(xs_p_get) {
     pl::Pointer * p = c.arg(0)->as_pointer();
 
     char *self = p->extract<char*>();
-    c.ret(pl::Str(self));
+    c.ret(self);
 }
 
 XS(xs_p_destroy) {
@@ -81,7 +82,7 @@ XS(XS_Devel__BindPP_twice) {
 
     int n = c.arg(0)->as_int()->to_c();
 
-    c.ret(pl::Int(n*2).mortal());
+    c.ret(n*2);
 }
 
 XS(xs_twice_deref) {
@@ -89,7 +90,7 @@ XS(xs_twice_deref) {
 
     int n = c.arg(0)->as_ref()->as_scalar()->as_int()->to_c();
 
-    c.ret(pl::Int(n*2).mortal());
+    c.ret(n*2);
 }
 
 XS(XS_Devel__BindPP_twice_n) {
@@ -97,7 +98,7 @@ XS(XS_Devel__BindPP_twice_n) {
 
     double n = c.arg(0)->as_double()->to_c();
 
-    c.ret(pl::Double(n*2).mortal());
+    c.ret(n*2);
 }
 
 XS(XS_Devel__BindPP_twice_u) {
@@ -105,7 +106,7 @@ XS(XS_Devel__BindPP_twice_u) {
 
     unsigned int n = c.arg(0)->as_uint()->to_c();
 
-    c.ret(pl::UInt(n*2).mortal());
+    c.ret(n*2);
 }
 
 XS(XS_Devel__BindPP_catfoo) {
@@ -115,7 +116,7 @@ XS(XS_Devel__BindPP_catfoo) {
     std::string buf(n);
     buf += "foo";
 
-    c.ret(pl::Str(buf).mortal());
+    c.ret(buf);
 }
 
 XS(XS_hv_fetch) {
@@ -205,7 +206,7 @@ XS(xs_av_len) {
     pl::Ctx c(1);
 
     pl::Array* array = c.arg(0)->as_ref()->as_array();
-    c.ret(pl::Int(array->len()));
+    c.ret(array->len());
 }
 
 XS(do_bless) {
@@ -224,7 +225,7 @@ XS(XS_hv_exists) {
     pl::Hash* hash = c.arg(0)->as_ref()->as_hash();
     const char * key = c.arg(1)->as_str()->to_c();
 
-    c.ret(pl::Boolean(hash->exists(key)));
+    c.ret(hash->exists(key));
 }
 
 XS(XS_hv_delete) {
@@ -314,9 +315,9 @@ XS(xs_wantarray) {
     pl::Ctx c(0);
 
     if (c.wantarray()) {
-        c.ret(pl::Str("yes"));
+        c.ret("yes");
     } else {
-        c.ret(pl::Str("no"));
+        c.ret("no");
     }
 }
 
@@ -326,7 +327,7 @@ XS(xs_ft_file) {
 
     const char * fname = c.arg(0)->as_str()->to_c();
 
-    c.ret( pl::Boolean( pl::FileTest::is_regular_file( fname ) ) );
+    c.ret( pl::FileTest::is_regular_file( fname ) );
 }
 
 // -d $dname
@@ -335,21 +336,21 @@ XS(xs_ft_dir) {
 
     const char * dname = c.arg(0)->as_str()->to_c();
 
-    c.ret( pl::Boolean( pl::FileTest::is_dir( dname ) ) );
+    c.ret( pl::FileTest::is_dir( dname ) );
 }
 
 XS(xs_s_len) {
     pl::Ctx c(1);
 
     int len = c.arg(0)->as_str()->length();
-    c.ret(pl::Int(len));
+    c.ret(len);
 }
 
 XS(xs_s_refcnt) {
     pl::Ctx c(1);
 
     int refcnt = c.arg(0)->refcnt();
-    c.ret(pl::Int(refcnt));
+    c.ret(refcnt);
 }
 
 /*

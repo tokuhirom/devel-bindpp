@@ -13,7 +13,7 @@ isa_ok Devel::BindPP::Scalar::do_bless([], 'OK'), 'OK';
     Devel::BindPP::Scalar::refcnt_inc($a);
     Devel::BindPP::Scalar::refcnt_inc($a);
     Devel::BindPP::Scalar::refcnt_inc($a);
-    is Internals::SvREFCNT($a), 4;
+    is Internals::SvREFCNT($a), 4, 'refcnt_inc';
 }
 {
     my $b = 'OK';
@@ -38,7 +38,7 @@ is Devel::BindPP::Scalar::twice_deref(\3), 6;
 ok !Devel::BindPP::Scalar::is_object([]);
 ok Devel::BindPP::Scalar::is_object(bless []);
 {
-    is join(',', @{Devel::BindPP::Scalar::call_cv(sub { @_, qw/1 2 3/ })}), '3,2,1,4649';
+    is join(',', @{Devel::BindPP::Scalar::call_cv(sub { @_, qw/1 2 3/ })}), '3,2,1,4649', 'call cv';
     is join(',', @{Devel::BindPP::Scalar::call_cv(sub { @_, qw/1 2/ })}), '2,1,4649';
     is join(',', @{Devel::BindPP::Scalar::call_cv(sub { qw/1 2/ })}), '2,1';
     is Devel::BindPP::Scalar::call_cv_scalarcon(sub { 2 }), '4';
