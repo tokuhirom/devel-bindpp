@@ -37,6 +37,33 @@ namespace pl {
     class Code;
     class Ctx;
 
+    /// PerlIO class
+    class IO {
+    public:
+        /// *STDERR
+        static PerlIO* stderr() {
+            return PerlIO_stderr();
+        }
+        /// *STDOUT
+        static PerlIO* stdout() {
+            return PerlIO_stdout();
+        }
+        /// printf to stdout
+        static void printf(const char *format, ...) {
+            va_list args;
+            va_start(args, format);
+            PerlIO_vprintf(IO::stdout(), format, args);
+            va_end(args);
+        }
+        /// just a printf
+        static void printf(PerlIO* io, const char *format, ...) {
+            va_list args;
+            va_start(args, format);
+            PerlIO_vprintf(io, format, args);
+            va_end(args);
+        }
+    };
+
     /**
      * abstract base class for perl values
      */
@@ -81,6 +108,8 @@ namespace pl {
          * get a reference of this value
          */
         Reference* reference();
+        ~Value() {
+        }
     protected:
         SV* val;
         Value() { }
