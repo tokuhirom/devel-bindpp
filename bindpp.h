@@ -398,11 +398,9 @@ namespace pl {
         Reference* del(const char*key, I32 klen);
 
         /// store value to hash
-        void store(const char*key, Scalar*value) {
-            this->store(key, strlen(key), value);
-        }
-        void store(const char*key, Scalar value) {
-            this->store(key, strlen(key), &value);
+        template <class T>
+        void store(const char*key, T value) {
+            this->store(key, strlen(key), Scalar::to_perl(value));
         }
         /// store value to hash
         void  store(const char*key, I32 klen, Scalar*value);
