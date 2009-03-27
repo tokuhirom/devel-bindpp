@@ -38,7 +38,7 @@ XS(xs_s_call_cv) {
     pl::Code * code = c.arg(0)->as_ref()->as_code();
 
     pl::Array args;
-    args.push(pl::Int(4649));
+    args.push(4649);
 
     pl::Array retval;
     code->call(&args, &retval);
@@ -51,7 +51,7 @@ XS(xs_s_call_cv_scalarcon) {
     pl::Code * code = c.arg(0)->as_ref()->as_code();
 
     pl::Array args;
-    args.push(pl::Int(4649));
+    args.push(4649);
 
     pl::Scalar *retval;
     code->call(&args, &retval);
@@ -125,7 +125,9 @@ XS(XS_hv_fetch) {
     pl::Hash* hash = c.arg(0)->as_ref()->as_hash();
     const char* key = c.arg(1)->as_str()->to_c();
 
-    c.ret(hash->fetch(key));
+    pl::Scalar * ret= hash->fetch(key);
+    assert(ret);
+    c.ret(ret);
 }
 
 XS(xs_av_fetch) {
@@ -296,11 +298,9 @@ XS(xs_hv_clear) {
 XS(xs_basic_mult) {
     pl::Ctx c(0);
 
-    pl::Int s1(4);
-    pl::Int s2(9);
     pl::Array v;
-    v.push(&s1);
-    v.push(&s2);
+    v.push(4);
+    v.push(9);
 
     c.ret(&v);
 }
@@ -372,7 +372,7 @@ extern "C" {
         b.add_method("mult", xs_basic_mult, __FILE__);
         b.add_method("mult2", xs_basic_mult2, __FILE__);
         b.add_method("wantarray", xs_wantarray, __FILE__);
-        b.add_constant("FOO", pl::Int(1981));
+        b.add_constant("FOO", 1981);
 
         pl::Package s("Devel::BindPP::Scalar");
         s.add_method("twice", XS_Devel__BindPP_twice, __FILE__);
