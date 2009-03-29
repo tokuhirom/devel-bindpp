@@ -464,7 +464,8 @@ namespace pl {
         }
 
         /// store values to array
-        Scalar * store(I32 key, Scalar* v);
+        template <class T>
+        Scalar * store(I32 key, T v);
         /// Clears an array, making it empty.
         void clear() {
             av_clear((AV*)this->val);
@@ -629,7 +630,9 @@ namespace pl {
         SV* v = av_shift((AV*)this->val);
         return Scalar::create(v);
     }
-    Scalar * Array::store(I32 key, Scalar* _v) {
+    template <class T>
+    Scalar * Array::store(I32 key, T arg) {
+        Scalar * _v = Scalar::to_perl(arg);
         _v->refcnt_inc();
         SV** v = av_store((AV*)this->val, key, _v->val);
         if (v) {
