@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 10;
 
 use Devel::BindPP;
 
@@ -19,6 +19,11 @@ use Devel::BindPP;
     is "$a", 'no';
 }
 is Devel::BindPP::Basic::FOO, 1981;
+ok !Devel::BindPP::Basic::is_true(0);
+ok !Devel::BindPP::Basic::is_true(undef);
+ok !Devel::BindPP::Basic::is_true('');
+ok Devel::BindPP::Basic::is_true(1);
+ok Devel::BindPP::Basic::is_true('a');
 
 # package
 =pod

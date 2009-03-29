@@ -140,6 +140,9 @@ namespace pl {
         int refcnt() {
             return SvREFCNT(this->val);
         }
+        bool is_true() {
+            return SvTRUE(this->val);
+        }
         /**
          * get a reference of this value
          */

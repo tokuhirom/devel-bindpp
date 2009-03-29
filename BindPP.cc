@@ -353,6 +353,12 @@ XS(xs_s_refcnt) {
     c.ret(refcnt);
 }
 
+XS(xs_is_true) {
+    pl::Ctx c(1);
+
+    c.ret(c.arg(0)->is_true());
+}
+
 /*
 XS(xs_pkg_stash) {
     pl::Ctx c;
@@ -372,6 +378,7 @@ extern "C" {
         b.add_method("mult", xs_basic_mult, __FILE__);
         b.add_method("mult2", xs_basic_mult2, __FILE__);
         b.add_method("wantarray", xs_wantarray, __FILE__);
+        b.add_method("is_true", xs_is_true, __FILE__);
         b.add_constant("FOO", 1981);
 
         pl::Package s("Devel::BindPP::Scalar");
