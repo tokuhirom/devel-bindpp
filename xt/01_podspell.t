@@ -10,3 +10,4 @@ tokuhirom ah! gmail.com
 Devel::BindPP
 API
 XS
+doxygen
