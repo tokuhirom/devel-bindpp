@@ -30,14 +30,16 @@
   <tr class="memlist"><td><a class="el" href="classpl_1_1Value.html#6443d62e19940e96d92ecd455e854b57">dump</a>()</td><td><a class="el" href="classpl_1_1Value.html">pl::Value</a></td><td><code> [inline]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classpl_1_1Array.html#474184b3489a7e95f3d8567e3f2235a2">extend</a>(I32 n)</td><td><a class="el" href="classpl_1_1Array.html">pl::Array</a></td><td><code> [inline]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classpl_1_1Array.html#2f2d807620a1a2a0d81593d0ad36b3dd">fetch</a>(I32 key)</td><td><a class="el" href="classpl_1_1Array.html">pl::Array</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>is_true</b>() (defined in <a class="el" href="classpl_1_1Value.html">pl::Value</a>)</td><td><a class="el" href="classpl_1_1Value.html">pl::Value</a></td><td><code> [inline]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classpl_1_1Array.html#ebcd126087966476ac07dcc587e6d728">len</a>()</td><td><a class="el" href="classpl_1_1Array.html">pl::Array</a></td><td><code> [inline]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classpl_1_1Array.html#d12f66148abafefd2f5d6dbcce572bf7">pop</a>()</td><td><a class="el" href="classpl_1_1Array.html">pl::Array</a></td><td></td></tr>
-  <tr class="memlist"><td><a class="el" href="classpl_1_1Array.html#69828ce611257d62d1109c28ccbd3d77">push</a>(Value v)</td><td><a class="el" href="classpl_1_1Array.html">pl::Array</a></td><td><code> [inline]</code></td></tr>
-  <tr class="memlist"><td><a class="el" href="classpl_1_1Array.html#9768fa9a46e82ce797d3053cbbc02318">push</a>(Value *v)</td><td><a class="el" href="classpl_1_1Array.html">pl::Array</a></td><td><code> [inline]</code></td></tr>
+  <tr class="memlist"><td><a class="el" href="classpl_1_1Array.html#33c837cbf66a57c96627906279dda29b">push</a>(Scalar *s)</td><td><a class="el" href="classpl_1_1Array.html">pl::Array</a></td><td><code> [inline]</code></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>push</b>(T v) (defined in <a class="el" href="classpl_1_1Array.html">pl::Array</a>)</td><td><a class="el" href="classpl_1_1Array.html">pl::Array</a></td><td><code> [inline]</code></td></tr>
+  <tr class="memlist"><td><a class="el" href="classpl_1_1Value.html#5daf1a7064b885906531426130033b32">refcnt</a>()</td><td><a class="el" href="classpl_1_1Value.html">pl::Value</a></td><td><code> [inline]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classpl_1_1Value.html#d5f6ceaf4d82be935157fd4711add187">refcnt_dec</a>()</td><td><a class="el" href="classpl_1_1Value.html">pl::Value</a></td><td><code> [inline]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classpl_1_1Value.html#03cd7efcf6532a680d98052984dbc201">refcnt_inc</a>()</td><td><a class="el" href="classpl_1_1Value.html">pl::Value</a></td><td><code> [inline]</code></td></tr>
-  <tr class="memlist"><td><a class="el" href="classpl_1_1Value.html#1be79542b1fdb3fe9106a73a184f0e5c">reference</a>()</td><td><a class="el" href="classpl_1_1Value.html">pl::Value</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>Reference</b> (defined in <a class="el" href="classpl_1_1Array.html">pl::Array</a>)</td><td><a class="el" href="classpl_1_1Array.html">pl::Array</a></td><td><code> [friend]</code></td></tr>
+  <tr class="memlist"><td><a class="el" href="classpl_1_1Value.html#1be79542b1fdb3fe9106a73a184f0e5c">reference</a>()</td><td><a class="el" href="classpl_1_1Value.html">pl::Value</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classpl_1_1Array.html#4ef220374709024670c2a29d6f81fe01">shift</a>()</td><td><a class="el" href="classpl_1_1Array.html">pl::Array</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classpl_1_1Array.html#87faf7941dc5866216c476c11b6015ba">size</a>()</td><td><a class="el" href="classpl_1_1Array.html">pl::Array</a></td><td><code> [inline]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classpl_1_1Array.html#ca5cf203c33f225f90e3141145fcf819">store</a>(I32 key, Scalar *v)</td><td><a class="el" href="classpl_1_1Array.html">pl::Array</a></td><td></td></tr>
@@ -47,8 +49,9 @@
   <tr bgcolor="#f0f0f0"><td><b>val</b> (defined in <a class="el" href="classpl_1_1Value.html">pl::Value</a>)</td><td><a class="el" href="classpl_1_1Value.html">pl::Value</a></td><td><code> [protected]</code></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>Value</b>() (defined in <a class="el" href="classpl_1_1Value.html">pl::Value</a>)</td><td><a class="el" href="classpl_1_1Value.html">pl::Value</a></td><td><code> [inline, protected]</code></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>Value</b>(SV *_v) (defined in <a class="el" href="classpl_1_1Value.html">pl::Value</a>)</td><td><a class="el" href="classpl_1_1Value.html">pl::Value</a></td><td><code> [inline, protected]</code></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>~Value</b>() (defined in <a class="el" href="classpl_1_1Value.html">pl::Value</a>)</td><td><a class="el" href="classpl_1_1Value.html">pl::Value</a></td><td><code> [inline]</code></td></tr>
 </table></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Mar 26 20:54:37 2009 for Devel::BindPP by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Mar 29 12:51:56 2009 for Devel::BindPP by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

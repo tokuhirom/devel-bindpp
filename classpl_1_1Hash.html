@@ -64,13 +64,11 @@ bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <a class="el" href="classpl_1_1Reference.html">Reference</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Hash.html#7c9a0c77351401036d03131adfc9fdd9">del</a> (const char *key, I32 klen)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">remove the key in hash <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="a499204794071f388487f3ea816ea7f5"></a><!-- doxytag: member="pl::Hash::store" ref="a499204794071f388487f3ea816ea7f5" args="(const char *key, Scalar *value)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Hash.html#a499204794071f388487f3ea816ea7f5">store</a> (const char *key, <a class="el" href="classpl_1_1Scalar.html">Scalar</a> *value)</td></tr>
+<tr><td class="memTemplParams" nowrap colspan="2"><a class="anchor" name="c0a592b38e4e69526bfd27cce3ef2794"></a><!-- doxytag: member="pl::Hash::store" ref="c0a592b38e4e69526bfd27cce3ef2794" args="(const char *key, T value)" -->
+template&lt;class T&gt; </td></tr>
+<tr><td class="memTemplItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpl_1_1Hash.html#c0a592b38e4e69526bfd27cce3ef2794">store</a> (const char *key, T value)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">store value to hash <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="a88bac96560a936e2a874bd2e44a7f2e"></a><!-- doxytag: member="pl::Hash::store" ref="a88bac96560a936e2a874bd2e44a7f2e" args="(const char *key, Scalar value)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><b>store</b> (const char *key, <a class="el" href="classpl_1_1Scalar.html">Scalar</a> value)</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="48dd0d31da85198fcac280c9e0796840"></a><!-- doxytag: member="pl::Hash::store" ref="48dd0d31da85198fcac280c9e0796840" args="(const char *key, I32 klen, Scalar *value)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Hash.html#48dd0d31da85198fcac280c9e0796840">store</a> (const char *key, I32 klen, <a class="el" href="classpl_1_1Scalar.html">Scalar</a> *value)</td></tr>
 
@@ -96,6 +94,12 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Value.html#d5f6ceaf4d82be935157fd4711add187">refcnt_dec</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">decrement the reference counter for this value  <a href="#d5f6ceaf4d82be935157fd4711add187"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Value.html#5daf1a7064b885906531426130033b32">refcnt</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">get a reference count  <a href="#5daf1a7064b885906531426130033b32"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="cd3933af2da290ff1ddb0f483e34a08d"></a><!-- doxytag: member="pl::Hash::is_true" ref="cd3933af2da290ff1ddb0f483e34a08d" args="()" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>is_true</b> ()</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="1be79542b1fdb3fe9106a73a184f0e5c"></a><!-- doxytag: member="pl::Hash::reference" ref="1be79542b1fdb3fe9106a73a184f0e5c" args="()" -->
 <a class="el" href="classpl_1_1Reference.html">Reference</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Value.html#1be79542b1fdb3fe9106a73a184f0e5c">reference</a> ()</td></tr>
 
@@ -181,10 +185,32 @@ decrement the reference counter for this value
 
 </div>
 </div><p>
-<hr>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="bindpp_8h-source.html">bindpp.h</a></ul>
+<a class="anchor" name="5daf1a7064b885906531426130033b32"></a><!-- doxytag: member="pl::Hash::refcnt" ref="5daf1a7064b885906531426130033b32" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int pl::Value::refcnt           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td><code> [inline, inherited]</code></td>
+        </tr>
+      </table>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Mar 26 20:54:37 2009 for Devel::BindPP by&nbsp;
+<div class="memdoc">
+
+<p>
+get a reference count 
+<p>
+<dl class="see" compact><dt><b>See also:</b></dt><dd>SvREFCNT </dd></dl>
+
+</div>
+</div><p>
+<hr>The documentation for this class was generated from the following file:<ul>
+<li>share/<a class="el" href="bindpp_8h-source.html">bindpp.h</a></ul>
+</div>
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Mar 29 12:51:56 2009 for Devel::BindPP by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

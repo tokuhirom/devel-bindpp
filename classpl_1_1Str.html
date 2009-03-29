@@ -103,6 +103,9 @@ SV *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <a class="el" href="classpl_1_1Reference.html">Reference</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Scalar.html#9f56af8688eb87c31af7b4c061dbafb4">as_ref</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">this variable is just a reference.change the type <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="80696c7f139c3044aea43a9f43160a3e"></a><!-- doxytag: member="pl::Str::clone" ref="80696c7f139c3044aea43a9f43160a3e" args="()" -->
+<a class="el" href="classpl_1_1Scalar.html">Scalar</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><b>clone</b> ()</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Value.html#6443d62e19940e96d92ecd455e854b57">dump</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">dump value  <a href="#6443d62e19940e96d92ecd455e854b57"></a><br></td></tr>
@@ -112,13 +115,48 @@ SV *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Value.html#d5f6ceaf4d82be935157fd4711add187">refcnt_dec</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">decrement the reference counter for this value  <a href="#d5f6ceaf4d82be935157fd4711add187"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Value.html#5daf1a7064b885906531426130033b32">refcnt</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">get a reference count  <a href="#5daf1a7064b885906531426130033b32"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="cd3933af2da290ff1ddb0f483e34a08d"></a><!-- doxytag: member="pl::Str::is_true" ref="cd3933af2da290ff1ddb0f483e34a08d" args="()" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>is_true</b> ()</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="1be79542b1fdb3fe9106a73a184f0e5c"></a><!-- doxytag: member="pl::Str::reference" ref="1be79542b1fdb3fe9106a73a184f0e5c" args="()" -->
 <a class="el" href="classpl_1_1Reference.html">Reference</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpl_1_1Value.html#1be79542b1fdb3fe9106a73a184f0e5c">reference</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">get a reference of this value <br></td></tr>
+<tr><td colspan="2"><br><h2>Static Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="979074868a896ff7fc6d09e79472a5d6"></a><!-- doxytag: member="pl::Str::to_perl" ref="979074868a896ff7fc6d09e79472a5d6" args="(const char *s)" -->
+static <a class="el" href="classpl_1_1Scalar.html">Scalar</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><b>to_perl</b> (const char *s)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="37ec67186a2947c52dcac92d0fdf8333"></a><!-- doxytag: member="pl::Str::to_perl" ref="37ec67186a2947c52dcac92d0fdf8333" args="(unsigned int v)" -->
+static <a class="el" href="classpl_1_1Scalar.html">Scalar</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><b>to_perl</b> (unsigned int v)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="60c8ef9886af8caaa8fe6bd4023e3b87"></a><!-- doxytag: member="pl::Str::to_perl" ref="60c8ef9886af8caaa8fe6bd4023e3b87" args="(int v)" -->
+static <a class="el" href="classpl_1_1Scalar.html">Scalar</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><b>to_perl</b> (int v)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ac14fa9566408b5c9d3690714d65379e"></a><!-- doxytag: member="pl::Str::to_perl" ref="ac14fa9566408b5c9d3690714d65379e" args="(I32 v)" -->
+static <a class="el" href="classpl_1_1Scalar.html">Scalar</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><b>to_perl</b> (I32 v)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="e192bdbbb38d6a90d0a9db6d1cf0a907"></a><!-- doxytag: member="pl::Str::to_perl" ref="e192bdbbb38d6a90d0a9db6d1cf0a907" args="(double v)" -->
+static <a class="el" href="classpl_1_1Scalar.html">Scalar</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><b>to_perl</b> (double v)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="0154d9b4de676cded25b8b7eda4b4f30"></a><!-- doxytag: member="pl::Str::to_perl" ref="0154d9b4de676cded25b8b7eda4b4f30" args="(Scalar *v)" -->
+static <a class="el" href="classpl_1_1Scalar.html">Scalar</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><b>to_perl</b> (<a class="el" href="classpl_1_1Scalar.html">Scalar</a> *v)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="80efabc06ed6441492a77e93b328f670"></a><!-- doxytag: member="pl::Str::to_perl" ref="80efabc06ed6441492a77e93b328f670" args="(std::string &amp;v)" -->
+static <a class="el" href="classpl_1_1Scalar.html">Scalar</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><b>to_perl</b> (std::string &amp;v)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="71be02539d9b02384546524ebd875235"></a><!-- doxytag: member="pl::Str::to_perl" ref="71be02539d9b02384546524ebd875235" args="(bool b)" -->
+static <a class="el" href="classpl_1_1Scalar.html">Scalar</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><b>to_perl</b> (bool b)</td></tr>
+
 <tr><td colspan="2"><br><h2>Protected Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="b8462c953a254e0c7e1a4ef2138425c6"></a><!-- doxytag: member="pl::Str::Str" ref="b8462c953a254e0c7e1a4ef2138425c6" args="(SV *_s)" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>Str</b> (SV *_s)</td></tr>
+
+<tr><td colspan="2"><br><h2>Static Protected Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="fa15418582fde964aaa5928950dd68e0"></a><!-- doxytag: member="pl::Str::create" ref="fa15418582fde964aaa5928950dd68e0" args="(SV *_v)" -->
+static <a class="el" href="classpl_1_1Scalar.html">Scalar</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><b>create</b> (SV *_v)</td></tr>
 
 <tr><td colspan="2"><br><h2>Protected Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ccbf8c00be167c8e743906842534b5c4"></a><!-- doxytag: member="pl::Str::val" ref="ccbf8c00be167c8e743906842534b5c4" args="" -->
@@ -218,10 +256,32 @@ decrement the reference counter for this value
 
 </div>
 </div><p>
-<hr>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="bindpp_8h-source.html">bindpp.h</a></ul>
+<a class="anchor" name="5daf1a7064b885906531426130033b32"></a><!-- doxytag: member="pl::Str::refcnt" ref="5daf1a7064b885906531426130033b32" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int pl::Value::refcnt           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td><code> [inline, inherited]</code></td>
+        </tr>
+      </table>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Mar 26 20:54:37 2009 for Devel::BindPP by&nbsp;
+<div class="memdoc">
+
+<p>
+get a reference count 
+<p>
+<dl class="see" compact><dt><b>See also:</b></dt><dd>SvREFCNT </dd></dl>
+
+</div>
+</div><p>
+<hr>The documentation for this class was generated from the following file:<ul>
+<li>share/<a class="el" href="bindpp_8h-source.html">bindpp.h</a></ul>
+</div>
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Mar 29 12:51:56 2009 for Devel::BindPP by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
