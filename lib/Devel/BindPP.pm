@@ -49,8 +49,7 @@ Devel::BindPP - bind c++ to perl
         pl::Pointer * p = c.arg(0)->as_pointer();
 
         char *self = p->extract<char>();
-        pl::Str s(self);
-        c.ret(&s);
+        c.ret(self);
     }
 
     XS(xs_destroy) {
@@ -58,7 +57,7 @@ Devel::BindPP - bind c++ to perl
 
         pl::Pointer * p = c.arg(0)->as_pointer();
         Safefree(p->extract<char>());
-        c.ret(pl::Boolean::yes());
+        c.return_true();
     }
 
     extern "C" {
