@@ -1,4 +1,8 @@
 Revision history for Perl extension Devel::BindPP
 
+0.03_01
+
+        - this module is cpan ready today.
+
 0.01    Sun Mar 22 21:43:06 2009
         - original version
