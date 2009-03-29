@@ -125,7 +125,7 @@ namespace pl {
          * @see SvREFCNT_inc
          */
         void refcnt_inc() {
-            SvREFCNT_inc(this->val);
+            SvREFCNT_inc_simple_void(this->val);
         }
         /**
          * decrement the reference counter for this value
