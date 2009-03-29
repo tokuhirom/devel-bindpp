@@ -2,7 +2,7 @@ package Devel::BindPP;
 use strict;
 use warnings;
 use 5.008005;
-our $VERSION = '0.03_01';
+our $VERSION = '0.03_02';
 use File::ShareDir ':ALL';
 use File::Copy;
 use XSLoader;

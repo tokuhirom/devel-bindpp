@@ -1,5 +1,15 @@
 Revision history for Perl extension Devel::BindPP
 
+0.03_02
+
+        - Array->store can store any C++ values
+        - updated docs
+        - use Module::Install::Repository
+        - register __FILE__ only once.
+          Package->add_method("name", xsub, __FILE___)
+          was changed to
+          Package->add_method("name", xsub)
+
 0.03_01
 
         - this module is cpan ready today.
