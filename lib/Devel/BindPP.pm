@@ -1,6 +1,7 @@
 package Devel::BindPP;
 use strict;
 use warnings;
+use 5.008005;
 our $VERSION = '0.02';
 our @ISA;
 
