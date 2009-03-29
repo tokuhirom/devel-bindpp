@@ -178,12 +178,6 @@ namespace pl {
             return this;
         }
         /**
-         * serialize this object to real perl variable
-         */
-        SV * serialize() {
-            return val;
-        }
-        /**
          * this variable is just a string.change the type
          */
         Str* as_str();
@@ -211,37 +205,41 @@ namespace pl {
             return Scalar::create(newSVsv(this->val));
         }
 
-        static Scalar *to_perl(const char* s) {
-            return Scalar::create(newSVpv(s, strlen(s)));
-        }
-        static Scalar *to_perl(unsigned int v) {
-            return Scalar::create(newSVuv(v));
-        }
-        static Scalar *to_perl(int v) {
-            return Scalar::create(newSViv(v));
-        }
-        static Scalar *to_perl(I32 v) {
-            return Scalar::create(newSViv(v));
-        }
-        static Scalar *to_perl(double v) {
-            return Scalar::create(newSVnv(v));
-        }
-        static Scalar *to_perl(Scalar * v) {
-            if (v && v->val) {
-                return Scalar::create(v->val);
-            } else {
-                return Scalar::create(&PL_sv_undef);
-            }
-        }
-        static Scalar *to_perl(std::string& v) {
-            return Scalar::create(newSVpv(v.c_str(), v.length()));
-        }
-        static Scalar *to_perl(bool b) {
-            return Scalar::create(b ? &PL_sv_yes : &PL_sv_no);
+        template <class T>
+        static Scalar *to_perl(T s) {
+            return Scalar::create(to_sv(s));
         }
     protected:
         Scalar(SV* _v) : Value(_v) { }
         static Scalar * create(SV* _v);
+        static SV *to_sv(const char* s) {
+            return (newSVpv(s, strlen(s)));
+        }
+        static SV *to_sv(unsigned int v) {
+            return (newSVuv(v));
+        }
+        static SV *to_sv(int v) {
+            return (newSViv(v));
+        }
+        static SV *to_sv(I32 v) {
+            return (newSViv(v));
+        }
+        static SV *to_sv(double v) {
+            return (newSVnv(v));
+        }
+        static SV *to_sv(Scalar * v) {
+            if (v && v->val) {
+                return (v->val);
+            } else {
+                return (&PL_sv_undef);
+            }
+        }
+        static SV *to_sv(std::string& v) {
+            return (newSVpv(v.c_str(), v.length()));
+        }
+        static SV *to_sv(bool b) {
+            return (b ? &PL_sv_yes : &PL_sv_no);
+        }
     };
 
     /**
@@ -405,10 +403,11 @@ namespace pl {
         /// store value to hash
         template <class T>
         void store(const char*key, T value) {
-            this->store(key, strlen(key), Scalar::to_perl(value));
+            this->store(key, strlen(key), value);
         }
         /// store value to hash
-        void  store(const char*key, I32 klen, Scalar*value);
+        template <class T>
+        void  store(const char*key, I32 klen,  T value);
         /// Evaluates the hash in scalar context and returns the result.
         Scalar* scalar();
         /// Undefines the hash.
@@ -433,9 +432,9 @@ namespace pl {
         }
         template <class T>
         void push(T v) {
-            Scalar * s = Scalar::to_perl(v);
-            s->refcnt_inc();
-            av_push((AV*)this->val, s->val);
+            SV * s = Scalar::to_sv(v);
+            SvREFCNT_inc_simple_void(s);
+            av_push((AV*)this->val, s);
         }
         /**
           * Unshift the given number of "undef" values onto the beginning
@@ -503,12 +502,12 @@ namespace pl {
         /// return the one scalar value
         template <class T>
         void ret(T n) {
-            Scalar * s = Scalar::to_perl(n);
-            this->ret(0, s->val);
+            SV * s = Scalar::to_sv(n);
+            this->ret(0, s);
         }
         template <class T>
         void ret(int n, T v) {
-            return this->ret(n, Scalar::to_perl(v));
+            return this->ret(n, Scalar::to_sv(v));
         }
         /// same as perl level wantarray()
         bool wantarray() {
@@ -632,9 +631,9 @@ namespace pl {
     }
     template <class T>
     Scalar * Array::store(I32 key, T arg) {
-        Scalar * _v = Scalar::to_perl(arg);
-        _v->refcnt_inc();
-        SV** v = av_store((AV*)this->val, key, _v->val);
+        SV * _v = Scalar::to_sv(arg);
+        SvREFCNT_inc_simple_void(_v);
+        SV** v = av_store((AV*)this->val, key, _v);
         if (v) {
             Reference * ref = new Reference(*v);
             CurCtx::get()->register_allocated(ref);
@@ -672,8 +671,8 @@ namespace pl {
 
         template <class T>
         void add_constant(const char *name, T val) {
-            Scalar * s = Scalar::to_perl(val);
-            this->add_constant(name, s->serialize());
+            SV * s = Scalar::to_sv(val);
+            this->add_constant(name, s);
         }
     protected:
         void add_constant(const char *name, SV* val) {
@@ -998,9 +997,11 @@ namespace pl {
         CurCtx::get()->register_allocated(ref);
         return ref;
     }
-    void Hash::store(const char*key, I32 klen, Scalar*value) {
-        value->refcnt_inc();
-        hv_store((HV*)this->val, key, klen, value->val, 0);
+    template <class T>
+    void Hash::store(const char*key, I32 klen, T value) {
+        SV * v = Scalar::to_sv(value);
+        SvREFCNT_inc_simple_void(v);
+        hv_store((HV*)this->val, key, klen, v, 0);
     }
     Scalar* Hash::scalar() {
         Scalar*s = new Scalar(hv_scalar((HV*)this->val));
