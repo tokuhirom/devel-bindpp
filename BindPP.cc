@@ -374,70 +374,70 @@ extern "C" {
     XS(boot_Devel__BindPP) {
         pl::BootstrapCtx bc;
 
-        pl::Package b("Devel::BindPP::Basic");
-        b.add_method("mult", xs_basic_mult, __FILE__);
-        b.add_method("mult2", xs_basic_mult2, __FILE__);
-        b.add_method("wantarray", xs_wantarray, __FILE__);
-        b.add_method("is_true", xs_is_true, __FILE__);
+        pl::Package b("Devel::BindPP::Basic", __FILE__);
+        b.add_method("mult",      xs_basic_mult);
+        b.add_method("mult2",     xs_basic_mult2);
+        b.add_method("wantarray", xs_wantarray);
+        b.add_method("is_true",   xs_is_true);
         b.add_constant("FOO", 1981);
 
-        pl::Package s("Devel::BindPP::Scalar");
-        s.add_method("twice", XS_Devel__BindPP_twice, __FILE__);
-        s.add_method("catfoo", XS_Devel__BindPP_catfoo, __FILE__);
-        s.add_method("twice_n", XS_Devel__BindPP_twice_n, __FILE__);
-        s.add_method("twice_u", XS_Devel__BindPP_twice_u, __FILE__);
-        s.add_method("do_bless", do_bless, __FILE__);
-        s.add_method("refcnt_inc", xs_refcnt_inc, __FILE__);
-        s.add_method("refcnt_dec", xs_refcnt_dec, __FILE__);
-        s.add_method("to_c", xs_to_c, __FILE__);
-        s.add_method("twice_deref", xs_twice_deref, __FILE__);
-        s.add_method("cats", xs_s_cats, __FILE__);
-        s.add_method("is_object", xs_s_is_object, __FILE__);
-        s.add_method("call_cv", xs_s_call_cv, __FILE__);
-        s.add_method("call_cv_scalarcon", xs_s_call_cv_scalarcon, __FILE__);
-        s.add_method("len", xs_s_len, __FILE__);
-        s.add_method("refcnt", xs_s_refcnt, __FILE__);
+        pl::Package s("Devel::BindPP::Scalar", __FILE__);
+        s.add_method("twice",             XS_Devel__BindPP_twice);
+        s.add_method("catfoo",            XS_Devel__BindPP_catfoo);
+        s.add_method("twice_n",           XS_Devel__BindPP_twice_n);
+        s.add_method("twice_u",           XS_Devel__BindPP_twice_u);
+        s.add_method("do_bless",          do_bless);
+        s.add_method("refcnt_inc",        xs_refcnt_inc);
+        s.add_method("refcnt_dec",        xs_refcnt_dec);
+        s.add_method("to_c",              xs_to_c);
+        s.add_method("twice_deref",       xs_twice_deref);
+        s.add_method("cats",              xs_s_cats);
+        s.add_method("is_object",         xs_s_is_object);
+        s.add_method("call_cv",           xs_s_call_cv);
+        s.add_method("call_cv_scalarcon", xs_s_call_cv_scalarcon);
+        s.add_method("len",               xs_s_len);
+        s.add_method("refcnt",            xs_s_refcnt);
 
         // Hash
-        pl::Package h("Devel::BindPP::Hash");
-        h.add_method("hvref_fetch", XS_hv_fetch, __FILE__);
-        h.add_method("exists", XS_hv_exists, __FILE__);
-        h.add_method("delete", XS_hv_delete, __FILE__);
-        h.add_method("store", xs_hv_store, __FILE__);
-        h.add_method("scalar", xs_hv_scalar, __FILE__);
-        h.add_method("undef", xs_hv_undef, __FILE__);
-        h.add_method("clear", xs_hv_clear, __FILE__);
+        pl::Package h("Devel::BindPP::Hash", __FILE__);
+        h.add_method("hvref_fetch", XS_hv_fetch);
+        h.add_method("exists",      XS_hv_exists);
+        h.add_method("delete",      XS_hv_delete);
+        h.add_method("store",       xs_hv_store);
+        h.add_method("scalar",      xs_hv_scalar);
+        h.add_method("undef",       xs_hv_undef);
+        h.add_method("clear",       xs_hv_clear);
 
         // Array
-        pl::Package a("Devel::BindPP::Array");
-        a.add_method("avref_fetch", xs_av_fetch, __FILE__);
-        a.add_method("push", xs_av_push, __FILE__);
-        a.add_method("pop", xs_av_pop, __FILE__);
-        a.add_method("len", xs_av_len, __FILE__);
-        a.add_method("shift", xs_av_shift, __FILE__);
-        a.add_method("unshift", xs_av_unshift, __FILE__);
-        a.add_method("store", xs_av_store, __FILE__);
-        a.add_method("clear", xs_av_clear, __FILE__);
-        a.add_method("undef", xs_av_undef, __FILE__);
+        pl::Package a("Devel::BindPP::Array", __FILE__);
+        a.add_method("avref_fetch", xs_av_fetch);
+        a.add_method("push",        xs_av_push);
+        a.add_method("pop",         xs_av_pop);
+        a.add_method("len",         xs_av_len);
+        a.add_method("shift",       xs_av_shift);
+        a.add_method("unshift",     xs_av_unshift);
+        a.add_method("store",       xs_av_store);
+        a.add_method("clear",       xs_av_clear);
+        a.add_method("undef",       xs_av_undef);
 
         // Pointer
-        pl::Package p("Devel::BindPP::Pointer");
-        p.add_method("new", xs_p_new, __FILE__);
-        p.add_method("get", xs_p_get, __FILE__);
-        p.add_method("DESTROY", xs_p_destroy, __FILE__);
+        pl::Package p("Devel::BindPP::Pointer", __FILE__);
+        p.add_method("new",     xs_p_new);
+        p.add_method("get",     xs_p_get);
+        p.add_method("DESTROY", xs_p_destroy);
 
         {
             // FileTest
-            pl::Package p("Devel::BindPP::FileTest");
-            p.add_method("is_file", xs_ft_file, __FILE__);
-            p.add_method("is_dir", xs_ft_dir, __FILE__);
+            pl::Package p("Devel::BindPP::FileTest", __FILE__);
+            p.add_method("is_file", xs_ft_file);
+            p.add_method("is_dir",  xs_ft_dir);
         }
 
         // package
         /*
         {
-            pl::Package pkg("Devel::BindPP::Package");
-            pkg.add_method("stash", xs_pkg_stash, __FILE__);
+            pl::Package pkg("Devel::BindPP::Package", __FILE__);
+            pkg.add_method("stash", xs_pkg_stash);
         }
         */
     }
