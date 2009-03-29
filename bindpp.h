@@ -13,7 +13,6 @@
 // TODO: handle gv
 // TODO: Str->utf8_on/Str->utf8_off
 // TODO: Str->len_bytes() / Str->len()
-// TODO: Value->true() # SvTRUE()
 // TODO: Scalar->weaken / Scalar->is_weak
 
 extern "C" {
