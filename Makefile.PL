@@ -29,8 +29,9 @@ makemaker_args(
 tests 't/*.t';
 author_tests 'xt';
 
+install_share 'share';
 build_requires 'Test::More';
-build_requires 'Devel::LibCheck';
+build_requires 'Devel::CheckLib';
 use_test_base;
 auto_include;
 WriteAll;

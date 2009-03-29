@@ -1,4 +1,4 @@
-#include "bindpp.h"
+#include "share/bindpp.h"
 // This is an example file for BindPP
 
 XS(xs_p_new) {
