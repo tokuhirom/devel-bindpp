@@ -3,8 +3,13 @@ use Devel::CheckLib;
 name 'Devel-BindPP';
 all_from 'lib/Devel/BindPP.pm';
 
+perl_version '5.008005';
+license 'perl';
 check_lib_or_exit(lib => 'stdc++');
 can_cc or die "This module requires a C++ compiler";
+
+requires 'File::ShareDir';
+requires 'File::Copy';
 
 my $ccflags = '';
 if ($ENV{USER} eq 'tokuhirom') {

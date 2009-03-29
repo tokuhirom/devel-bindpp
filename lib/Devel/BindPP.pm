@@ -2,18 +2,20 @@ package Devel::BindPP;
 use strict;
 use warnings;
 use 5.008005;
-our $VERSION = '0.02';
-our @ISA;
+our $VERSION = '0.03';
+use File::ShareDir ':ALL';
+use File::Copy;
+use XSLoader;
 
-eval {
-    require XSLoader;
-    XSLoader::load(__PACKAGE__, $VERSION);
-    1;
-} or do {
-    require DynaLoader;
-    push @ISA, 'DynaLoader';
-    __PACKAGE__->bootstrap($VERSION);
-};
+XSLoader::load(__PACKAGE__, $VERSION);
+
+sub WriteFile {
+    my $no_ppport = shift || undef;
+    copy(dist_file('Devel-BindPP', 'bindpp.h'), 'bindpp.h');
+    unless ($no_ppport) {
+        copy(dist_file('Devel-BindPP', 'ppport.h'), 'ppport.h');
+    }
+}
 
 1;
 __END__
@@ -24,6 +26,10 @@ Devel::BindPP - bind c++ to perl
 
 =head1 SYNOPSIS
 
+    // generate ppport.h & bindpp.h
+    perl -e 'use Devel::BindPP; Devel::BindPP::WriteFile()'
+
+    //// and write your c++ module
     #include "bindpp.h"
 
     XS(xs_new) {
@@ -76,11 +82,15 @@ XS is too difficult for me :p XS is filled by too much C macros.
 
 You can write perl extension by pure C++ with Devel::BindPP.
 
+This module contains only one header file.You can include this file and write C++!
+
 =head1 AUTHOR
 
 Tokuhiro Matsuno E<lt>tokuhirom ah! gmail.comE<gt>
 
 =head1 SEE ALSO
+
+L<Devel::PPPort>, L<perl>
 
 =head1 LICENSE
 
