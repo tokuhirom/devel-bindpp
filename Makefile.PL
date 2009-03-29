@@ -34,6 +34,7 @@ makemaker_args(
 tests 't/*.t';
 author_tests 'xt';
 
+auto_set_repository;
 install_share 'share';
 build_requires 'Test::More';
 build_requires 'Devel::CheckLib';
