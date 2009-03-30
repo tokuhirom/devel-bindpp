@@ -24,6 +24,11 @@ extern "C" {
 #include <cstdarg>
 };
 
+#ifdef _WIN32
+# undef stderr
+# undef stdout
+#endif
+
 namespace pl {
     class Str;
     class UInt;
