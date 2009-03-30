@@ -99,6 +99,10 @@ github.com:tokuhirom/devel-bindpp.git
 
 Tokuhiro Matsuno E<lt>tokuhirom ah! gmail.comE<gt>
 
+=head1 THANKS TO
+
+mattn++ # win32 port
+
 =head1 SEE ALSO
 
 L<Devel::PPPort>, L<perl>
