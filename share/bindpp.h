@@ -14,6 +14,7 @@
 // TODO: Str->utf8_on/Str->utf8_off
 // TODO: Str->len_bytes() / Str->len()
 // TODO: Scalar->weaken / Scalar->is_weak
+// TODO: handle signals?
 
 extern "C" {
 #include "EXTERN.h"
