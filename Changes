@@ -1,5 +1,12 @@
 Revision history for Perl extension Devel::BindPP
 
+0.03_03
+
+        - mingw32 support(by mattn++)
+        - updated docs
+        - remove Scalar->serialize() method
+        - added Scalar->to_sv() for optimization
+
 0.03_02
 
         - Array->store can store any C++ values
