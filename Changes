@@ -1,5 +1,10 @@
 Revision history for Perl extension Devel::BindPP
 
+0.05
+
+        - must use g++. this is required at some systems.
+          (reported by miyagawa++)
+
 0.04
 
         - now stable, maybe.

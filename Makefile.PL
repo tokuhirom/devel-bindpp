@@ -6,7 +6,6 @@ all_from 'lib/Devel/BindPP.pm';
 perl_version '5.008005';
 license 'perl';
 check_lib_or_exit(lib => 'stdc++');
-can_cc or die "This module requires a C++ compiler";
 
 requires 'File::ShareDir';
 requires 'File::Copy';
@@ -20,6 +19,9 @@ makemaker_args(
     OBJECT => '$(O_FILES)',
     LIBS => ['-lstdc++'],
     CCFLAGS => $ccflags,
+    CC => 'g++',
+    LD => 'g++',
+    XSPOT => '-C++',
     clean => {
         FILES => q{
             *.stackdump
@@ -30,6 +32,8 @@ makemaker_args(
         },
     },
 );
+
+can_cc or die "This module requires a C++ compiler";
 
 tests 't/*.t';
 author_tests 'xt';
