@@ -1,5 +1,9 @@
 Revision history for Perl extension Devel::BindPP
 
+0.04
+
+        - now stable, maybe.
+
 0.03_03
 
         - mingw32 support(by mattn++)
